@@ -599,13 +599,21 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 
 int RdmaHw::Receive(Ptr<Packet> p, CustomHeader &ch){
 	if (ch.l3Prot == 0x11){ // UDP
+		std::cout << "checkpoint UDP begin\n";
 		ReceiveUdp(p, ch);
+		std::cout << "checkpoint UDP end\n";
 	}else if (ch.l3Prot == 0xFF){ // CNP
+		std::cout << "checkpoint CNP begin\n";
 		ReceiveCnp(p, ch);
+		std::cout << "checkpoint CNP end\n";
 	}else if (ch.l3Prot == 0xFD){ // NACK
+		std::cout << "checkpoint NACK begin\n";
 		ReceiveAck(p, ch);
+		std::cout << "checkpoint NACK end\n";
 	}else if (ch.l3Prot == 0xFC){ // ACK
+		std::cout << "checkpoint ACK begin\n";
 		ReceiveAck(p, ch);
+		std::cout << "checkpoint ACK end\n";
 	}
 	return 0;
 }
