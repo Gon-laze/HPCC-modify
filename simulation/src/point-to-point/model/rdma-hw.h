@@ -8,7 +8,6 @@
 #include "qbb-net-device.h"
 #include <unordered_map>
 #include "pint.h"
-#include <cstring>
 #include <string>
 #include <chrono>
 
@@ -53,26 +52,26 @@ public:
 	double burst_max_duration = 0.4;
 	//所有的流表，其key均使用流五元组构成的字符串 TODO：重写哈希函数，构建key值为五元组的unordered_map
 	//和包的总个数以及总字节数相关的统计table，
-	std::unordered_map<string,uint64_t> flow_byte_size_table;
-	std::unordered_map<string,uint64_t> flow_packet_num_table;
+	std::unordered_map<std::string,uint64_t> flow_byte_size_table;
+	std::unordered_map<std::string,uint64_t> flow_packet_num_table;
 	//和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
-	std::unordered_map<string,std::chrono::system_clock::time_point> flow_last_pkt_time_table;
-	std::unordered_map<string,std::chrono::system_clock::time_point> flow_first_pkt_time_table;
-	std::unordered_map<string,double> flow_min_pkt_interval_table;
-	std::unordered_map<string,double> flow_max_pkt_interval_table;
-	std::unordered_map<string,double> flow_avg_pkt_interval_table;
+	std::unordered_map<std::string,std::chrono::system_clock::time_point> flow_last_pkt_time_table;
+	std::unordered_map<std::string,std::chrono::system_clock::time_point> flow_first_pkt_time_table;
+	std::unordered_map<std::string,double> flow_min_pkt_interval_table;
+	std::unordered_map<std::string,double> flow_max_pkt_interval_table;
+	std::unordered_map<std::string,double> flow_avg_pkt_interval_table;
 	//和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
-	std::unordered_map<string,uint16_t> flow_max_pkt_size_table;
-	std::unordered_map<string,uint16_t> flow_min_pkt_size_table;
-	std::unordered_map<string,uint16_t> flow_avg_pkt_size_table;
+	std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table;
+	std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table;
+	std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table;
 	//和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
-	std::unordered_map<string,uint64_t> flow_current_burst_size_table;
-	std::unordered_map<string,uint64_t> flow_max_burst_size_table;
-	std::unordered_map<string,uint64_t> flow_avg_burst_size_table;
-	std::unordered_map<string,uint64_t> flow_total_burst_size_table;
-	std::unordered_map<string,uint64_t> flow_burst_num_table;
+	std::unordered_map<std::string,uint64_t> flow_current_burst_size_table;
+	std::unordered_map<std::string,uint64_t> flow_max_burst_size_table;
+	std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table;
+	std::unordered_map<std::string,uint64_t> flow_total_burst_size_table;
+	std::unordered_map<std::string,uint64_t> flow_burst_num_table;
 	//和流速率相关的统计tables，flow speed
-	std::unordered_map<string,double> flow_speed_table;
+	std::unordered_map<std::string,double> flow_speed_table;
 
 	//ECMP相关，从32位的ip地址映射到ECMP协议端口号（负载均衡相关）
 
