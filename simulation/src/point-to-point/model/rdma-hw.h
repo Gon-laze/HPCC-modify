@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include "pint.h"
 #include <cstring>
+#include <string>
 #include <chrono>
 
 namespace ns3 {
