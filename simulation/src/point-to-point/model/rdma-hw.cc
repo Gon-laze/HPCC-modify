@@ -494,7 +494,9 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	}
 
 	//获取流特征并存储
+	std::cout << "checkpoint 2 begin\n";
 	Generate_feature(ch);
+	std::cout << "checkpoint 2 end\n";
 	return 0;
 }
 
@@ -566,7 +568,9 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 			qp->Acknowledge(goback_seq);
 		}
 		if (qp->IsFinished()){
+			std::cout << "checkpoint 3 begin\n";
 			QpComplete(qp);
+			std::cout << "checkpoint 3 end\n";
 		}
 	}
 	if (ch.l3Prot == 0xFD) // NACK
