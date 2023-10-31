@@ -346,7 +346,9 @@ void RdmaHw::Generate_feature(CustomHeader & ch)
 	key_dport = std::to_string(ch.udp.dport);
 	key_proto = std::to_string(ch.l3Prot);
 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+	std::cout << "checkpoint 1 begin\n";
 	auto current_time = std::chrono::system_clock::now();
+	std::cout << "checkpoint 1 end\n";
 	//更新流字节数、包个数特征
 	flow_byte_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
 	flow_packet_num_table[fivetuples] += 1;
@@ -665,10 +667,10 @@ void RdmaHw::QpComplete(Ptr<RdmaQueuePair> qp){
 	//如果在流表中找到了当前流
 	if(flow_first_pkt_time_table.find(udp_key) != flow_first_pkt_time_table.end())
 	{
-		std::cout << "flow five tuples : " << udp_key << std::endl;
-		std::cout << "flow speed : " << flow_speed_table[udp_key] << std::endl;
-		std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << std::endl;
-		std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << std::endl;
+		std::cout << "flow five tuples : " << udp_key << '\n';
+		std::cout << "flow speed : " << flow_speed_table[udp_key] << '\n';
+		std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << '\n';
+		std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << '\n';
 		//需要将流从流表中删除
 		flow_first_pkt_time_table.erase(udp_key);
 	}
