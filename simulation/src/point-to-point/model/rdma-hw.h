@@ -73,6 +73,8 @@ public:
 	//和流速率相关的统计tables，flow speed
 	std::unordered_map<std::string,double> flow_speed_table;
 
+	void Generate_feature(CustomHeader & ch);
+
 	//ECMP相关，从32位的ip地址映射到ECMP协议端口号（负载均衡相关）
 
 	// qp complete callback

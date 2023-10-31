@@ -312,7 +312,7 @@ void RdmaHw::DeleteRxQp(uint32_t dip, uint16_t pg, uint16_t dport){
 /******************************
 * Generate features for flows
  *****************************/
-void Generate_feature(CustomHeader & ch)
+void RdmaHw::Generate_feature(CustomHeader & ch)
 {
 	std::string key_sip = std::to_string(ch.sip);
 	std::string key_dip = std::to_string(ch.dip);
@@ -342,9 +342,9 @@ void Generate_feature(CustomHeader & ch)
 	{
 		return;
 	}
-	std::string key_sport = std::to_string(ch.udp.sport);
-	std::string key_dport = std::to_string(ch.udp.dport);
-	std::string key_proto = std::to_string(ch.l3Prot);
+	key_sport = std::to_string(ch.udp.sport);
+	key_dport = std::to_string(ch.udp.dport);
+	key_proto = std::to_string(ch.l3Prot);
 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
 	auto current_time = std::chrono::system_clock::now();
 	//更新流字节数、包个数特征
