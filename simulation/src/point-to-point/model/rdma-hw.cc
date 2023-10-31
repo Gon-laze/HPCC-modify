@@ -657,10 +657,10 @@ void RdmaHw::RecoverQueue(Ptr<RdmaQueuePair> qp){
 
 void RdmaHw::QpComplete(Ptr<RdmaQueuePair> qp){
 	//我们在回调函数中附加流特征统计的输出环节
-	uint32_t sip = (q->sip).m_adress;
-	uint32_t dip = (q->dip).m_adress;
-	uint16_t sport = q->sport;
-	uint16_t dport = q->dport;
+	uint32_t sip = (qp->sip).m_adress;
+	uint32_t dip = (qp->dip).m_adress;
+	uint16_t sport = qp->sport;
+	uint16_t dport = qp->dport;
 	std::string udp_key = std::to_string(sip) + " " + std::to_string(dip) + " " + std::to_string(sport) + " " + std::to_string(dport) + " " + std::to_string(0x11);
 	//如果在流表中找到了当前流
 	if(flow_first_pkt_time_table.find(udp_key) != flow_first_pkt_time_table.end())
