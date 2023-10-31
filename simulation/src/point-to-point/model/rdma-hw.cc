@@ -381,12 +381,12 @@ void RdmaHw::Generate_feature(CustomHeader & ch)
 		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
 		flow_last_pkt_time_table[fivetuples] = current_time;
 		//更新平均包大小，最大包大小、最小包大小特征
-		flow_max_pkt_size_table[fivetuples] = max(flow_max_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
-		flow_min_pkt_size_table[fivetuples] = min(flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+		flow_max_pkt_size_table[fivetuples] = std::max(flow_max_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+		flow_min_pkt_size_table[fivetuples] = std::min(flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
 		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
 		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
-		flow_max_pkt_interval_table[fivetuples] = max(flow_max_pkt_interval_table[fivetuples],pkt_interval);
-		flow_min_pkt_interval_table[fivetuples] = min(flow_min_pkt_interval_table[fivetuples],pkt_interval);
+		flow_max_pkt_interval_table[fivetuples] = std::max(flow_max_pkt_interval_table[fivetuples],pkt_interval);
+		flow_min_pkt_interval_table[fivetuples] = std::min(flow_min_pkt_interval_table[fivetuples],pkt_interval);
 		flow_avg_pkt_interval_table[fivetuples] = (flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count() / flow_packet_num_table[fivetuples];
 		//更新流速率
 		flow_speed_table[fivetuples] = (double)(flow_byte_size_table[fivetuples]) / ((flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count());
@@ -399,7 +399,7 @@ void RdmaHw::Generate_feature(CustomHeader & ch)
 		//当前burst结束，更新全局burst特征信息
 		else
 		{
-			flow_max_burst_size_table[fivetuples] = max(flow_max_burst_size_table[fivetuples],flow_current_burst_size_table[fivetuples]);
+			flow_max_burst_size_table[fivetuples] = std::max(flow_max_burst_size_table[fivetuples],flow_current_burst_size_table[fivetuples]);
 			flow_total_burst_size_table[fivetuples] += flow_current_burst_size_table[fivetuples];
 			flow_burst_num_table[fivetuples] += 1;
 			flow_avg_burst_size_table[fivetuples] = flow_total_burst_size_table[fivetuples] / flow_burst_num_table[fivetuples];
