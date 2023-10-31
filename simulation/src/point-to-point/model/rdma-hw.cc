@@ -381,8 +381,8 @@ void RdmaHw::Generate_feature(CustomHeader & ch)
 		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
 		flow_last_pkt_time_table[fivetuples] = current_time;
 		//更新平均包大小，最大包大小、最小包大小特征
-		flow_max_pkt_size_table[fivetuples] = std::max((uint64_t)(flow_max_pkt_size_table[fivetuples], (uint64_t)(ch.m_payloadSize + ch.m_headerSize));
-		flow_min_pkt_size_table[fivetuples] = std::min((uint64_t)(flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+		flow_max_pkt_size_table[fivetuples] = std::max((uint64_t)flow_max_pkt_size_table[fivetuples], (uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+		flow_min_pkt_size_table[fivetuples] = std::min((uint64_t)flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
 		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
 		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
 		flow_max_pkt_interval_table[fivetuples] = std::max((double)flow_max_pkt_interval_table[fivetuples], pkt_interval);
@@ -657,8 +657,8 @@ void RdmaHw::RecoverQueue(Ptr<RdmaQueuePair> qp){
 
 void RdmaHw::QpComplete(Ptr<RdmaQueuePair> qp){
 	//我们在回调函数中附加流特征统计的输出环节
-	uint32_t sip = qp->sip;
-	uint32_t dip = qp->dip;
+	uint32_t sip = qp->sip.Get();
+	uint32_t dip = qp->dip.Get();
 	uint16_t sport = qp->sport;
 	uint16_t dport = qp->dport;
 	std::string udp_key = std::to_string(sip) + " " + std::to_string(dip) + " " + std::to_string(sport) + " " + std::to_string(dport) + " " + std::to_string(0x11);
