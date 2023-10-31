@@ -12,6 +12,7 @@
 #include "ppp-header.h"
 #include "qbb-header.h"
 #include "cn-header.h"
+#include <chrono>
 
 namespace ns3{
 
@@ -185,11 +186,15 @@ void RdmaHw::SetNode(Ptr<Node> node){
 	m_node = node;
 }
 void RdmaHw::Setup(QpCompleteCallback cb){
+	//遍历rdma-hw类上的nic vector（虚拟网卡）
 	for (uint32_t i = 0; i < m_nic.size(); i++){
+		//m_nic是RdmaInterfaceMgr类的vector
 		Ptr<QbbNetDevice> dev = m_nic[i].dev;
+		//如果当前网卡指针为空，那么就跳过
 		if (dev == NULL)
 			continue;
 		// share data with NIC
+		//
 		dev->m_rdmaEQ->m_qpGrp = m_nic[i].qpGrp;
 		// setup callback
 		dev->m_rdmaReceiveCb = MakeCallback(&RdmaHw::Receive, this);
@@ -199,6 +204,7 @@ void RdmaHw::Setup(QpCompleteCallback cb){
 		dev->m_rdmaEQ->m_rdmaGetNxtPkt = MakeCallback(&RdmaHw::GetNxtPacket, this);
 	}
 	// setup qp complete callback
+	//qp完成时的回调函数被设置为传入的函数参数cb
 	m_qpCompleteCallback = cb;
 }
 
@@ -264,20 +270,27 @@ void RdmaHw::DeleteQueuePair(Ptr<RdmaQueuePair> qp){
 }
 
 Ptr<RdmaRxQueuePair> RdmaHw::GetRxQp(uint32_t sip, uint32_t dip, uint16_t sport, uint16_t dport, uint16_t pg, bool create){
+	//计算哈希表当中的key值，通过数据包的dip、pg以及dport字段移位获取查找的key
 	uint64_t key = ((uint64_t)dip << 32) | ((uint64_t)pg << 16) | (uint64_t)dport;
+	//返回迭代器，指向rxQp哈希表中对应qp的位置
 	auto it = m_rxQpMap.find(key);
+	//如果找到了那就返回对应位置的qp
 	if (it != m_rxQpMap.end())
 		return it->second;
+	//如果没找到，则需要考虑是否创建一个新的qp
+	//参数中设置了create == true，即未找到时创建新的qp对
 	if (create){
 		// create new rx qp
 		Ptr<RdmaRxQueuePair> q = CreateObject<RdmaRxQueuePair>();
 		// init the qp
+		//利用参数初始化qp
 		q->sip = sip;
 		q->dip = dip;
 		q->sport = sport;
 		q->dport = dport;
 		q->m_ecn_source.qIndex = pg;
 		// store in map
+		//rxMap使用的是之前构建的key
 		m_rxQpMap[key] = q;
 		return q;
 	}
@@ -296,113 +309,168 @@ void RdmaHw::DeleteRxQp(uint32_t dip, uint16_t pg, uint16_t dport){
 	m_rxQpMap.erase(key);
 }
 
-
-
-#ifdef MODIFY_ON
-
-std::string RdmaHw::Header2string(CustomHeader &ch){
-	std::string s{};
-	s << ch.sip << ch.dip;
-
-	// 实际上这一分支理想下可省略（目前想测量的必定是UDP），保留以备后用
-	switch(ch.l3Prot)
+/******************************
+* Generate features for flows
+ *****************************/
+void Generate_feature(CustomHeader & ch)
+{
+	std::string key_sip = to_string(ch.sip);
+	std::string key_dip = to_string(ch.dip);
+	std::string key_sport;
+	std::string key_dport;
+	std::string key_proto = to_string(ch.l3Prot);
+	//TCP
+	if(ch.l3Prot == 0x06)
 	{
-		case 0x6:				// tcp
-			s << ch.tcp.sport << ch.tcp.dport;	break;
-		case 0x11:				// udp
-			s << ch.udp.sport << ch.udp.dport;	break;
-		case 0xFC: case 0xFD:	// ack & nack
-			s << ch.ack.sport << ch.ack.dport;	break;
+		key_sport = to_string(ch.tcp.sport);
+		key_dport = to_string(ch.tcp.dport);
 	}
-	s << ch.l3Prot;
-	return s;
-}
-
-void RdmaHw::feature_Statistics(Ptr<packet> p, CustomHeader &ch){
-	std::string key = Header2string(ch);
-	uint32_t payload_size = p->GetSize() - ch.GetSerializedSize();
-	// 时间精确到1ns
-	uint64 currentPkt = Simulator::Now().GetNanoSeconds();
-	Time gap = currentPkt - flow_last_pkt_time_table[key];
-	Time passedTime = current - flow_first_pkt_time_table[key];
-
-	bool isExist = flow_packet_num_table.find(key);
-	if (isExist)
+	//UDP
+	else if(ch.l3Prot == 0x11)
+	{ 
+		key_sport = to_string(ch.udp.sport);
+		key_dport = to_string(ch.udp.dport);
+	}
+	//NACK && ACK
+	else if(ch.l3Prot == 0xFD || ch.l3Prot == 0xFC)
 	{
-		// ?flow_byte_size_table是指包总共字节数吗？
-		flow_byte_size_table[key] += payload_size;
-		flow_packet_num_table[key]++;
-			
-		if (flow_max_pkt_interval_table[key] < gap)
-			flow_max_pkt_interval_table[key] = gap;
-		if (flow_min_pkt_interval_table[key] > gap)
-			flow_min_pkt_interval_table[key] = gap;
-		flow_last_pkt_time_table[key] = currentPkt;
-
-		if (flow_max_pkt_size_table[key] < payload_size)
-			flow_max_pkt_size_table[key] = payload_size;
-		if (flow_min_pkt_size_table[key] > payload_size)
-			flow_min_pkt_size_table[key] = payload_size;
-
-		// TODO: 关于burst测量所使用的burstThreshold和滞留率beta是计算得出还是预设？
-		// TODO: 后续如果需要的话也许可以添加一个大小流判定算法来自动实现？
-
-		// 这里先直接判断包传输大小了，默认处于下降期预示一个burst过程的结束
-		// ! waiting......
+		key_sport = to_string(ch.ack.sport);
+		key_dport = to_string(ch.ack.dport);
 	}
+	//control protocols and other
 	else
 	{
-		flow_byte_size_table.insert({key, payload_size});
-		flow_packet_num_table.insert({key, 1});
-
-		flow_max_pkt_interval_table.insert({key, 0});
-		flow_min_pkt_interval_table.insert({key, 0xffff'ffff'ffff'ffff});
-		
-		flow_max_pkt_size_table.insert({key, payload_size});
-		flow_min_pkt_size_table.insert({key, payload_size});
-
-		// TODO: burst相关统计
+		return;
 	}
+	std::string key_sport = to_string(ch.udp.sport);
+	std::string key_dport = to_string(ch.udp.dport);
+	std::string key_proto = to_string(ch.l3Prot);
+	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+	auto current_time = std::chrono::system_clock::now();
+	//更新流字节数、包个数特征
+	flow_byte_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+	flow_packet_num_table[fivetuples] += 1;
+	//当前数据包是当前流上的第一个数据包（上行），则更新流第一个数据包的抵达时间，初始化最大包大小，最小包大小，当前burst等信息
+	if(flow_first_pkt_time_table.find(fivetuples) == flow_first_pkt_time_table.end())
+	{
+		//第一个数据包抵达时间以及上一个数据包抵达时间
+		flow_first_pkt_time_table[fivetuples] = current_time;
+		flow_last_pkt_time_table[fivetuples] = current_time;
+		//初始化平均包大小，最大包大小、最小包大小特征
+		//TODO：需要再确认下payloadSize + headerSize是否就是数据包的字节大小
+		flow_max_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+		flow_min_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+		flow_avg_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+		//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
+		flow_max_pkt_interval_table[fivetuples] = 0.0;
+		flow_min_pkt_interval_table[fivetuples] = 1000000000;
+		flow_avg_pkt_interval_table[fivetuples] - 0.0;
+		//初始化平均burst
+		flow_current_burst_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+		flow_max_burst_size_table[fivetuples] = 0;
+		flow_total_burst_size_table[fivetuples] = 0;
+		flow_avg_burst_size_table[fivetuples] = 0;
+		flow_burst_num_table[fivetuples] = 0;
+		//初始化流速率特征
+		flow_speed_table[fivetuples] = 0.0;
+	}
+	//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
+	else
+	{
+		//计算包间隔，更新上一个数据包抵达时间
+		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
+		flow_last_pkt_time_table[fivetuples] = current_time;
+		//更新平均包大小，最大包大小、最小包大小特征
+		flow_max_pkt_size_table[fivetuples] = max(flow_max_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+		flow_min_pkt_size_table[fivetuples] = min(flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
+		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
+		flow_max_pkt_interval_table[fivetuples] = max(flow_max_pkt_interval_table[fivetuples],pkt_interval);
+		flow_min_pkt_interval_table[fivetuples] = min(flow_min_pkt_interval_table[fivetuples],pkt_interval);
+		flow_avg_pkt_interval_table[fivetuples] = (flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count() / flow_packet_num_table[fivetuples];
+		//更新流速率
+		flow_speed_table[fivetuples] = (double)(flow_byte_size_table[fivetuples]) / ((flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count());
+		//更新burst
+		//当前数据包间隔小于burst duration，那么继续更新current burst
+		if(pkt_interval < burst_max_duration)
+		{
+			flow_current_burst_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+		}
+		//当前burst结束，更新全局burst特征信息
+		else
+		{
+			flow_max_burst_size_table[fivetuples] = max(flow_max_burst_size_table[fivetuples],flow_current_burst_size_table[fivetuples]);
+			flow_total_burst_size_table[fivetuples] += flow_current_burst_size_table[fivetuples];
+			flow_burst_num_table[fivetuples] += 1;
+			flow_avg_burst_size_table[fivetuples] = flow_total_burst_size_table[fivetuples] / flow_burst_num_table[fivetuples];
+			flow_current_burst_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+		}
+	}
+	return;
 }
-
-#endif
 
 
 int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
-	// 获取ipv4 ECN字段
+	/*
+	CustomerHeader中，udp协议的构成元素
+	struct {
+		  uint16_t sport;        //!< Source port
+		  uint16_t dport;   //!< Destination port
+		  uint16_t payload_size;
+		  // SeqTsHeader
+		  uint16_t pg;
+		  uint32_t seq;
+		  IntHeader ih;
+	  } udp;
+	*/
+	//获取ipv4 ECN字段 结果为uint8_t
 	uint8_t ecnbits = ch.GetIpv4EcnBits();
-	// 获取实际载荷大小
+	//payload字段的size，大小为packet的size - 包头字段的size（CustomHeader即为常规包头）
 	uint32_t payload_size = p->GetSize() - ch.GetSerializedSize();
 
 	// TODO find corresponding rx queue pair
-	// 寻找匹配的接收队列对（rx queue pair）
+	//rxqp: 指向当前数据包所在的qp，GetRxqp为获取qp指针的函数
 	Ptr<RdmaRxQueuePair> rxQp = GetRxQp(ch.dip, ch.sip, ch.udp.dport, ch.udp.sport, ch.udp.pg, true);
+	//如果ECN字段不为0，
 	if (ecnbits != 0){
 		rxQp->m_ecn_source.ecnbits |= ecnbits;
 		rxQp->m_ecn_source.qfb++;
 	}
 	rxQp->m_ecn_source.total++;
-	// !: 这一步到底是什么含义？
 	rxQp->m_milestone_rx = m_ack_interval;
-
-	#ifdef MODIFY_ON
-	feature_Statistics(p, ch);
-	#endif
 
 	int x = ReceiverCheckSeq(ch.udp.seq, rxQp, payload_size);
 	if (x == 1 || x == 2){ //generate ACK or NACK
+		/*
+		qbb header类所包含的属性字段
+		private:
+			uint16_t sport, dport;
+			uint16_t flags;
+			uint16_t m_pg;
+			uint32_t m_seq; // the qbb sequence number.
+			IntHeader ih;
+		*/
 		qbbHeader seqh;
+		//seq设置为当前rxqp上期待的下一个seq
 		seqh.SetSeq(rxQp->ReceiverNextExpectedSeq);
+		//pg参数和udp协议包头的pg属性保持一致
 		seqh.SetPG(ch.udp.pg);
+		//注意seqh的sport为接收到数据包的dport，dport为接收数据包的sport，这是一个reply packet
 		seqh.SetSport(ch.udp.dport);
 		seqh.SetDport(ch.udp.sport);
+		//TODO：研究清楚Int-header.h中IntHeader各个属性的意义
 		seqh.SetIntHeader(ch.udp.ih);
+		//如果ecnbits不为0，还需要做ECN相关的处理，这里选择将属性中的flags进行设置
 		if (ecnbits)
 			seqh.SetCnp();
-
+		
+		//生成一个新的数据包，14是ethernet header长度，20是ipv4 header长度
+		//这里还减去了seqh的长度，这里目的是让payload+header长度大于60byte
 		Ptr<Packet> newp = Create<Packet>(std::max(60-14-20-(int)seqh.GetSerializedSize(), 0));
+		//对newp增加一个header，为刚刚填充好的qbbHeader
 		newp->AddHeader(seqh);
 
+		//生成一个ipv4 header
 		Ipv4Header head;	// Prepare IPv4 header
 		head.SetDestination(Ipv4Address(ch.sip));
 		head.SetSource(Ipv4Address(ch.dip));
@@ -410,14 +478,21 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 		head.SetTtl(64);
 		head.SetPayloadSize(newp->GetSize());
 		head.SetIdentification(rxQp->m_ipid++);
-
+		//将ipv4 header添加到packet（payload）前
 		newp->AddHeader(head);
+		//再增加一个header，对应以太网包头中的协议字段，这里我理解为mac地址会由ns3底层环境自动支持添加，我们只需确定协议栈即可
 		AddHeader(newp, 0x800);	// Attach PPP header
 		// send
+		//将这个回复包发送出去，先获取对应的虚拟网卡id
 		uint32_t nic_idx = GetNicIdxOfRxQp(rxQp);
+		//TODO：这里疑似给了该数据包一个较高的优先级
 		m_nic[nic_idx].dev->RdmaEnqueueHighPrioQ(newp);
+		//发送数据包，调用了qbb-net-device模块下的函数DequeueAndTransmit，该函数与设备上的发包相关，可能是后续QoS调度需要关注的接口
 		m_nic[nic_idx].dev->TriggerTransmit();
 	}
+
+	//获取流特征并存储
+	Generate_feature(ch);
 	return 0;
 }
 
@@ -526,28 +601,17 @@ int RdmaHw::Receive(Ptr<Packet> p, CustomHeader &ch){
 	}else if (ch.l3Prot == 0xFC){ // ACK
 		ReceiveAck(p, ch);
 	}
-
-	feature_Statistics(p, ch);
-
 	return 0;
 }
 
-
-/*
-	返回参数：
-	包号连续（满足预期）：
-		1:		正常确认生成ACK包，
-		5:		异常(似乎是数据未对齐？)
-	包号大于预期(后发先到，预期反而未到)：
-		2:		预期的包连续两跳未收到，生成NACK包
-		4:		接收到了上一个预期未收到的包，不为其生成NACK
-	包号小于预期（收到了已确认过的包）
-		3:		表示重复收包
-*/
 int RdmaHw::ReceiverCheckSeq(uint32_t seq, Ptr<RdmaRxQueuePair> q, uint32_t size){
+	//expected代表当前qp对上期待的下一个seqNo
 	uint32_t expected = q->ReceiverNextExpectedSeq;
+	//如果当前的seq和期待的下一个seq相匹配
 	if (seq == expected){
+		//更新qp对上期待的下一个seqNo
 		q->ReceiverNextExpectedSeq = expected + size;
+		//
 		if (q->ReceiverNextExpectedSeq >= q->m_milestone_rx){
 			q->m_milestone_rx += m_ack_interval;
 			return 1; //Generate ACK
@@ -556,6 +620,7 @@ int RdmaHw::ReceiverCheckSeq(uint32_t seq, Ptr<RdmaRxQueuePair> q, uint32_t size
 		}else {
 			return 5;
 		}
+	//如果当前的seq大于期待的seq（发生了丢包现象）	
 	} else if (seq > expected) {
 		// Generate NACK
 		if (Simulator::Now() >= q->m_nackTimer || q->m_lastNACK != expected){
