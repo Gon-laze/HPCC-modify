@@ -656,6 +656,22 @@ void RdmaHw::RecoverQueue(Ptr<RdmaQueuePair> qp){
 }
 
 void RdmaHw::QpComplete(Ptr<RdmaQueuePair> qp){
+	//我们在回调函数中附加流特征统计的输出环节
+	uint32_t sip = (q->sip).m_adress;
+	uint32_t dip = (q->dip).m_adress;
+	uint16_t sport = q->sport;
+	uint16_t dport = q->dport;
+	std::string udp_key = to_string(sip) + " " + to_string(dip) + " " + to_string(sport) + " " + to_string(dport) + " " + to_string(0x11);
+	//如果在流表中找到了当前流
+	if(flow_first_pkt_time_table.find(udp_key) != flow_first_pkt_time_table.end())
+	{
+		std::cout << "flow five tuples : " << udp_key << std::endl;
+		std::cout << "flow speed : " << flow_speed_table[udp_key] << std::endl;
+		std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << std::endl;
+		std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << std::endl;
+		//需要将流从流表中删除
+		flow_first_pkt_time_table.erase(udp_key);
+	}
 	NS_ASSERT(!m_qpCompleteCallback.IsNull());
 	if (m_cc_mode == 1){
 		Simulator::Cancel(qp->mlx.m_eventUpdateAlpha);
