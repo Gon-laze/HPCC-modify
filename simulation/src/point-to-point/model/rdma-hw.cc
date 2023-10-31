@@ -314,37 +314,37 @@ void RdmaHw::DeleteRxQp(uint32_t dip, uint16_t pg, uint16_t dport){
  *****************************/
 void Generate_feature(CustomHeader & ch)
 {
-	std::string key_sip = to_string(ch.sip);
-	std::string key_dip = to_string(ch.dip);
+	std::string key_sip = std::to_string(ch.sip);
+	std::string key_dip = std::to_string(ch.dip);
 	std::string key_sport;
 	std::string key_dport;
-	std::string key_proto = to_string(ch.l3Prot);
+	std::string key_proto = std::to_string(ch.l3Prot);
 	//TCP
 	if(ch.l3Prot == 0x06)
 	{
-		key_sport = to_string(ch.tcp.sport);
-		key_dport = to_string(ch.tcp.dport);
+		key_sport = std::to_string(ch.tcp.sport);
+		key_dport = std::to_string(ch.tcp.dport);
 	}
 	//UDP
 	else if(ch.l3Prot == 0x11)
 	{ 
-		key_sport = to_string(ch.udp.sport);
-		key_dport = to_string(ch.udp.dport);
+		key_sport = std::to_string(ch.udp.sport);
+		key_dport = std::to_string(ch.udp.dport);
 	}
 	//NACK && ACK
 	else if(ch.l3Prot == 0xFD || ch.l3Prot == 0xFC)
 	{
-		key_sport = to_string(ch.ack.sport);
-		key_dport = to_string(ch.ack.dport);
+		key_sport = std::to_string(ch.ack.sport);
+		key_dport = std::to_string(ch.ack.dport);
 	}
 	//control protocols and other
 	else
 	{
 		return;
 	}
-	std::string key_sport = to_string(ch.udp.sport);
-	std::string key_dport = to_string(ch.udp.dport);
-	std::string key_proto = to_string(ch.l3Prot);
+	std::string key_sport = std::to_string(ch.udp.sport);
+	std::string key_dport = std::to_string(ch.udp.dport);
+	std::string key_proto = std::to_string(ch.l3Prot);
 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
 	auto current_time = std::chrono::system_clock::now();
 	//更新流字节数、包个数特征
@@ -661,7 +661,7 @@ void RdmaHw::QpComplete(Ptr<RdmaQueuePair> qp){
 	uint32_t dip = (q->dip).m_adress;
 	uint16_t sport = q->sport;
 	uint16_t dport = q->dport;
-	std::string udp_key = to_string(sip) + " " + to_string(dip) + " " + to_string(sport) + " " + to_string(dport) + " " + to_string(0x11);
+	std::string udp_key = std::to_string(sip) + " " + std::to_string(dip) + " " + std::to_string(sport) + " " + std::to_string(dport) + " " + std::to_string(0x11);
 	//如果在流表中找到了当前流
 	if(flow_first_pkt_time_table.find(udp_key) != flow_first_pkt_time_table.end())
 	{
