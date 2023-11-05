@@ -37,6 +37,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#ifdef MODIFY_ON
+#undef MODIFY_ON
+
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("UdpClient");

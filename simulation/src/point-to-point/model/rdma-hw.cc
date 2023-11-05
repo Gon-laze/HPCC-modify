@@ -14,8 +14,7 @@
 #include "cn-header.h"
 #include <chrono>
 
-// #ifndef CHECKPOINT_ON
-// #define CHECKPOINT_ON
+
 
 namespace ns3{
 
@@ -237,6 +236,31 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	qp->SetBaseRtt(baseRtt);
 	qp->SetVarWin(m_var_win);
 	qp->SetAppNotifyCallback(notifyAppFinish);
+	
+	// 初始化包数目以及输入, 打开日志记录准备输入
+	#ifdef MODIFY_ON
+		qp->m_sent = 0;
+		Custom_Packet_Info_input.open("CPinfo.txt", ios::in, 0);
+	    
+		double StartTime = 0;
+		uint32_t Pktsize = 0;
+		double Last_StartTime = 0; 
+		uint32_t Last_Pktsize = 0;
+
+		Custom_Packet_Info_File >> Last_StartTime >> Last_PktSize;
+		while (Custom_Packet_Info_File >> StartTime >> Pktsize)
+		{
+			PktInfo_vec.insert({StartTime-Last_StartTime, Last_PktSize});
+			Last_StartTime = StartTime;  
+			Last_Pktsize = Pktsize;     
+		}
+		// 保证最后一个包能够发出
+		PktInfo_vec.insert({0, Last_PktSize});
+		Custom_Packet_Info_input.close();
+		#ifdef LOG_OUTPUT_ON
+			Custom_Packet_Info_log.open("CPinfo.txt", ios::app|ios::out, 0);
+		#endif
+	#endif
 
 	// add qp
 	uint32_t nic_idx = GetNicIdxOfQp(qp);
@@ -268,6 +292,12 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 
 void RdmaHw::DeleteQueuePair(Ptr<RdmaQueuePair> qp){
 	// remove qp from the m_qpMap
+	// 关闭日志输出:即将销毁QP时触发
+	#ifdef MODIFY_ON
+		#ifdef LOG_OUTPUT_ON
+			Custom_Packet_Info_log.close();
+		#endif
+	#endif
 	uint64_t key = GetQpKey(qp->dip.Get(), qp->sport, qp->m_pg);
 	m_qpMap.erase(key);
 }
@@ -436,6 +466,13 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	uint8_t ecnbits = ch.GetIpv4EcnBits();
 	//payload字段的size，大小为packet的size - 包头字段的size（CustomHeader即为常规包头）
 	uint32_t payload_size = p->GetSize() - ch.GetSerializedSize();
+
+	// 输出调试信息；
+	#ifdef MODIFY_ON
+		#ifdef LOG_OUTPUT_ON
+			Custom_Packet_Info_log << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
+		#endif
+	#endif
 
 	// TODO find corresponding rx queue pair
 	//rxqp: 指向当前数据包所在的qp，GetRxqp为获取qp指针的函数
@@ -767,6 +804,16 @@ void RdmaHw::RedistributeQp(){
 
 Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	uint32_t payload_size = qp->GetBytesLeft();
+	// 更新mtu以限制单次包大小
+	#ifdef MODIFY_ON
+		// !若余留数据不足m_mtu，最后一个包大小可能偏小
+		m_mtu = PktInfo_vec[m_sent].last;
+		// !不太清楚自定义发包大小会不会最终改变发包的数量（即唤起send的次数与实际包数不一致），留个调试点
+    	if (PktInfo_vec.size() > m_sent)
+      	std::cout << "CUSTOM_PKT_ERROR!\n" \
+          << "Total: " << PktInfo_vec.size() << '\n' \
+          << "Current: " << m_sent << '\n';
+	#endif
 	if (m_mtu < payload_size)
 		payload_size = m_mtu;
 	Ptr<Packet> p = Create<Packet> (payload_size);
@@ -810,11 +857,21 @@ void RdmaHw::PktSent(Ptr<RdmaQueuePair> qp, Ptr<Packet> pkt, Time interframeGap)
 
 void RdmaHw::UpdateNextAvail(Ptr<RdmaQueuePair> qp, Time interframeGap, uint32_t pkt_size){
 	Time sendingTime;
-	if (m_rateBound)
-		sendingTime = interframeGap + Seconds(qp->m_rate.CalculateTxTime(pkt_size));
-	else
-		sendingTime = interframeGap + Seconds(qp->m_max_rate.CalculateTxTime(pkt_size));
+	// 改变发送间隔
+	// !此处sendingTime若通过读vector将不受到发送速率的限制（严格回访真实情况），可能会产生错误
+	#ifdef MODIFY_ON
+		sendingTime = Time(PktInfo_vec[m_sent].first);
+		if (m_rateBound)
+			sendingTime = interframeGap + Seconds(qp->m_rate.CalculateTxTime(pkt_size));
+		else
+			sendingTime = interframeGap + Seconds(qp->m_max_rate.CalculateTxTime(pkt_size));
+	#endif
 	qp->m_nextAvail = Simulator::Now() + sendingTime;
+
+	// m_rdmaPktSent是位于TransmitStart(p)后触发的，更新了m_nextAvail后我们才认为这个包发送过程才彻底完成了
+	#ifdef MODIFY_ON
+		m_sent++;
+	#endif
 }
 
 void RdmaHw::ChangeRate(Ptr<RdmaQueuePair> qp, DataRate new_rate){

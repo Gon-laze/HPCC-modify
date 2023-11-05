@@ -10,6 +10,13 @@
 #include <ns3/int-header.h>
 #include <vector>
 
+#ifndef MODIFY_ON
+#define MODIFY_ON
+
+// #ifndef LOG_OUTPUT_ON
+// #define LOG_OUTPUT_ON
+
+
 namespace ns3 {
 
 class RdmaQueuePair : public Object {
@@ -29,6 +36,18 @@ public:
 	uint32_t wp; // current window of packets
 	uint32_t lastPktSize;
 	Callback<void> m_notifyAppFinish;
+
+	#ifdef MODIFY_ON;
+		// TODO: 后续添加更多流时在初始化阶段分配id，以读取不同流对应不同的txt
+		std::fstream Custom_Packet_Info_input;
+		std::vector< std::pair<double, uint32_t> > PktInfo_vec;
+		uint32_t m_sent;
+		#ifdef DEBUG_ON;
+		std::fstream Pkt_log;
+		const char logName[] = "Pkt_log.txt";
+		bool is_Loginit = false;
+		#endif
+	#endif
 
 	/******************************
 	 * runtime states

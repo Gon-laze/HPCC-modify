@@ -82,6 +82,10 @@ namespace ns3 {
 			return p;
 		}
 		if (qIndex >= 0){ // qp
+			// !一个尚不明确的地方：p是新生成的一个对象的指针（size=0）还是基于qp内信息生成？
+			// !虽然感觉大概率是后者（调用某个hook做到），但细节尚不明白
+			// TODO: 后续探究
+			// *Done:这个函数的本体实际上就是RdmaHw::GetNxtPacket，由RdmaHw.cc定义，生成包规则已经详细列明
 			Ptr<Packet> p = m_rdmaGetNxtPkt(m_qpGrp->Get(qIndex));
 			m_rrlast = qIndex;
 			m_qlast = qIndex;

@@ -11,6 +11,15 @@
 #include <string>
 #include <chrono>
 
+// #ifndef CHECKPOINT_ON
+// #define CHECKPOINT_ON
+
+#ifndef MODIFY_ON
+#define MODIFY_ON
+
+#ifndef LOG_OUTPUT_ON
+#define LOG_OUTPUT_ON
+
 namespace ns3 {
 
 struct RdmaInterfaceMgr{
@@ -74,6 +83,13 @@ public:
 	std::unordered_map<std::string,double> flow_speed_table;
 
 	void Generate_feature(CustomHeader & ch);
+
+	// 以qp级别发送流（读取参数），而以网卡级别接收流（输出日志）
+	#ifdef MODIFY_ON
+		#ifdef LOG_OUTPUT_ON
+			std::fstream Custom_Packet_Info_log;
+		#endif
+	#endif
 
 	//ECMP相关，从32位的ip地址映射到ECMP协议端口号（负载均衡相关）
 
