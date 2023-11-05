@@ -14,6 +14,9 @@
 #include "cn-header.h"
 #include <chrono>
 
+// #ifndef CHECKPOINT_ON
+// #define CHECKPOINT_ON
+
 namespace ns3{
 
 TypeId RdmaHw::GetTypeId (void)
@@ -346,9 +349,13 @@ void RdmaHw::Generate_feature(CustomHeader & ch)
 	key_dport = std::to_string(ch.udp.dport);
 	key_proto = std::to_string(ch.l3Prot);
 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
-	std::cout << "checkpoint 1 begin\n";
+	#ifdef CHECKPOINT_ON
+		std::cout << "checkpoint 1 begin\n";
+	#endif
 	auto current_time = std::chrono::system_clock::now();
-	std::cout << "checkpoint 1 end\n";
+	#ifdef CHECKPOINT_ON
+		std::cout << "checkpoint 1 end\n";
+	#endif
 	//更新流字节数、包个数特征
 	flow_byte_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
 	flow_packet_num_table[fivetuples] += 1;
@@ -494,9 +501,13 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	}
 
 	//获取流特征并存储
-	std::cout << "checkpoint 2 begin\n";
+	#ifdef CHECKPOINT_ON
+		std::cout << "checkpoint 2 begin\n";
+	#endif
 	Generate_feature(ch);
-	std::cout << "checkpoint 2 end\n";
+	#ifdef CHECKPOINT_ON
+		std::cout << "checkpoint 2 end\n";
+	#endif
 	return 0;
 }
 
@@ -568,9 +579,13 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 			qp->Acknowledge(goback_seq);
 		}
 		if (qp->IsFinished()){
-			std::cout << "checkpoint 3 begin\n";
+			#ifdef CHECKPOINT_ON
+				std::cout << "checkpoint 3 begin\n";
+			#endif
 			QpComplete(qp);
-			std::cout << "checkpoint 3 end\n";
+			#ifdef CHECKPOINT_ON
+				std::cout << "checkpoint 3 end\n";
+			#endif
 		}
 	}
 	if (ch.l3Prot == 0xFD) // NACK
@@ -599,21 +614,37 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 
 int RdmaHw::Receive(Ptr<Packet> p, CustomHeader &ch){
 	if (ch.l3Prot == 0x11){ // UDP
-		std::cout << "checkpoint UDP begin\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint UDP begin\n";
+		#endif
 		ReceiveUdp(p, ch);
-		std::cout << "checkpoint UDP end\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint UDP end\n";
+		#endif
 	}else if (ch.l3Prot == 0xFF){ // CNP
-		std::cout << "checkpoint CNP begin\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint CNP begin\n";
+		#endif
 		ReceiveCnp(p, ch);
-		std::cout << "checkpoint CNP end\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint CNP end\n";
+		#endif
 	}else if (ch.l3Prot == 0xFD){ // NACK
-		std::cout << "checkpoint NACK begin\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint NACK begin\n";
+		#endif
 		ReceiveAck(p, ch);
-		std::cout << "checkpoint NACK end\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint NACK end\n";
+		#endif
 	}else if (ch.l3Prot == 0xFC){ // ACK
-		std::cout << "checkpoint ACK begin\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint ACK begin\n";
+		#endif
 		ReceiveAck(p, ch);
-		std::cout << "checkpoint ACK end\n";
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint ACK end\n";
+		#endif
 	}
 	return 0;
 }
