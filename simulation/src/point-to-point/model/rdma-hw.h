@@ -119,6 +119,7 @@ public:
 	//添加queue pair，queue pair作用的对象是一个链接（srcip、dstip、dport以及sport确定），AddQueuePair会将qp绑定到一张虚拟网卡上，并添加到
 	//Rdmahw下的unordered_map哈希表中，用一个key值标记该qp
 	void AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, uint16_t _sport, uint16_t _dport, uint32_t win, uint64_t baseRtt, Callback<void> notifyAppFinish); // add a new qp (new send)
+	void AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address _sip, Ipv4Address _dip, uint16_t _sport, uint16_t _dport, uint32_t win, uint64_t baseRtt, uint64_t fptr, Callback<void> notifyAppFinish); // add a new qp (new send)
 	//删除qp对，这里直接从unordered_map当中进行删除
 	void DeleteQueuePair(Ptr<RdmaQueuePair> qp);
 	//建立Rx对应的qp，create参数用于判断是否需要创建新qp

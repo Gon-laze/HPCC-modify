@@ -64,6 +64,10 @@ void RdmaDriver::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4A
 	m_rdma->AddQueuePair(size, pg, sip, dip, sport, dport, win, baseRtt, notifyAppFinish);
 }
 
+void RdmaDriver::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint32_t win, uint64_t baseRtt, uint64_t fptr, Callback<void> notifyAppFinish){
+	m_rdma->AddQueuePair(size, pg, sip, dip, sport, dport, win, baseRtt, notifyAppFinish);
+}
+
 void RdmaDriver::QpComplete(Ptr<RdmaQueuePair> q){
 	m_traceQpComplete(q);
 }

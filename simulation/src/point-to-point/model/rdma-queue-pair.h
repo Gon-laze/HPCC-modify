@@ -51,7 +51,7 @@ public:
 
 	#ifdef MODIFY_ON
 		// TODO: 后续添加更多流时在初始化阶段分配id，以读取不同流对应不同的txt
-		std::fstream Custom_Packet_Info_input;
+		std::ifstream *Custom_Packet_Info_input_ptr;
 		std::vector< std::pair<double, uint32_t> > PktInfo_vec;
 		uint32_t m_sent;
 		#ifdef DEBUG_ON

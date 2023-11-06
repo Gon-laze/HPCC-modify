@@ -228,7 +228,47 @@ Ptr<RdmaQueuePair> RdmaHw::GetQp(uint32_t dip, uint16_t sport, uint16_t pg){
 		return it->second;
 	return NULL;
 }
+
 void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint32_t win, uint64_t baseRtt, Callback<void> notifyAppFinish){
+	// create qp
+	Ptr<RdmaQueuePair> qp = CreateObject<RdmaQueuePair>(pg, sip, dip, sport, dport);
+	qp->SetSize(size);
+	qp->SetWin(win);
+	qp->SetBaseRtt(baseRtt);
+	qp->SetVarWin(m_var_win);
+	qp->SetAppNotifyCallback(notifyAppFinish);
+	
+
+	// add qp
+	uint32_t nic_idx = GetNicIdxOfQp(qp);
+	m_nic[nic_idx].qpGrp->AddQp(qp);
+	uint64_t key = GetQpKey(dip.Get(), sport, pg);
+	m_qpMap[key] = qp;
+
+	// set init variables
+	DataRate m_bps = m_nic[nic_idx].dev->GetDataRate();
+	qp->m_rate = m_bps;
+	qp->m_max_rate = m_bps;
+	if (m_cc_mode == 1){
+		qp->mlx.m_targetRate = m_bps;
+	}else if (m_cc_mode == 3){
+		qp->hp.m_curRate = m_bps;
+		if (m_multipleRate){
+			for (uint32_t i = 0; i < IntHeader::maxHop; i++)
+				qp->hp.hopState[i].Rc = m_bps;
+		}
+	}else if (m_cc_mode == 7){
+		qp->tmly.m_curRate = m_bps;
+	}else if (m_cc_mode == 10){
+		qp->hpccPint.m_curRate = m_bps;
+	}
+
+	// Notify Nic
+	m_nic[nic_idx].dev->NewQp(qp);
+}
+
+// *添加了文件输入的AddQueuePair
+void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint32_t win, uint64_t baseRtt, uint64_t fptr, Callback<void> notifyAppFinish){
 	// create qp
 	Ptr<RdmaQueuePair> qp = CreateObject<RdmaQueuePair>(pg, sip, dip, sport, dport);
 	qp->SetSize(size);
@@ -240,18 +280,18 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	// 初始化包数目以及输入, 打开日志记录准备输入
 	#ifdef MODIFY_ON
 		qp->m_sent = 0;
-		if (qp->Custom_Packet_Info_input.is_open())
-		{
-			qp->Custom_Packet_Info_input.clear();
-			qp->Custom_Packet_Info_input.flush();
-			qp->Custom_Packet_Info_input.close();			
-		}
-		if (qp->Custom_Packet_Info_input.is_open())
+		Custom_Packet_Info_input_ptr = (std::fstream*)fptr;
+		// if (qp->Custom_Packet_Info_input_ptr->is_open())
+		// {
+		// 	qp->Custom_Packet_Info_input_ptr->clear();
+		// 	qp->Custom_Packet_Info_input_ptr->flush();
+		// 	qp->Custom_Packet_Info_input_ptr->close();			
+		// }
+		// qp->Custom_Packet_Info_input_ptr->open("modify_data/CPinfo.txt");
+		if (qp->Custom_Packet_Info_input_ptr->is_open())
 			std::cout << "input Test begin!\n";
 		else
-			std::cout << "inpu Test failed!\n";
-		qp->Custom_Packet_Info_input.open("modify_data/CPinfo.txt");
-	    
+			std::cout << "inpu Test failed!\n";	    
 		double StartTime = 0;
 		uint32_t Pktsize = 0;
 		double Last_StartTime = 0; 
@@ -272,21 +312,21 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 		}
 		// 保证最后一个包能够发出
 		qp->PktInfo_vec.push_back({0, Last_Pktsize});
-		qp->Custom_Packet_Info_input.close();
+		// qp->Custom_Packet_Info_input.close();
 		#ifdef LOG_OUTPUT_ON
-			if (Custom_Packet_Info_log.is_open())
-			{
-				Custom_Packet_Info_log.clear();
-				Custom_Packet_Info_log.flush();
-				Custom_Packet_Info_log.close();			
-			}
-
-			Custom_Packet_Info_log.open("modify_data/CPinfo.txt");
-			if (Custom_Packet_Info_log.is_open())
-				std::cout << "Test begin!\n";
-			else
-				std::cout << "Test failed!\n";
-			Custom_Packet_Info_log << "Test begin!\n";
+			// if (Custom_Packet_Info_log.is_open())
+			// {
+			// 	Custom_Packet_Info_log.clear();
+			// 	Custom_Packet_Info_log.flush();
+			// 	Custom_Packet_Info_log.close();			
+			// }
+			//Custom_Packet_Info_log.open("modify_data/CPinfo.txt");
+			// !先用std::cout顶替一下看看能不能出结果
+			// if (Custom_Packet_Info_log.is_open())
+			// 	std::cout << "Test begin!\n";
+			// else
+			// 	std::cout << "Test failed!\n";
+			// Custom_Packet_Info_log << "Test begin!\n";
 		#endif
 	#endif
 
@@ -498,7 +538,8 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	// 输出调试信息；
 	#ifdef MODIFY_ON
 		#ifdef LOG_OUTPUT_ON
-			Custom_Packet_Info_log << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
+			// Custom_Packet_Info_log << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
+			std::cout << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
 		#endif
 	#endif
 

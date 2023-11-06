@@ -76,6 +76,9 @@ private:
   uint16_t m_sport, m_dport;
   uint32_t m_win; // bound of on-the-fly packets
   uint64_t m_baseRtt; // base Rtt
+
+  // 添加读入包信息的文件指针（std::fstream*）
+  uint64_t m_Custom_Packet_Info_input_ptr;
 };
 
 } // namespace ns3

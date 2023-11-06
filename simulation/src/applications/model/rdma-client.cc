@@ -87,6 +87,13 @@ RdmaClient::GetTypeId (void)
                    UintegerValue (0),
                    MakeUintegerAccessor (&RdmaClient::m_baseRtt),
                    MakeUintegerChecker<uint64_t> ())
+    #ifdef MODIFY_ON
+      .AddAttribute ("PacketfilePtr",
+                    "Let the client know where to find Pkt info",
+                    UintegerValue (0),
+                    MakeUintegerAccessor (&RdmaClient::m_Custom_Packet_Info_input_ptr),
+                    MakeUintegerChecker<uint64_t> ())
+    #endif
   ;
   return tid;
 }
@@ -138,7 +145,11 @@ void RdmaClient::StartApplication (void)
   // get RDMA driver and add up queue pair
   Ptr<Node> node = GetNode();
   Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
-  rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));
+  #ifdef MODIFY_ON
+    rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));
+  #else
+    rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, m_Custom_Packet_Info_input_ptr, MakeCallback(&RdmaClient::Finish, this));
+  #endif
 }
 
 void RdmaClient::StopApplication ()

@@ -137,6 +137,12 @@ struct FlowInput{
 FlowInput flow_input = {0};
 uint32_t flow_num;
 
+// !理论上一次只会读一个流，所以实际不用开数组（不过还是先等调通再说吧）
+#ifdef MODIFY_ON
+	uint32_t max_fnum = 65535;
+	std::ifstream flowPkt_fileGroup[max_fnum];
+#endif
+
 void ReadFlowInput(){
 	if (flow_input.idx < flow_num){
 		flowf >> flow_input.src >> flow_input.dst >> flow_input.pg >> flow_input.dport >> flow_input.maxPacketCount >> flow_input.start_time;
@@ -146,9 +152,19 @@ void ReadFlowInput(){
 void ScheduleFlowInputs(){
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
-		RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
+		// *尝试传入fstream指针
+		#ifdef MODIFY_ON
+			flowPkt_fileGroup[flow_input.idx].open("CustomData/CPinfo.txt");
+			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], &flowPkt_fileGroup[flow_input.idx]);
+		#else
+			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
+		#endif
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
+
+		#ifdef MODIFY_ON
+			flowPkt_fileGroup[flow_input.idx]。close();
+		#endif
 
 		// get the next flow input
 		flow_input.idx++;
