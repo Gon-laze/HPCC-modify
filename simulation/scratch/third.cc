@@ -138,8 +138,9 @@ FlowInput flow_input = {0};
 uint32_t flow_num;
 
 // !理论上一次只会读一个流，所以实际不用开数组（不过还是先等调通再说吧）
+// !发现还是要的：一旦simulation启动将无法打开其他文件，只能预先写好
 #ifdef MODIFY_ON
-	uint32_t max_fnum = 65535;
+	const uint32_t max_fnum = 128;
 	std::ifstream flowPkt_fileGroup[max_fnum];
 #endif
 
@@ -154,17 +155,17 @@ void ScheduleFlowInputs(){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		// *尝试传入fstream指针
 		#ifdef MODIFY_ON
-			flowPkt_fileGroup[flow_input.idx].open("CustomData/CPinfo.txt");
-			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], &flowPkt_fileGroup[flow_input.idx]);
+			std::cout << "CP1\n";
+			if (flowPkt_fileGroup[flow_input.idx].is_open())
+				std::cout << "init Test begin!\n";
+			else
+				std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
+			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
 		#else
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
 		#endif
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		appCon.Start(Time(0));
-
-		#ifdef MODIFY_ON
-			flowPkt_fileGroup[flow_input.idx]。close();
-		#endif
 
 		// get the next flow input
 		flow_input.idx++;
@@ -725,6 +726,26 @@ int main(int argc, char *argv[])
 	flowf >> flow_num;
 	tracef >> trace_num;
 
+	// 初始化自定义输入流
+	#ifdef MODIFY_ON
+	for (int i=0; i<max_fnum; i++)
+	{
+		flowPkt_fileGroup[i].open("mix/CPinfo.txt");
+		if (flowPkt_fileGroup[i].is_open())
+			std::cout << "init Test begin!"  << (uint64_t)&flowPkt_fileGroup[i]<< '\n';
+		else
+			std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
+
+	}
+	#endif
+
+	// 临时测试
+	#ifdef MODIFY_ON
+		if (topof.is_open())
+			std::cout << "topof ready.\n";
+		else
+			std::cout << "topof failed.\n";
+	#endif
 
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
@@ -1046,6 +1067,11 @@ int main(int argc, char *argv[])
 	Simulator::Destroy();
 	NS_LOG_INFO("Done.");
 	fclose(trace_output);
+
+	#ifdef MODIFY_ON
+		for (int i=0; i<max_fnum; i++)
+			flowPkt_fileGroup[flow_input.idx].close();
+	#endif
 
 	endt = clock();
 	std::cout << (double)(endt - begint) / CLOCKS_PER_SEC << "\n";

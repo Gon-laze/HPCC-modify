@@ -276,11 +276,11 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	qp->SetBaseRtt(baseRtt);
 	qp->SetVarWin(m_var_win);
 	qp->SetAppNotifyCallback(notifyAppFinish);
-	
+	std::cout << "CP5\n";
 	// 初始化包数目以及输入, 打开日志记录准备输入
 	#ifdef MODIFY_ON
 		qp->m_sent = 0;
-		Custom_Packet_Info_input_ptr = (std::fstream*)fptr;
+		qp->Custom_Packet_Info_input_ptr = (std::ifstream*)fptr;
 		// if (qp->Custom_Packet_Info_input_ptr->is_open())
 		// {
 		// 	qp->Custom_Packet_Info_input_ptr->clear();
@@ -291,7 +291,7 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 		if (qp->Custom_Packet_Info_input_ptr->is_open())
 			std::cout << "input Test begin!\n";
 		else
-			std::cout << "inpu Test failed!\n";	    
+			std::cout << "input Test failed!" << fptr << '\n';	    
 		double StartTime = 0;
 		uint32_t Pktsize = 0;
 		double Last_StartTime = 0; 
@@ -299,12 +299,12 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	
 		// 虽然m_size理论上由flow.txt决定，若手动预先修改flow.txt则无需再更改，但为保险且这里加一步（无异常后可考虑删去）
 		uint32_t totalSize;
-		qp->Custom_Packet_Info_input >> totalSize;
+		*(qp->Custom_Packet_Info_input_ptr) >> totalSize;
 		if (totalSize > 0)
 			qp->SetSize(totalSize);
 
-		qp->Custom_Packet_Info_input >> Last_StartTime >> Last_Pktsize;
-		while (qp->Custom_Packet_Info_input >> StartTime >> Pktsize)
+		*(qp->Custom_Packet_Info_input_ptr) >> Last_StartTime >> Last_Pktsize;
+		while (*(qp->Custom_Packet_Info_input_ptr) >> StartTime >> Pktsize)
 		{
 			qp->PktInfo_vec.push_back({StartTime-Last_StartTime, Last_Pktsize});
 			Last_StartTime = StartTime;  
@@ -329,7 +329,7 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 			// Custom_Packet_Info_log << "Test begin!\n";
 		#endif
 	#endif
-
+	std::cout << "CP6\n";
 	// add qp
 	uint32_t nic_idx = GetNicIdxOfQp(qp);
 	m_nic[nic_idx].qpGrp->AddQp(qp);

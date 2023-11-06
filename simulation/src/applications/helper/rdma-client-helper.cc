@@ -52,7 +52,7 @@ RdmaClientHelper::RdmaClientHelper (uint16_t pg, Ipv4Address sip, Ipv4Address di
   SetAttribute ("WriteSize", UintegerValue (size));
   SetAttribute ("Window", UintegerValue (win));
   SetAttribute ("BaseRtt", UintegerValue (baseRtt));
-  setAttribute ("PacketfilePtr", UintegerValue (Pktfp));
+  SetAttribute ("PacketfilePtr", UintegerValue (Pktfp));
 }
 
 void
@@ -68,6 +68,7 @@ RdmaClientHelper::Install (NodeContainer c)
   for (NodeContainer::Iterator i = c.Begin (); i != c.End (); ++i)
     {
       Ptr<Node> node = *i;
+      std::cout << "CP2\n";
       Ptr<RdmaClient> client = m_factory.Create<RdmaClient> ();
       node->AddApplication (client);
       apps.Add (client);
