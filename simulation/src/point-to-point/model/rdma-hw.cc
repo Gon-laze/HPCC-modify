@@ -539,7 +539,10 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	#ifdef MODIFY_ON
 		#ifdef LOG_OUTPUT_ON
 			// Custom_Packet_Info_log << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
-			std::cout <<Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
+			std::cout << "##########################\n";
+			std::cout << "##\t" << Simulator::Now().GetSeconds() << '\t' << payload_size << "\t##\n";
+			std::cout << "##########################\n";
+			std::cout << "CCmode: " << m_cc_mode << '\n';
 		#endif
 	#endif
 

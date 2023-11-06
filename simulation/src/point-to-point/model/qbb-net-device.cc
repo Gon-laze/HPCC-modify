@@ -75,7 +75,7 @@ namespace ns3 {
 	}
 
 	Ptr<Packet> RdmaEgressQueue::DequeueQindex(int qIndex){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "DequeueQindex()\n";
 		#endif
 		if (qIndex == -1){ // high prio
@@ -106,7 +106,7 @@ namespace ns3 {
 
 	*/
 	int RdmaEgressQueue::GetNextQindex(bool paused[]){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "GetNextQindex()\n";
 		#endif
 		bool found = false;
@@ -275,7 +275,7 @@ namespace ns3 {
 	void
 		QbbNetDevice::DequeueAndTransmit(void)
 	{
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "DequeueAndTransmit()\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -360,7 +360,7 @@ namespace ns3 {
 	void
 		QbbNetDevice::Resume(unsigned qIndex)
 	{
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "Resume()\t\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -375,7 +375,7 @@ namespace ns3 {
 	void
 		QbbNetDevice::Receive(Ptr<Packet> packet)
 	{
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "Receive()\t\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -424,7 +424,7 @@ namespace ns3 {
 
 	bool QbbNetDevice::Send(Ptr<Packet> packet, const Address &dest, uint16_t protocolNumber)
 	{
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "Send()\t\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -433,7 +433,7 @@ namespace ns3 {
 	}
 
 	bool QbbNetDevice::SwitchSend (uint32_t qIndex, Ptr<Packet> packet, CustomHeader &ch){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "SwitchSend()\t\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -475,7 +475,7 @@ namespace ns3 {
 	bool
 		QbbNetDevice::TransmitStart(Ptr<Packet> p)
 	{
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "TransmitStart()\t\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -514,7 +514,7 @@ namespace ns3 {
    }
 
    void QbbNetDevice::NewQp(Ptr<RdmaQueuePair> qp){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "NewQp()\t\t\t\n\t";
 			// std::cout << "nodeId " << m_node->GetId() << "\n\t";
 		#endif
@@ -522,14 +522,14 @@ namespace ns3 {
 	   DequeueAndTransmit();
    }
    void QbbNetDevice::ReassignedQp(Ptr<RdmaQueuePair> qp){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "ReassignedQp()\t\t\t\n\t";
 			// std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
 	   DequeueAndTransmit();
    }
    void QbbNetDevice::TriggerTransmit(void){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "TriggerTransmit()\t\t\t\n\t";
 			// std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif
@@ -577,7 +577,7 @@ namespace ns3 {
 	}
 
 	void QbbNetDevice::UpdateNextAvail(Time t){
-		#ifdef MODIFY_ON
+		#ifdef CHECKPOINT_ON
 			std::cout << "UpdateNextAvail()\t\t\t\t";
 			std::cout << "nodeId " << m_node->GetId() << '\n';
 		#endif

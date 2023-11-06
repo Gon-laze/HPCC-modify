@@ -44,6 +44,9 @@
 // #ifndef CHECKPOINT_ON
 // 	#define CHECKPOINT_ON
 // #endif
+// #ifdef CHECKPOINT_ON
+// 	#undef CHECKPOINT_ON
+// #endif
 
 namespace ns3 {
 
