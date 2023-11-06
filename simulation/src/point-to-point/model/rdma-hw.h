@@ -11,14 +11,14 @@
 #include <string>
 #include <chrono>
 
-// #ifndef CHECKPOINT_ON
-// #define CHECKPOINT_ON
-
 #ifndef MODIFY_ON
 #define MODIFY_ON
 
 #ifndef LOG_OUTPUT_ON
 #define LOG_OUTPUT_ON
+
+// #ifndef CHECKPOINT_ON
+// #define CHECKPOINT_ON
 
 namespace ns3 {
 

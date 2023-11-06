@@ -16,6 +16,10 @@
 // #ifndef LOG_OUTPUT_ON
 // #define LOG_OUTPUT_ON
 
+// #ifndef CHECKPOINT_ON
+// #define CHECKPOINT_ON
+
+
 
 namespace ns3 {
 
@@ -24,6 +28,7 @@ public:
 	Time startTime;
 	Ipv4Address sip, dip;
 	uint16_t sport, dport;
+	// !注意：此处的m_size应该是指整个qp上要发送数据的大小（而不是单个数据包大小）
 	uint64_t m_size;
 	uint64_t snd_nxt, snd_una; // next seq to send, the highest unacked seq
 	uint16_t m_pg;

@@ -240,12 +240,18 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	// 初始化包数目以及输入, 打开日志记录准备输入
 	#ifdef MODIFY_ON
 		qp->m_sent = 0;
-		Custom_Packet_Info_input.open("CPinfo.txt", ios::in, 0);
+		Custom_Packet_Info_input.open("./modify_data/CPinfo.txt", ios::in, 0);
 	    
 		double StartTime = 0;
 		uint32_t Pktsize = 0;
 		double Last_StartTime = 0; 
 		uint32_t Last_Pktsize = 0;
+	
+		// 虽然m_size理论上由flow.txt决定，若手动预先修改flow.txt则无需再更改，但为保险且这里加一步（无异常后可考虑删去）
+		Uint32_t totalSize;
+		Custom_Packet_Info_File >> totalSize;
+		if (totalsize > 0)
+			qp->setSize(totalSize);
 
 		Custom_Packet_Info_File >> Last_StartTime >> Last_PktSize;
 		while (Custom_Packet_Info_File >> StartTime >> Pktsize)
@@ -258,7 +264,7 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 		PktInfo_vec.insert({0, Last_PktSize});
 		Custom_Packet_Info_input.close();
 		#ifdef LOG_OUTPUT_ON
-			Custom_Packet_Info_log.open("CPinfo.txt", ios::app|ios::out, 0);
+			Custom_Packet_Info_log.open("./modify_data/CPinfo.txt", ios::app|ios::out, 0);
 		#endif
 	#endif
 
@@ -807,12 +813,13 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	// 更新mtu以限制单次包大小
 	#ifdef MODIFY_ON
 		// !若余留数据不足m_mtu，最后一个包大小可能偏小
-		m_mtu = PktInfo_vec[m_sent].last;
+		// !每次都根据qp内容调整HW级别信息。有可能造成不必要开销或冲突
+		m_mtu = qp->PktInfo_vec[qp->m_sent].last;
 		// !不太清楚自定义发包大小会不会最终改变发包的数量（即唤起send的次数与实际包数不一致），留个调试点
-    	if (PktInfo_vec.size() > m_sent)
+    	if (qp->PktInfo_vec.size() > qp->m_sent)
       	std::cout << "CUSTOM_PKT_ERROR!\n" \
           << "Total: " << PktInfo_vec.size() << '\n' \
-          << "Current: " << m_sent << '\n';
+          << "Current: " << qp->m_sent << '\n';
 	#endif
 	if (m_mtu < payload_size)
 		payload_size = m_mtu;
@@ -860,7 +867,8 @@ void RdmaHw::UpdateNextAvail(Ptr<RdmaQueuePair> qp, Time interframeGap, uint32_t
 	// 改变发送间隔
 	// !此处sendingTime若通过读vector将不受到发送速率的限制（严格回访真实情况），可能会产生错误
 	#ifdef MODIFY_ON
-		sendingTime = Time(PktInfo_vec[m_sent].first);
+		sendingTime = Time(qp->PktInfo_vec[qp->m_sent].first);
+	#else
 		if (m_rateBound)
 			sendingTime = interframeGap + Seconds(qp->m_rate.CalculateTxTime(pkt_size));
 		else
@@ -870,7 +878,7 @@ void RdmaHw::UpdateNextAvail(Ptr<RdmaQueuePair> qp, Time interframeGap, uint32_t
 
 	// m_rdmaPktSent是位于TransmitStart(p)后触发的，更新了m_nextAvail后我们才认为这个包发送过程才彻底完成了
 	#ifdef MODIFY_ON
-		m_sent++;
+		qp->m_sent++;
 	#endif
 }
 
