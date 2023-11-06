@@ -15,13 +15,18 @@
 	#define MODIFY_ON
 #endif
 
-// #ifndef LOG_OUTPUT_ON
-// 	#define LOG_OUTPUT_ON
-// #endif
+#ifndef LOG_OUTPUT_ON
+	#define LOG_OUTPUT_ON
+#endif
 
 // #ifndef CHECKPOINT_ON
 // 	#define CHECKPOINT_ON
 // #endif
+
+#ifdef MODIFY_ON
+	#include <iostream>
+	#include <fstream>
+#endif
 
 namespace ns3 {
 

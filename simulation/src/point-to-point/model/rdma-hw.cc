@@ -239,32 +239,50 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	
 	// 初始化包数目以及输入, 打开日志记录准备输入
 	#ifdef MODIFY_ON
-		qp->m_sent = 0;
-		qp->Custom_Packet_Info_input.open("./modify_data/CPinfo.txt", std::ios::in);
+		// qp->m_sent = 0;
+		// if (qp->Custom_Packet_Info_input.is_open())
+		// {
+		// 	qp->Custom_Packet_Info_input.clear();
+		// 	qp->Custom_Packet_Info_input.flush();
+		// 	qp->Custom_Packet_Info_input.close();			
+		// }
+		// qp->Custom_Packet_Info_input.open("modify_data/CPinfo.txt");
 	    
-		double StartTime = 0;
-		uint32_t Pktsize = 0;
-		double Last_StartTime = 0; 
-		uint32_t Last_Pktsize = 0;
+		// double StartTime = 0;
+		// uint32_t Pktsize = 0;
+		// double Last_StartTime = 0; 
+		// uint32_t Last_Pktsize = 0;
 	
-		// 虽然m_size理论上由flow.txt决定，若手动预先修改flow.txt则无需再更改，但为保险且这里加一步（无异常后可考虑删去）
-		uint32_t totalSize;
-		qp->Custom_Packet_Info_input >> totalSize;
-		if (totalSize > 0)
-			qp->SetSize(totalSize);
+		// // 虽然m_size理论上由flow.txt决定，若手动预先修改flow.txt则无需再更改，但为保险且这里加一步（无异常后可考虑删去）
+		// uint32_t totalSize;
+		// qp->Custom_Packet_Info_input >> totalSize;
+		// if (totalSize > 0)
+		// 	qp->SetSize(totalSize);
 
-		qp->Custom_Packet_Info_input >> Last_StartTime >> Last_Pktsize;
-		while (qp->Custom_Packet_Info_input >> StartTime >> Pktsize)
-		{
-			qp->PktInfo_vec.push_back({StartTime-Last_StartTime, Last_Pktsize});
-			Last_StartTime = StartTime;  
-			Last_Pktsize = Pktsize;     
-		}
-		// 保证最后一个包能够发出
-		qp->PktInfo_vec.push_back({0, Last_Pktsize});
-		qp->Custom_Packet_Info_input.close();
+		// qp->Custom_Packet_Info_input >> Last_StartTime >> Last_Pktsize;
+		// while (qp->Custom_Packet_Info_input >> StartTime >> Pktsize)
+		// {
+		// 	qp->PktInfo_vec.push_back({StartTime-Last_StartTime, Last_Pktsize});
+		// 	Last_StartTime = StartTime;  
+		// 	Last_Pktsize = Pktsize;     
+		// }
+		// // 保证最后一个包能够发出
+		// qp->PktInfo_vec.push_back({0, Last_Pktsize});
+		// qp->Custom_Packet_Info_input.close();
 		#ifdef LOG_OUTPUT_ON
-			Custom_Packet_Info_log.open("./modify_data/CPinfo.txt", std::ios::app|std::ios::out);
+			if (Custom_Packet_Info_log.is_open())
+			{
+				Custom_Packet_Info_log.clear();
+				Custom_Packet_Info_log.flush();
+				Custom_Packet_Info_log.close();			
+			}
+
+			Custom_Packet_Info_log.open("modify_data/CPinfo.txt");
+			if (Custom_Packet_Info_log)
+				std::cout << "Test begin!\n";
+			else
+				std::cout << "Test failed!\n";
+			Custom_Packet_Info_log << "Test begin!\n";
 		#endif
 	#endif
 
