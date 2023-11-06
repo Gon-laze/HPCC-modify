@@ -41,18 +41,22 @@ using namespace ns3;
 using namespace std;
 
 #ifndef MODIFY_ON
-#define MODIFY_ON
+	#define MODIFY_ON
+#endif
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
 bool enable_qcn = true, use_dynamic_pfc_threshold = true;
 uint32_t packet_payload_size = 1000, l2_chunk_size = 0, l2_ack_interval = 0;
-double pause_time = 5, simulator_stop_time = 3.01;
+
 #ifdef MODIFY_ON
 	// 回放测试用时160s，这里宽松地设成3分钟
-	simulator_stop_time = 180.0;
+	double pause_time = 5, simulator_stop_time = 180.0;
+#else
+	double pause_time = 5, simulator_stop_time = 3.01;
 #endif
+
 std::string data_rate, link_delay, topology_file, flow_file, trace_file, trace_output_file;
 std::string fct_output_file = "fct.txt";
 std::string pfc_output_file = "pfc.txt";

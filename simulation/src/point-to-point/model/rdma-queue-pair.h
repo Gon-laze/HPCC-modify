@@ -11,14 +11,21 @@
 #include <vector>
 
 #ifndef MODIFY_ON
-#define MODIFY_ON
+	#define MODIFY_ON
+#endif
 
 // #ifndef LOG_OUTPUT_ON
-// #define LOG_OUTPUT_ON
+// 	#define LOG_OUTPUT_ON
+// #endif
 
 // #ifndef CHECKPOINT_ON
-// #define CHECKPOINT_ON
+// 	#define CHECKPOINT_ON
+// #endif
 
+#ifdef MODIFY_ON
+	#include <iostream>
+	#include <fstream>
+#endif
 
 
 namespace ns3 {
@@ -42,15 +49,15 @@ public:
 	uint32_t lastPktSize;
 	Callback<void> m_notifyAppFinish;
 
-	#ifdef MODIFY_ON;
+	#ifdef MODIFY_ON
 		// TODO: 后续添加更多流时在初始化阶段分配id，以读取不同流对应不同的txt
 		std::fstream Custom_Packet_Info_input;
 		std::vector< std::pair<double, uint32_t> > PktInfo_vec;
 		uint32_t m_sent;
-		#ifdef DEBUG_ON;
-		std::fstream Pkt_log;
-		const char logName[] = "Pkt_log.txt";
-		bool is_Loginit = false;
+		#ifdef DEBUG_ON
+			std::fstream Pkt_log;
+			const char logName[] = "Pkt_log.txt";
+			bool is_Loginit = false;
 		#endif
 	#endif
 

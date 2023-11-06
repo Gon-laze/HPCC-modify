@@ -240,7 +240,7 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	// 初始化包数目以及输入, 打开日志记录准备输入
 	#ifdef MODIFY_ON
 		qp->m_sent = 0;
-		Custom_Packet_Info_input.open("./modify_data/CPinfo.txt", ios::in, 0);
+		qp->Custom_Packet_Info_input.open("./modify_data/CPinfo.txt", std::ios::in);
 	    
 		double StartTime = 0;
 		uint32_t Pktsize = 0;
@@ -248,23 +248,23 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 		uint32_t Last_Pktsize = 0;
 	
 		// 虽然m_size理论上由flow.txt决定，若手动预先修改flow.txt则无需再更改，但为保险且这里加一步（无异常后可考虑删去）
-		Uint32_t totalSize;
-		Custom_Packet_Info_File >> totalSize;
-		if (totalsize > 0)
-			qp->setSize(totalSize);
+		uint32_t totalSize;
+		qp->Custom_Packet_Info_input >> totalSize;
+		if (totalSize > 0)
+			qp->SetSize(totalSize);
 
-		Custom_Packet_Info_File >> Last_StartTime >> Last_PktSize;
-		while (Custom_Packet_Info_File >> StartTime >> Pktsize)
+		qp->Custom_Packet_Info_input >> Last_StartTime >> Last_Pktsize;
+		while (qp->Custom_Packet_Info_input >> StartTime >> Pktsize)
 		{
-			PktInfo_vec.insert({StartTime-Last_StartTime, Last_PktSize});
+			qp->PktInfo_vec.push_back({StartTime-Last_StartTime, Last_Pktsize});
 			Last_StartTime = StartTime;  
 			Last_Pktsize = Pktsize;     
 		}
 		// 保证最后一个包能够发出
-		PktInfo_vec.insert({0, Last_PktSize});
-		Custom_Packet_Info_input.close();
+		qp->PktInfo_vec.push_back({0, Last_Pktsize});
+		qp->Custom_Packet_Info_input.close();
 		#ifdef LOG_OUTPUT_ON
-			Custom_Packet_Info_log.open("./modify_data/CPinfo.txt", ios::app|ios::out, 0);
+			Custom_Packet_Info_log.open("./modify_data/CPinfo.txt", std::ios::app|std::ios::out);
 		#endif
 	#endif
 
@@ -814,12 +814,12 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	#ifdef MODIFY_ON
 		// !若余留数据不足m_mtu，最后一个包大小可能偏小
 		// !每次都根据qp内容调整HW级别信息。有可能造成不必要开销或冲突
-		m_mtu = qp->PktInfo_vec[qp->m_sent].last;
+		m_mtu = qp->PktInfo_vec[qp->m_sent].second;
 		// !不太清楚自定义发包大小会不会最终改变发包的数量（即唤起send的次数与实际包数不一致），留个调试点
-    	if (qp->PktInfo_vec.size() > qp->m_sent)
-      	std::cout << "CUSTOM_PKT_ERROR!\n" \
-          << "Total: " << PktInfo_vec.size() << '\n' \
-          << "Current: " << qp->m_sent << '\n';
+    	if (qp->PktInfo_vec.size() <= qp->m_sent)
+      		std::cout << "CUSTOM_PKT_ERROR!\n" \
+				<< "Total: " << qp->PktInfo_vec.size() << '\n' \
+				<< "Current: " << qp->m_sent << '\n';
 	#endif
 	if (m_mtu < payload_size)
 		payload_size = m_mtu;

@@ -12,13 +12,16 @@
 #include <chrono>
 
 #ifndef MODIFY_ON
-#define MODIFY_ON
+	#define MODIFY_ON
+#endif
 
-#ifndef LOG_OUTPUT_ON
-#define LOG_OUTPUT_ON
+// #ifndef LOG_OUTPUT_ON
+// 	#define LOG_OUTPUT_ON
+// #endif
 
 // #ifndef CHECKPOINT_ON
-// #define CHECKPOINT_ON
+// 	#define CHECKPOINT_ON
+// #endif
 
 namespace ns3 {
 

@@ -23,22 +23,10 @@
 #ifndef UDP_CLIENT_H
 #define UDP_CLIENT_H
 
-#ifndef MODIFY_ON
-#define MODIFY_ON
-
 #include "ns3/application.h"
 #include "ns3/event-id.h"
 #include "ns3/ptr.h"
 #include "ns3/ipv4-address.h"
-
-#ifdef MODIFY_ON
-  #ifndef _GLIBCXX_VECTOR
-    #include <vector>
-  #endif
-#endif
-
-// #ifndef DEBUG_ON
-// #define DEBUG_ON
 
 namespace ns3 {
 
@@ -71,19 +59,6 @@ public:
   void SetRemote (Ipv6Address ip, uint16_t port);
   void SetRemote (Address ip, uint16_t port);
   void SetPG (uint16_t pg);
-
-  #ifdef MODIFY_ON;
-    std::fstream Custom_Packet_Info_File;
-    const char CPIFName[] = "CPinfo.txt";
-    bool is_CPIFinit = false;
-    std::vector< std::pair<double, uint32_t> > PktInfo_vec;
-    #ifdef DEBUG_ON;
-      std::fstream Pkt_log;
-      const char logName[] = "Pkt_log.txt";
-      bool is_Loginit = false;
-    #endif
-  #endif
-
 
 protected:
   virtual void DoDispose (void);
