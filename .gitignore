@@ -4,3 +4,5 @@ simulation/mix/mix.tr
 simulation/mix/fct.txt
 simulation/mix/pfc.txt
 simulation/mix/qlen.txt
+*.pyc
+*/waflib
