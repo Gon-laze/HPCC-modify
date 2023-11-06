@@ -539,7 +539,7 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	#ifdef MODIFY_ON
 		#ifdef LOG_OUTPUT_ON
 			// Custom_Packet_Info_log << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
-			std::cout << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
+			std::cout <<Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
 		#endif
 	#endif
 
@@ -930,10 +930,10 @@ void RdmaHw::UpdateNextAvail(Ptr<RdmaQueuePair> qp, Time interframeGap, uint32_t
 	// 改变发送间隔
 	// !此处sendingTime若通过读vector将不受到发送速率的限制（严格回访真实情况），可能会产生错误
 	#ifdef MODIFY_ON
-		sendingTime = Time(qp->PktInfo_vec[qp->m_sent].first);
+		sendingTime = Seconds(qp->PktInfo_vec[qp->m_sent].first);		// seconds->nanoseceonds
 	#else
 		if (m_rateBound)
-			sendingTime = interframeGap + Seconds(qp->m_rate.CalculateTxTime(pkt_size));
+			sendingTime = interframeGap + Seconds(qp->m_rate.CalculateTxdTime(pkt_size));
 		else
 			sendingTime = interframeGap + Seconds(qp->m_max_rate.CalculateTxTime(pkt_size));
 	#endif

@@ -75,6 +75,9 @@ namespace ns3 {
 	}
 
 	Ptr<Packet> RdmaEgressQueue::DequeueQindex(int qIndex){
+		#ifdef MODIFY_ON
+			std::cout << "DequeueQindex()\n";
+		#endif
 		if (qIndex == -1){ // high prio
 			Ptr<Packet> p = m_ackQ->Dequeue();
 			m_qlast = -1;
@@ -103,6 +106,9 @@ namespace ns3 {
 
 	*/
 	int RdmaEgressQueue::GetNextQindex(bool paused[]){
+		#ifdef MODIFY_ON
+			std::cout << "GetNextQindex()\n";
+		#endif
 		bool found = false;
 		uint32_t qIndex;
 		if (!paused[ack_q_idx] && m_ackQ->GetNPackets() > 0)
@@ -269,6 +275,10 @@ namespace ns3 {
 	void
 		QbbNetDevice::DequeueAndTransmit(void)
 	{
+		#ifdef MODIFY_ON
+			std::cout << "DequeueAndTransmit()\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		NS_LOG_FUNCTION(this);
 		if (!m_linkUp) return; // if link is down, return
 		if (m_txMachineState == BUSY) return;	// Quit if channel busy
@@ -350,6 +360,10 @@ namespace ns3 {
 	void
 		QbbNetDevice::Resume(unsigned qIndex)
 	{
+		#ifdef MODIFY_ON
+			std::cout << "Resume()\t\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		NS_LOG_FUNCTION(this << qIndex);
 		NS_ASSERT_MSG(m_paused[qIndex], "Must be PAUSEd");
 		m_paused[qIndex] = false;
@@ -361,6 +375,10 @@ namespace ns3 {
 	void
 		QbbNetDevice::Receive(Ptr<Packet> packet)
 	{
+		#ifdef MODIFY_ON
+			std::cout << "Receive()\t\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		NS_LOG_FUNCTION(this << packet);
 		if (!m_linkUp){
 			m_traceDrop(packet, 0);
@@ -406,11 +424,19 @@ namespace ns3 {
 
 	bool QbbNetDevice::Send(Ptr<Packet> packet, const Address &dest, uint16_t protocolNumber)
 	{
+		#ifdef MODIFY_ON
+			std::cout << "Send()\t\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		NS_ASSERT_MSG(false, "QbbNetDevice::Send not implemented yet\n");
 		return false;
 	}
 
 	bool QbbNetDevice::SwitchSend (uint32_t qIndex, Ptr<Packet> packet, CustomHeader &ch){
+		#ifdef MODIFY_ON
+			std::cout << "SwitchSend()\t\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		m_macTxTrace(packet);
 		m_traceEnqueue(packet, qIndex);
 		m_queue->Enqueue(packet, qIndex);
@@ -449,6 +475,10 @@ namespace ns3 {
 	bool
 		QbbNetDevice::TransmitStart(Ptr<Packet> p)
 	{
+		#ifdef MODIFY_ON
+			std::cout << "TransmitStart()\t\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		NS_LOG_FUNCTION(this << p);
 		NS_LOG_LOGIC("UID is " << p->GetUid() << ")");
 		//
@@ -484,13 +514,25 @@ namespace ns3 {
    }
 
    void QbbNetDevice::NewQp(Ptr<RdmaQueuePair> qp){
+		#ifdef MODIFY_ON
+			std::cout << "NewQp()\t\t\t\n\t";
+			// std::cout << "nodeId " << m_node->GetId() << "\n\t";
+		#endif
 	   qp->m_nextAvail = Simulator::Now();
 	   DequeueAndTransmit();
    }
    void QbbNetDevice::ReassignedQp(Ptr<RdmaQueuePair> qp){
+		#ifdef MODIFY_ON
+			std::cout << "ReassignedQp()\t\t\t\n\t";
+			// std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 	   DequeueAndTransmit();
    }
    void QbbNetDevice::TriggerTransmit(void){
+		#ifdef MODIFY_ON
+			std::cout << "TriggerTransmit()\t\t\t\n\t";
+			// std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 	   DequeueAndTransmit();
    }
 
@@ -535,6 +577,10 @@ namespace ns3 {
 	}
 
 	void QbbNetDevice::UpdateNextAvail(Time t){
+		#ifdef MODIFY_ON
+			std::cout << "UpdateNextAvail()\t\t\t\t";
+			std::cout << "nodeId " << m_node->GetId() << '\n';
+		#endif
 		if (!m_nextSend.IsExpired() && t < m_nextSend.GetTs()){
 			Simulator::Cancel(m_nextSend);
 			Time delta = t < Simulator::Now() ? Time(0) : t - Simulator::Now();
