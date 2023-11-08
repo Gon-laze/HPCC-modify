@@ -91,6 +91,7 @@ public:
 	std::unordered_map<std::string,double> flow_speed_table;
 
 	void Generate_feature(CustomHeader & ch);
+	void Generate_feature(Ptr<RdmaQueuePair> qp, uint32_t payload_size);
 
 	// 以qp级别发送流（读取参数），而以网卡级别接收流（输出日志）
 	#ifdef MODIFY_ON

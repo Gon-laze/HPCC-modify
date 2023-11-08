@@ -44,9 +44,6 @@
 // #ifndef CHECKPOINT_ON
 // 	#define CHECKPOINT_ON
 // #endif
-// #ifdef CHECKPOINT_ON
-// 	#undef CHECKPOINT_ON
-// #endif
 
 namespace ns3 {
 
@@ -211,6 +208,11 @@ public:
 	// callback for sent a packet
 	typedef Callback<void, Ptr<RdmaQueuePair>, Ptr<Packet>, Time> RdmaPktSent;
 	RdmaPktSent m_rdmaPktSent;
+
+  // 尝试在发包的时刻将控制权由qbbNetDevice转向所隶属的网卡，同时回传包内容
+  // !发现m_rdmaPktSent发包的时候刚巧把权限转给了rdmaHw；无需进一步新建Hook
+  #ifdef MODIFY_ON
+  #endif
 
 	Ptr<RdmaEgressQueue> GetRdmaQueue();
 	void TakeDown(); // take down this device
