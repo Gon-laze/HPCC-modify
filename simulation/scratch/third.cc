@@ -44,6 +44,14 @@ using namespace std;
 	#define MODIFY_ON
 #endif
 
+#ifndef LOG_OUTPUT_ON
+	#define LOG_OUTPUT_ON
+#endif
+
+#ifndef CHECKPOINT_ON
+	#define CHECKPOINT_ON
+#endif
+
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
@@ -142,6 +150,7 @@ uint32_t flow_num;
 #ifdef MODIFY_ON
 	const uint32_t max_fnum = 128;
 	std::ifstream flowPkt_fileGroup[max_fnum];
+	std::ofstream flowLog_fileGroup[128];
 #endif
 
 void ReadFlowInput(){
@@ -155,11 +164,11 @@ void ScheduleFlowInputs(){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		// *尝试传入fstream指针
 		#ifdef MODIFY_ON
-			std::cout << "CP1\n";
-			if (flowPkt_fileGroup[flow_input.idx].is_open())
-				std::cout << "init Test begin!\n";
-			else
-				std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
+			// std::cout << "CP1\n";
+			// if (flowPkt_fileGroup[flow_input.idx].is_open())
+			// 	std::cout << "init Test begin!\n";
+			// else
+			// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
 		#else
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
@@ -731,21 +740,21 @@ int main(int argc, char *argv[])
 	for (int i=0; i<max_fnum; i++)
 	{
 		flowPkt_fileGroup[i].open("mix/CPinfo.txt");
-		if (flowPkt_fileGroup[i].is_open())
-			std::cout << "init Test begin!"  << (uint64_t)&flowPkt_fileGroup[i]<< '\n';
-		else
-			std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
+		// if (flowPkt_fileGroup[i].is_open())
+		// 	std::cout << "init Test begin!"  << (uint64_t)&flowPkt_fileGroup[i]<< '\n';
+		// else
+		// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
 
 	}
 	#endif
 
 	// 临时测试
-	#ifdef MODIFY_ON
-		if (topof.is_open())
-			std::cout << "topof ready.\n";
-		else
-			std::cout << "topof failed.\n";
-	#endif
+	// #ifdef MODIFY_ON
+	// 	if (topof.is_open())
+	// 		std::cout << "topof ready.\n";
+	// 	else
+	// 		std::cout << "topof failed.\n";
+	// #endif
 
 	//n.Create(node_num);
 	std::vector<uint32_t> node_type(node_num, 0);
@@ -778,6 +787,9 @@ int main(int argc, char *argv[])
 		if (n.Get(i)->GetNodeType() == 0){ // is server
 			serverAddress.resize(i + 1);
 			serverAddress[i] = node_id_to_ip(i);
+			#ifdef CHECKPOINT_ON
+				std::cout << "init: node " << i << " device Num: " << n.Get(i)->GetNDevices() << '\n';
+			#endif
 		}
 	}
 

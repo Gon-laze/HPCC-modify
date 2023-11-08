@@ -189,7 +189,29 @@ void RdmaHw::SetNode(Ptr<Node> node){
 }
 void RdmaHw::Setup(QpCompleteCallback cb){
 	//遍历rdma-hw类上的nic vector（虚拟网卡）
+	#ifdef LOG_OUTPUT_ON
+		std::cout << "Node" << '[' << m_node->GetId() << ']' << " has m_nic Nums " << m_nic.size() << '\n';
+	#endif
 	for (uint32_t i = 0; i < m_nic.size(); i++){
+		#ifdef LOG_OUTPUT_ON
+			std::cout  	<< '\t' << "Node" << '[' << m_node->GetId() << ']' 
+								<< "m_nic" << '[' << i << ']' << "QpGrpstatus:"
+								<< '\n';
+			RdmaQueuePairGroup& tmpGrp = *(m_nic[i].qpGrp);
+			for (auto iter : tmpGrp.m_qps)
+			{
+				std::cout << "\t\t";
+				std::cout << "***.";
+				iter->sip.Print(std::cout);
+				std::cout << ".***";
+
+				std::cout << "\t\t";
+				std::cout << "***.";
+				iter->dip.Print(std::cout);
+				std::cout << ".***";
+				std::cout << "\n";
+			}		
+		#endif
 		//m_nic是RdmaInterfaceMgr类的vector
 		Ptr<QbbNetDevice> dev = m_nic[i].dev;
 		//如果当前网卡指针为空，那么就跳过
@@ -539,10 +561,12 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	#ifdef MODIFY_ON
 		#ifdef LOG_OUTPUT_ON
 			// Custom_Packet_Info_log << Simulator::Now().GetSeconds() << '\t' << payload_size << '\n';
-			std::cout << "##########################\n";
-			std::cout << "##\t" << Simulator::Now().GetSeconds() << '\t' << payload_size << "\t##\n";
-			std::cout << "##########################\n";
-			std::cout << "CCmode: " << m_cc_mode << '\n';
+			// std::cout << "##########################\n";
+			// std::cout << "##\t" << Simulator::Now().GetSeconds() << '\t' << payload_size << "\t##\n";
+			// std::cout << "##########################\n";
+			// std::cout << "CCmode: " << m_cc_mode << '\n';
+			// std::cout.precision(10);
+			// std::cout << Simulator::Now().GetSeconds() << '\t' << payload_size << "\n";
 		#endif
 	#endif
 

@@ -115,6 +115,9 @@ Node::AddDevice (Ptr<NetDevice> device)
   Simulator::ScheduleWithContext (GetId (), Seconds (0.0), 
                                   &NetDevice::Start, device);
   NotifyDeviceAdded (device);
+  #ifdef CHECKPOINT_ON
+				std::cout << "Add: node " << GetId() << " device Num: " << GetNDevices() << '\n';
+  #endif
   return index;
 }
 Ptr<NetDevice>
