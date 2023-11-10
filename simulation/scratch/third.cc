@@ -148,9 +148,9 @@ uint32_t flow_num;
 // !理论上一次只会读一个流，所以实际不用开数组（不过还是先等调通再说吧）
 // !发现还是要的：一旦simulation启动将无法打开其他文件，只能预先写好
 #ifdef MODIFY_ON
-	const uint32_t max_fnum = 128;
+	const uint32_t max_fnum = 100;
 	std::ifstream flowPkt_fileGroup[max_fnum];
-	std::ofstream flowLog_fileGroup[128];
+	std::ofstream flowLog_fileGroup[64];
 #endif
 
 void ReadFlowInput(){
@@ -164,7 +164,7 @@ void ScheduleFlowInputs(){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		// *尝试传入fstream指针
 		#ifdef MODIFY_ON
-			// std::cout << "CP1\n";
+			std::cout << "CP1\n";
 			// if (flowPkt_fileGroup[flow_input.idx].is_open())
 			// 	std::cout << "init Test begin!\n";
 			// else
@@ -739,7 +739,10 @@ int main(int argc, char *argv[])
 	#ifdef MODIFY_ON
 	for (int i=0; i<max_fnum; i++)
 	{
-		flowPkt_fileGroup[i].open("mix/CPinfo.txt");
+		std::string fhead{"mix/CPinfo_"};
+		std::string ftail{".txt"};
+
+		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
 		// if (flowPkt_fileGroup[i].is_open())
 		// 	std::cout << "init Test begin!"  << (uint64_t)&flowPkt_fileGroup[i]<< '\n';
 		// else
@@ -1081,6 +1084,11 @@ int main(int argc, char *argv[])
 	fclose(trace_output);
 
 	#ifdef MODIFY_ON
+		// 尝试直接通过switchNode打印流信息
+		for (int i=0; i<node_num; i++)
+			if (n.Get(i)->GetNodeType() > 0)
+				n.Get(i)->Switch_FeaturePrinter();
+		
 		for (int i=0; i<max_fnum; i++)
 			flowPkt_fileGroup[flow_input.idx].close();
 	#endif

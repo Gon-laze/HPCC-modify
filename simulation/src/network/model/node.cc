@@ -355,4 +355,15 @@ bool Node::SwitchReceiveFromDevice(Ptr<NetDevice> device, Ptr<Packet> packet, Cu
 void Node::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p){
 	NS_ASSERT_MSG(false, "Calling NotifyDequeue() on a non-switch node or this function is not implemented");
 }
+
+#ifdef MODIFY_ON
+  void Node::Switch_FeatureGenerator(CustomHeader &ch){
+    NS_ASSERT_MSG(false, "Calling Switch_FeatureGenerator() on a non-switch node or this function is not implemented");
+  }
+
+  void Node::Switch_FeaturePrinter(){
+    NS_ASSERT_MSG(false, "Calling Switch_FeaturePrinter() on a non-switch node or this function is not implemented");
+
+  }
+#endif
 } // namespace ns3

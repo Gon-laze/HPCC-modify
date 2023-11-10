@@ -228,7 +228,7 @@ void RdmaHw::Setup(QpCompleteCallback cb){
 		dev->m_rdmaEQ->m_rdmaGetNxtPkt = MakeCallback(&RdmaHw::GetNxtPacket, this);
 		// 尝试回传包测量特征
 		#ifdef MODIFY_ON
-			// !发现无需新hook。跳过
+			// dev->m_rdmaGenFeature = MakeCallback(&RdmaHw::Generate_feature_ch, this);
 		#endif
 	}
 	// setup qp complete callback
@@ -436,203 +436,208 @@ void RdmaHw::DeleteRxQp(uint32_t dip, uint16_t pg, uint16_t dport){
 	m_rxQpMap.erase(key);
 }
 
+
 /******************************
 * Generate features for flows
  *****************************/
+// !运行时错误：先用个空函数实验一下
+// *结果表明switch没有RdmaHw的部分（从third.cc初始化也可以看出来）
+// void RdmaHw::Generate_feature_ch(CustomHeader & ch){}
+
 // 原先为了满足收端特征测量所设计的特征测量函数
-void RdmaHw::Generate_feature(CustomHeader & ch)
-{
-	std::string key_sip = std::to_string(ch.sip);
-	std::string key_dip = std::to_string(ch.dip);
-	std::string key_sport;
-	std::string key_dport;
-	std::string key_proto = std::to_string(ch.l3Prot);
-	//TCP
-	if(ch.l3Prot == 0x06)
-	{
-		key_sport = std::to_string(ch.tcp.sport);
-		key_dport = std::to_string(ch.tcp.dport);
-	}
-	//UDP
-	else if(ch.l3Prot == 0x11)
-	{ 
-		key_sport = std::to_string(ch.udp.sport);
-		key_dport = std::to_string(ch.udp.dport);
-	}
-	//NACK && ACK
-	else if(ch.l3Prot == 0xFD || ch.l3Prot == 0xFC)
-	{
-		key_sport = std::to_string(ch.ack.sport);
-		key_dport = std::to_string(ch.ack.dport);
-	}
-	//control protocols and other
-	else
-	{
-		return;
-	}
-	key_sport = std::to_string(ch.udp.sport);
-	key_dport = std::to_string(ch.udp.dport);
-	key_proto = std::to_string(ch.l3Prot);
-	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
-	#ifdef CHECKPOINT_ON
-		std::cout << "checkpoint 1 begin\n";
-	#endif
-	auto current_time = std::chrono::system_clock::now();
-	#ifdef CHECKPOINT_ON
-		std::cout << "checkpoint 1 end\n";
-	#endif
-	//更新流字节数、包个数特征
-	flow_byte_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-	flow_packet_num_table[fivetuples] += 1;
-	//当前数据包是当前流上的第一个数据包（上行），则更新流第一个数据包的抵达时间，初始化最大包大小，最小包大小，当前burst等信息
-	if(flow_first_pkt_time_table.find(fivetuples) == flow_first_pkt_time_table.end())
-	{
-		//第一个数据包抵达时间以及上一个数据包抵达时间
-		flow_first_pkt_time_table[fivetuples] = current_time;
-		flow_last_pkt_time_table[fivetuples] = current_time;
-		//初始化平均包大小，最大包大小、最小包大小特征
-		//TODO：需要再确认下payloadSize + headerSize是否就是数据包的字节大小
-		flow_max_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-		flow_min_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-		flow_avg_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-		//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
-		flow_max_pkt_interval_table[fivetuples] = 0.0;
-		flow_min_pkt_interval_table[fivetuples] = 1000000000;
-		flow_avg_pkt_interval_table[fivetuples] - 0.0;
-		//初始化平均burst
-		flow_current_burst_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-		flow_max_burst_size_table[fivetuples] = 0;
-		flow_total_burst_size_table[fivetuples] = 0;
-		flow_avg_burst_size_table[fivetuples] = 0;
-		flow_burst_num_table[fivetuples] = 0;
-		//初始化流速率特征
-		flow_speed_table[fivetuples] = 0.0;
-	}
-	//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
-	else
-	{
-		//计算包间隔，更新上一个数据包抵达时间
-		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
-		flow_last_pkt_time_table[fivetuples] = current_time;
-		//更新平均包大小，最大包大小、最小包大小特征
-		flow_max_pkt_size_table[fivetuples] = std::max((uint64_t)flow_max_pkt_size_table[fivetuples], (uint64_t)(ch.m_payloadSize + ch.m_headerSize));
-		flow_min_pkt_size_table[fivetuples] = std::min((uint64_t)flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
-		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
-		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
-		flow_max_pkt_interval_table[fivetuples] = std::max((double)flow_max_pkt_interval_table[fivetuples], pkt_interval);
-		flow_min_pkt_interval_table[fivetuples] = std::min((double)flow_min_pkt_interval_table[fivetuples], pkt_interval);
-		flow_avg_pkt_interval_table[fivetuples] = (flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count() / flow_packet_num_table[fivetuples];
-		//更新流速率
-		flow_speed_table[fivetuples] = (double)(flow_byte_size_table[fivetuples]) / ((flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count());
-		//更新burst
-		//当前数据包间隔小于burst duration，那么继续更新current burst
-		if(pkt_interval < burst_max_duration)
-		{
-			flow_current_burst_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-		}
-		//当前burst结束，更新全局burst特征信息
-		else
-		{
-			flow_max_burst_size_table[fivetuples] = std::max((uint64_t)flow_max_burst_size_table[fivetuples], (uint64_t)flow_current_burst_size_table[fivetuples]);
-			flow_total_burst_size_table[fivetuples] += flow_current_burst_size_table[fivetuples];
-			flow_burst_num_table[fivetuples] += 1;
-			flow_avg_burst_size_table[fivetuples] = flow_total_burst_size_table[fivetuples] / flow_burst_num_table[fivetuples];
-			flow_current_burst_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
-		}
-	}
-	return;
-}
+// void RdmaHw::Generate_feature_ch(CustomHeader & ch)
+// {
+// 	std::string key_sip = std::to_string(ch.sip);
+// 	std::string key_dip = std::to_string(ch.dip);
+// 	std::string key_sport;
+// 	std::string key_dport;
+// 	std::string key_proto = std::to_string(ch.l3Prot);
+// 	//TCP
+// 	if(ch.l3Prot == 0x06)
+// 	{
+// 		key_sport = std::to_string(ch.tcp.sport);
+// 		key_dport = std::to_string(ch.tcp.dport);
+// 	}
+// 	//UDP
+// 	else if(ch.l3Prot == 0x11)
+// 	{ 
+// 		key_sport = std::to_string(ch.udp.sport);
+// 		key_dport = std::to_string(ch.udp.dport);
+// 	}
+// 	//NACK && ACK
+// 	else if(ch.l3Prot == 0xFD || ch.l3Prot == 0xFC)
+// 	{
+// 		key_sport = std::to_string(ch.ack.sport);
+// 		key_dport = std::to_string(ch.ack.dport);
+// 	}
+// 	//control protocols and other
+// 	else
+// 	{
+// 		return;
+// 	}
+// 	key_sport = std::to_string(ch.udp.sport);
+// 	key_dport = std::to_string(ch.udp.dport);
+// 	key_proto = std::to_string(ch.l3Prot);
+// 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+// 	#ifdef CHECKPOINT_ON
+// 		std::cout << "checkpoint 1 begin\n";
+// 	#endif
+// 	auto current_time = std::chrono::system_clock::now();
+// 	#ifdef CHECKPOINT_ON
+// 		std::cout << "checkpoint 1 end\n";
+// 	#endif
+// 	//更新流字节数、包个数特征
+// 	flow_byte_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 	flow_packet_num_table[fivetuples] += 1;
+// 	//当前数据包是当前流上的第一个数据包（上行），则更新流第一个数据包的抵达时间，初始化最大包大小，最小包大小，当前burst等信息
+// 	if(flow_first_pkt_time_table.find(fivetuples) == flow_first_pkt_time_table.end())
+// 	{
+// 		//第一个数据包抵达时间以及上一个数据包抵达时间
+// 		flow_first_pkt_time_table[fivetuples] = current_time;
+// 		flow_last_pkt_time_table[fivetuples] = current_time;
+// 		//初始化平均包大小，最大包大小、最小包大小特征
+// 		//TODO：需要再确认下payloadSize + headerSize是否就是数据包的字节大小
+// 		flow_max_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 		flow_min_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 		flow_avg_pkt_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 		//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
+// 		flow_max_pkt_interval_table[fivetuples] = 0.0;
+// 		flow_min_pkt_interval_table[fivetuples] = 1000000000;
+// 		flow_avg_pkt_interval_table[fivetuples] - 0.0;
+// 		//初始化平均burst
+// 		flow_current_burst_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 		flow_max_burst_size_table[fivetuples] = 0;
+// 		flow_total_burst_size_table[fivetuples] = 0;
+// 		flow_avg_burst_size_table[fivetuples] = 0;
+// 		flow_burst_num_table[fivetuples] = 0;
+// 		//初始化流速率特征
+// 		flow_speed_table[fivetuples] = 0.0;
+// 	}
+// 	//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
+// 	else
+// 	{
+// 		//计算包间隔，更新上一个数据包抵达时间
+// 		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
+// 		flow_last_pkt_time_table[fivetuples] = current_time;
+// 		//更新平均包大小，最大包大小、最小包大小特征
+// 		flow_max_pkt_size_table[fivetuples] = std::max((uint64_t)flow_max_pkt_size_table[fivetuples], (uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+// 		flow_min_pkt_size_table[fivetuples] = std::min((uint64_t)flow_min_pkt_size_table[fivetuples],(uint64_t)(ch.m_payloadSize + ch.m_headerSize));
+// 		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
+// 		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
+// 		flow_max_pkt_interval_table[fivetuples] = std::max((double)flow_max_pkt_interval_table[fivetuples], pkt_interval);
+// 		flow_min_pkt_interval_table[fivetuples] = std::min((double)flow_min_pkt_interval_table[fivetuples], pkt_interval);
+// 		flow_avg_pkt_interval_table[fivetuples] = (flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count() / flow_packet_num_table[fivetuples];
+// 		//更新流速率
+// 		flow_speed_table[fivetuples] = (double)(flow_byte_size_table[fivetuples]) / ((flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count());
+// 		//更新burst
+// 		//当前数据包间隔小于burst duration，那么继续更新current burst
+// 		if(pkt_interval < burst_max_duration)
+// 		{
+// 			flow_current_burst_size_table[fivetuples] += (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 		}
+// 		//当前burst结束，更新全局burst特征信息
+// 		else
+// 		{
+// 			flow_max_burst_size_table[fivetuples] = std::max((uint64_t)flow_max_burst_size_table[fivetuples], (uint64_t)flow_current_burst_size_table[fivetuples]);
+// 			flow_total_burst_size_table[fivetuples] += flow_current_burst_size_table[fivetuples];
+// 			flow_burst_num_table[fivetuples] += 1;
+// 			flow_avg_burst_size_table[fivetuples] = flow_total_burst_size_table[fivetuples] / flow_burst_num_table[fivetuples];
+// 			flow_current_burst_size_table[fivetuples] = (uint64_t)(ch.m_payloadSize + ch.m_headerSize);
+// 		}
+// 	}
+// 	return;
+// }
 
 // 重写为在发端进行特征测量的函数，采用的参数改为对应qp对及包大小（懒得多写解包方法了）
 // 根据RdmaHw::GetNxtPacket的的生成规则，host发出的pkt的格式应为 pppHeader|ipv4Header|payload
-void RdmaHw::Generate_feature(Ptr<RdmaQueuePair> qp, uint32_t payload_size)
-{
-	#ifdef LOG_OUTPUT_ON
-		std::cout << "start to generate feature.\n";
-	#endif
+// void RdmaHw::Generate_feature_qp(Ptr<RdmaQueuePair> qp, uint32_t payload_size)
+// {
+// 	#ifdef LOG_OUTPUT_ON
+// 		// std::cout << "start to generate feature.\n";
+// 	#endif
 
-	std::string key_sip = std::to_string(qp->sip.Get());
-	std::string key_dip = std::to_string(qp->dip.Get());
-	std::string key_sport;
-	std::string key_dport;
-	// *依照GetNxtPacket，数据包的L3Prot恒定为UDP(0x11)
-	// TODO:如若Protocol有变，这里需要记着更改
-	std::string key_proto = std::to_string(0x11);
+// 	std::string key_sip = std::to_string(qp->sip.Get());
+// 	std::string key_dip = std::to_string(qp->dip.Get());
+// 	std::string key_sport;
+// 	std::string key_dport;
+// 	// *依照GetNxtPacket，数据包的L3Prot恒定为UDP(0x11)
+// 	// TODO:如若Protocol有变，这里需要记着更改
+// 	std::string key_proto = std::to_string(0x11);
 
-	// 直接读取qp的L4 port数据
-	key_sport = std::to_string(qp->sport);
-	key_dport = std::to_string(qp->dport);
+// 	// 直接读取qp的L4 port数据
+// 	key_sport = std::to_string(qp->sport);
+// 	key_dport = std::to_string(qp->dport);
 
-	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
-	#ifdef CHECKPOINT_ON
-		std::cout << "checkpoint 1 begin\n";
-	#endif
-	auto current_time = std::chrono::system_clock::now();
-	#ifdef CHECKPOINT_ON
-		std::cout << "checkpoint 1 end\n";
-	#endif
-	//更新流字节数、包个数特征
-	// TODO:此处有变：只payload_size记载。不过在模拟测试test中发出的时候header大小应该也是个定值（后续有需要补上header大小）
-	flow_byte_size_table[fivetuples] += (uint64_t)(payload_size);
-	flow_packet_num_table[fivetuples] += 1;
-	//当前数据包是当前流上的第一个数据包（上行），则更新流第一个数据包的抵达时间，初始化最大包大小，最小包大小，当前burst等信息
-	if(flow_first_pkt_time_table.find(fivetuples) == flow_first_pkt_time_table.end())
-	{
-		//第一个数据包抵达时间以及上一个数据包抵达时间
-		flow_first_pkt_time_table[fivetuples] = current_time;
-		flow_last_pkt_time_table[fivetuples] = current_time;
-		//初始化平均包大小，最大包大小、最小包大小特征
-		//TODO：需要再确认下payloadSize + headerSize是否就是数据包的字节大小
-		flow_max_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
-		flow_min_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
-		flow_avg_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
-		//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
-		flow_max_pkt_interval_table[fivetuples] = 0.0;
-		flow_min_pkt_interval_table[fivetuples] = 1000000000;
-		flow_avg_pkt_interval_table[fivetuples] - 0.0;
-		//初始化平均burst
-		flow_current_burst_size_table[fivetuples] += (uint64_t)(payload_size);
-		flow_max_burst_size_table[fivetuples] = 0;
-		flow_total_burst_size_table[fivetuples] = 0;
-		flow_avg_burst_size_table[fivetuples] = 0;
-		flow_burst_num_table[fivetuples] = 0;
-		//初始化流速率特征
-		flow_speed_table[fivetuples] = 0.0;
-	}
-	//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
-	else
-	{
-		//计算包间隔，更新上一个数据包抵达时间
-		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
-		flow_last_pkt_time_table[fivetuples] = current_time;
-		//更新平均包大小，最大包大小、最小包大小特征
-		flow_max_pkt_size_table[fivetuples] = std::max((uint64_t)flow_max_pkt_size_table[fivetuples], (uint64_t)(payload_size));
-		flow_min_pkt_size_table[fivetuples] = std::min((uint64_t)flow_min_pkt_size_table[fivetuples],(uint64_t)(payload_size));
-		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
-		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
-		flow_max_pkt_interval_table[fivetuples] = std::max((double)flow_max_pkt_interval_table[fivetuples], pkt_interval);
-		flow_min_pkt_interval_table[fivetuples] = std::min((double)flow_min_pkt_interval_table[fivetuples], pkt_interval);
-		flow_avg_pkt_interval_table[fivetuples] = (flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count() / flow_packet_num_table[fivetuples];
-		//更新流速率
-		flow_speed_table[fivetuples] = (double)(flow_byte_size_table[fivetuples]) / ((flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count());
-		//更新burst
-		//当前数据包间隔小于burst duration，那么继续更新current burst
-		if(pkt_interval < burst_max_duration)
-		{
-			flow_current_burst_size_table[fivetuples] += (uint64_t)(payload_size);
-		}
-		//当前burst结束，更新全局burst特征信息
-		else
-		{
-			flow_max_burst_size_table[fivetuples] = std::max((uint64_t)flow_max_burst_size_table[fivetuples], (uint64_t)flow_current_burst_size_table[fivetuples]);
-			flow_total_burst_size_table[fivetuples] += flow_current_burst_size_table[fivetuples];
-			flow_burst_num_table[fivetuples] += 1;
-			flow_avg_burst_size_table[fivetuples] = flow_total_burst_size_table[fivetuples] / flow_burst_num_table[fivetuples];
-			flow_current_burst_size_table[fivetuples] = (uint64_t)(payload_size);
-		}
-	}
-	return;
-}
+// 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+// 	#ifdef CHECKPOINT_ON
+// 		std::cout << "checkpoint 1 begin\n";
+// 	#endif
+// 	auto current_time = std::chrono::system_clock::now();
+// 	#ifdef CHECKPOINT_ON
+// 		std::cout << "checkpoint 1 end\n";
+// 	#endif
+// 	//更新流字节数、包个数特征
+// 	// TODO:此处有变：只payload_size记载。不过在模拟测试test中发出的时候header大小应该也是个定值（后续有需要补上header大小）
+// 	flow_byte_size_table[fivetuples] += (uint64_t)(payload_size);
+// 	flow_packet_num_table[fivetuples] += 1;
+// 	//当前数据包是当前流上的第一个数据包（上行），则更新流第一个数据包的抵达时间，初始化最大包大小，最小包大小，当前burst等信息
+// 	if(flow_first_pkt_time_table.find(fivetuples) == flow_first_pkt_time_table.end())
+// 	{
+// 		//第一个数据包抵达时间以及上一个数据包抵达时间
+// 		flow_first_pkt_time_table[fivetuples] = current_time;
+// 		flow_last_pkt_time_table[fivetuples] = current_time;
+// 		//初始化平均包大小，最大包大小、最小包大小特征
+// 		//TODO：需要再确认下payloadSize + headerSize是否就是数据包的字节大小
+// 		flow_max_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
+// 		flow_min_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
+// 		flow_avg_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
+// 		//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
+// 		flow_max_pkt_interval_table[fivetuples] = 0.0;
+// 		flow_min_pkt_interval_table[fivetuples] = 1000000000;
+// 		flow_avg_pkt_interval_table[fivetuples] - 0.0;
+// 		//初始化平均burst
+// 		flow_current_burst_size_table[fivetuples] += (uint64_t)(payload_size);
+// 		flow_max_burst_size_table[fivetuples] = 0;
+// 		flow_total_burst_size_table[fivetuples] = 0;
+// 		flow_avg_burst_size_table[fivetuples] = 0;
+// 		flow_burst_num_table[fivetuples] = 0;
+// 		//初始化流速率特征
+// 		flow_speed_table[fivetuples] = 0.0;
+// 	}
+// 	//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
+// 	else
+// 	{
+// 		//计算包间隔，更新上一个数据包抵达时间
+// 		double pkt_interval = (current_time - flow_last_pkt_time_table[fivetuples]).count();
+// 		flow_last_pkt_time_table[fivetuples] = current_time;
+// 		//更新平均包大小，最大包大小、最小包大小特征
+// 		flow_max_pkt_size_table[fivetuples] = std::max((uint64_t)flow_max_pkt_size_table[fivetuples], (uint64_t)(payload_size));
+// 		flow_min_pkt_size_table[fivetuples] = std::min((uint64_t)flow_min_pkt_size_table[fivetuples],(uint64_t)(payload_size));
+// 		flow_avg_pkt_size_table[fivetuples] = flow_byte_size_table[fivetuples] / flow_packet_num_table[fivetuples];
+// 		//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
+// 		flow_max_pkt_interval_table[fivetuples] = std::max((double)flow_max_pkt_interval_table[fivetuples], pkt_interval);
+// 		flow_min_pkt_interval_table[fivetuples] = std::min((double)flow_min_pkt_interval_table[fivetuples], pkt_interval);
+// 		flow_avg_pkt_interval_table[fivetuples] = (flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count() / flow_packet_num_table[fivetuples];
+// 		//更新流速率
+// 		flow_speed_table[fivetuples] = (double)(flow_byte_size_table[fivetuples]) / ((flow_last_pkt_time_table[fivetuples] - flow_first_pkt_time_table[fivetuples]).count());
+// 		//更新burst
+// 		//当前数据包间隔小于burst duration，那么继续更新current burst
+// 		if(pkt_interval < burst_max_duration)
+// 		{
+// 			flow_current_burst_size_table[fivetuples] += (uint64_t)(payload_size);
+// 		}
+// 		//当前burst结束，更新全局burst特征信息
+// 		else
+// 		{
+// 			flow_max_burst_size_table[fivetuples] = std::max((uint64_t)flow_max_burst_size_table[fivetuples], (uint64_t)flow_current_burst_size_table[fivetuples]);
+// 			flow_total_burst_size_table[fivetuples] += flow_current_burst_size_table[fivetuples];
+// 			flow_burst_num_table[fivetuples] += 1;
+// 			flow_avg_burst_size_table[fivetuples] = flow_total_burst_size_table[fivetuples] / flow_burst_num_table[fivetuples];
+// 			flow_current_burst_size_table[fivetuples] = (uint64_t)(payload_size);
+// 		}
+// 	}
+// 	return;
+// }
 
 
 int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
@@ -938,15 +943,15 @@ void RdmaHw::QpComplete(Ptr<RdmaQueuePair> qp){
 	uint16_t dport = qp->dport;
 	std::string udp_key = std::to_string(sip) + " " + std::to_string(dip) + " " + std::to_string(sport) + " " + std::to_string(dport) + " " + std::to_string(0x11);
 	//如果在流表中找到了当前流
-	if(flow_first_pkt_time_table.find(udp_key) != flow_first_pkt_time_table.end())
-	{
-		std::cout << "flow five tuples : " << udp_key << '\n';
-		std::cout << "flow speed : " << flow_speed_table[udp_key] << '\n';
-		std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << '\n';
-		std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << '\n';
-		//需要将流从流表中删除
-		flow_first_pkt_time_table.erase(udp_key);
-	}
+	// if(flow_first_pkt_time_table.find(udp_key) != flow_first_pkt_time_table.end())
+	// {
+	// 	std::cout << "flow five tuples : " << udp_key << '\n';
+	// 	std::cout << "flow speed : " << flow_speed_table[udp_key] << '\n';
+	// 	std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << '\n';
+	// 	std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << '\n';
+	// 	//需要将流从流表中删除
+	// 	flow_first_pkt_time_table.erase(udp_key);
+	// }
 	NS_ASSERT(!m_qpCompleteCallback.IsNull());
 	if (m_cc_mode == 1){
 		Simulator::Cancel(qp->mlx.m_eventUpdateAlpha);
@@ -1042,7 +1047,7 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 
 	// !暂时用qp和payloadsize凑数。自定义流量的话改为传Ptr<Packet>后解包即可
 	#ifdef MODIFY_ON
-		Generate_feature(qp, payload_size);
+		// Generate_feature_qp(qp, payload_size);
 	#endif
 
 	// return

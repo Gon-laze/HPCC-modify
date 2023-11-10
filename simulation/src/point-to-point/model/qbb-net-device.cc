@@ -399,6 +399,13 @@ namespace ns3 {
 		CustomHeader ch(CustomHeader::L2_Header | CustomHeader::L3_Header | CustomHeader::L4_Header);
 		ch.getInt = 1; // parse INT header
 		packet->PeekHeader(ch);
+		// !针对于switch节点的特征测量：原计划于RdmaHw，经测试后废弃（switch无RdmaHw）改称switch内部定义
+		#ifdef MODIFY_ON
+			// if (m_node->GetNodeType() > 0)
+			// 	m_rdmaGenFeature(ch);
+			if (m_node->GetNodeType() > 0)
+				m_node->Switch_FeatureGenerator(ch);
+		#endif
 		if (ch.l3Prot == 0xFE){ // PFC
 			if (!m_qbbEnabled) return;
 			unsigned qIndex = ch.pfc.qIndex;

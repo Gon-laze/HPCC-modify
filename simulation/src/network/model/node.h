@@ -340,6 +340,12 @@ protected:
 public:
   virtual bool SwitchReceiveFromDevice(Ptr<NetDevice> device, Ptr<Packet> packet, CustomHeader &ch);
   virtual void SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p);
+  // 仅为供给SwitchNode统计特征而留下的虚函数接口；理论上Node不可用
+ 
+  #ifdef MODIFY_ON
+    virtual void Switch_FeatureGenerator(CustomHeader &ch);
+    virtual void Switch_FeaturePrinter();
+  #endif
 };
 
 } // namespace ns3
