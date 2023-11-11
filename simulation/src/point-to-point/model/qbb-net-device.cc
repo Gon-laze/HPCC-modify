@@ -404,7 +404,7 @@ namespace ns3 {
 			// if (m_node->GetNodeType() > 0)
 			// 	m_rdmaGenFeature(ch);
 			if (m_node->GetNodeType() > 0)
-				m_node->Switch_FeatureGenerator(ch);
+				m_node->Switch_FeatureGenerator(packet, ch);
 		#endif
 		if (ch.l3Prot == 0xFE){ // PFC
 			if (!m_qbbEnabled) return;
@@ -419,6 +419,7 @@ namespace ns3 {
 		}else { // non-PFC packets (data, ACK, NACK, CNP...)
 			if (m_node->GetNodeType() > 0){ // switch
 				packet->AddPacketTag(FlowIdTag(m_ifIndex));
+				// *这一步开始触发switch转发过程（一直通往switchsend）
 				m_node->SwitchReceiveFromDevice(this, packet, ch);
 			}else { // NIC
 				// send to RdmaHw

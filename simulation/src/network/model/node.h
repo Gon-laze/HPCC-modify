@@ -343,7 +343,7 @@ public:
   // 仅为供给SwitchNode统计特征而留下的虚函数接口；理论上Node不可用
  
   #ifdef MODIFY_ON
-    virtual void Switch_FeatureGenerator(CustomHeader &ch);
+    virtual void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
     virtual void Switch_FeaturePrinter();
   #endif
 };

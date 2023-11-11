@@ -1049,6 +1049,7 @@ int main(int argc, char *argv[])
 			for (uint32_t j = 0; j < node_num; j++){
 				if (n.Get(j)->GetNodeType() == 0)
 					// *似乎限定了端口号（10000）？
+					// *看运行结果似乎是从10000起始，而非全部使用10000
 					portNumder[i][j] = 10000; // each host pair use port number from 10000
 			}
 	}

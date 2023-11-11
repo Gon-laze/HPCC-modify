@@ -42,8 +42,8 @@ class SwitchNode : public Node{
 	std::unordered_map<std::string,uint64_t> flow_byte_size_table;
 	std::unordered_map<std::string,uint64_t> flow_packet_num_table;
 	//和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
-	std::unordered_map<std::string,std::chrono::system_clock::time_point> flow_last_pkt_time_table;
-	std::unordered_map<std::string,std::chrono::system_clock::time_point> flow_first_pkt_time_table;
+	std::unordered_map<std::string,double> flow_last_pkt_time_table;
+	std::unordered_map<std::string,double> flow_first_pkt_time_table;
 	std::unordered_map<std::string,double> flow_min_pkt_interval_table;
 	std::unordered_map<std::string,double> flow_max_pkt_interval_table;
 	std::unordered_map<std::string,double> flow_avg_pkt_interval_table;
@@ -60,7 +60,7 @@ class SwitchNode : public Node{
 	//和流速率相关的统计tables，flow speed
 	std::unordered_map<std::string,double> flow_speed_table;
 
-	void Switch_FeatureGenerator(CustomHeader &ch);
+	void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
 	void Switch_FeaturePrinter();
 #endif
 

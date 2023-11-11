@@ -357,7 +357,7 @@ void Node::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p)
 }
 
 #ifdef MODIFY_ON
-  void Node::Switch_FeatureGenerator(CustomHeader &ch){
+  void Node::Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch){
     NS_ASSERT_MSG(false, "Calling Switch_FeatureGenerator() on a non-switch node or this function is not implemented");
   }
 
