@@ -737,17 +737,38 @@ int main(int argc, char *argv[])
 
 	// 初始化自定义输入流
 	#ifdef MODIFY_ON
-	for (int i=0; i<max_fnum; i++)
+	// for (int i=0; i<max_fnum; i++)
+	// {
+	// 	std::string fhead{"mix/CPinfo_"};
+	// 	std::string ftail{".txt"};
+
+	// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+	// 	// if (flowPkt_fileGroup[i].is_open())
+	// 	// 	std::cout << "init Test begin!"  << (uint64_t)&flowPkt_fileGroup[i]<< '\n';
+	// 	// else
+	// 	// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
+
+	// }
+	for (int i=0; i<20; i++)
 	{
 		std::string fhead{"mix/CPinfo_"};
 		std::string ftail{".txt"};
 
 		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-		// if (flowPkt_fileGroup[i].is_open())
-		// 	std::cout << "init Test begin!"  << (uint64_t)&flowPkt_fileGroup[i]<< '\n';
-		// else
-		// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
+	}
+	for (int i=0; i<20; i++)
+	{
+		std::string fhead{"mix/big-small-txt2/64KB_"};
+		std::string ftail{".txt"};
 
+		flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
+	}
+	for (int i=0; i<60; i++)
+	{
+		std::string fhead{"mix/big-small-txt2/1MB_"};
+		std::string ftail{".txt"};
+
+		flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
 	}
 	#endif
 

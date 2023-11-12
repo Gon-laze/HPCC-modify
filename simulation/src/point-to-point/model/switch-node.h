@@ -9,6 +9,8 @@
 
 #ifdef MODIFY_ON
 	#include<chrono>
+	#include<queue>
+	#include<algorithm>
 #endif
 
 namespace ns3 {
@@ -36,7 +38,7 @@ class SwitchNode : public Node{
 	 * New Stats for switch.h
 	 *****************************/
 	//burst的最大包间隔，用于统计流量burst特征信息
-	double burst_max_duration = 0.4;
+	double burst_max_duration = 0.03;
 	//所有的流表，其key均使用流五元组构成的字符串 TODO：重写哈希函数，构建key值为五元组的unordered_map
 	//和包的总个数以及总字节数相关的统计table，
 	std::unordered_map<std::string,uint64_t> flow_byte_size_table;
@@ -59,6 +61,39 @@ class SwitchNode : public Node{
 	std::unordered_map<std::string,uint64_t> flow_burst_num_table;
 	//和流速率相关的统计tables，flow speed
 	std::unordered_map<std::string,double> flow_speed_table;
+
+	struct{
+		std::priority_queue< uint32_t, std::vector<uint32_t>, std::greater<uint32_t> > Top;
+		std::priority_queue< uint32_t, std::vector<uint32_t>, std::less<uint32_t> > Bottom;
+
+		inline uint32_t top()	{	return Top.top();	}
+		void adjust()
+		{
+			uint32_t tmp;
+			while (Top.size()>20)						{	tmp=Top.top();	Top.pop();	Bottom.push(tmp);	}
+			while (Top.size()<20 && !Bottom.empty())	{	tmp=Bottom.top();	Bottom.pop();	Top.push(tmp);	}
+		}
+		bool empty()		{	return Top.empty() && Bottom.empty();	}
+		void push(uint32_t x)
+		{
+			uint32_t tmp;
+			if (Top.top()>=x)	Top.push(x);
+			else				Bottom.push(x);
+			
+			adjust();
+		}
+		void pop()
+		{
+			uint32_t tmp;
+			tmp = Top.top();
+			Top.pop();
+
+			adjust();
+		}
+	}Top20;
+
+	// 流特征优先级
+	std::unordered_map<std::string, uint32_t> flow_pg_class_table;
 
 	void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
 	void Switch_FeaturePrinter();
