@@ -446,42 +446,95 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		}
 
 		// *设置优先级
-		if (flow_max_pkt_size_table[fivetuples] <= 0.576)
-			flow_pg_class_table[fivetuples] = 1;
-		else if (flow_avg_burst_size_table[fivetuples] <= 257.008 &&
-				 flow_min_pkt_size_table[fivetuples] <=54.5)
+		// *PLAN A
+				if (flow_max_pkt_size_table[fivetuples] <= 1369.5 &&
+					flow_avg_burst_size_table[fivetuples] <=6790.036 &&
+					flow_avg_pkt_interval_table[fivetuples] <= 0.568 &&
+					flow_avg_burst_size_table[fivetuples] > 78.0)
 			flow_pg_class_table[fivetuples] = 1;
 		else
 			flow_pg_class_table[fivetuples] = 2;
 		return;
+		// *PLAN B
+		// if (flow_max_pkt_size_table[fivetuples] <= 0.576)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else if (flow_avg_burst_size_table[fivetuples] <= 257.008 &&
+		// 		 flow_min_pkt_size_table[fivetuples] <=54.5)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else
+		// 	flow_pg_class_table[fivetuples] = 2;
+		// return;
 	}
 	void SwitchNode::Switch_FeaturePrinter()
 	{
 		// 如果在流表中找到了当前流
+		// for (auto iter : flow_first_pkt_time_table)
+		// {
+		// 	auto udp_key = iter.first;
+		// 	// !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+		// 	if (flow_max_pkt_size_table[udp_key] == 0.0) continue;
+			
+		// 	std::cout << "\n";
+		// 	std::cout.precision(10);
+		// 	std::cout << "flow five tuples : " << udp_key << '\n';
+		// 	std::cout << "flow speed : " << flow_speed_table[udp_key] << '\n';
+		// 	std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << '\n';
+		// 	std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << '\n';
+		// 	std::cout << "flow min pakcet size : " << flow_min_pkt_size_table[udp_key] << '\n';
+		// 	std::cout << "frist arrival: " << flow_first_pkt_time_table[udp_key] << '\n';
+		// 	std::cout << "last arrival: " << flow_last_pkt_time_table[udp_key] << '\n';
+			
+		// 	std::cout << "*flow size: " << flow_byte_size_table[udp_key] << '\n';
+		// 	std::cout << "*Pktclass: " << flow_pg_class_table[udp_key] << '\n';
+
+		// 	std::cout << "\n";
+		// 	// 需要将流从流表中删除
+		// 	// !由于是汇总后一并输出，且使用迭代器，保险起见不再删除
+		// 	// flow_first_pkt_time_table.erase(udp_key);
+		// }
+		uint32_t tmpCount;
+
+		std::vector<uint32_t>	tmp_vec;
+		
+		std::cout << "\n\n";
+		std::cout << "PktClass: High\n";
+		tmpCount = 0;
+		tmp_vec = std::vector<uint32_t>{};
 		for (auto iter : flow_first_pkt_time_table)
 		{
 			auto udp_key = iter.first;
-			// !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
 			if (flow_max_pkt_size_table[udp_key] == 0.0) continue;
-			
-			std::cout << "\n";
-			std::cout.precision(10);
-			std::cout << "flow five tuples : " << udp_key << '\n';
-			std::cout << "flow speed : " << flow_speed_table[udp_key] << '\n';
-			std::cout << "flow max packet interval : " << flow_max_pkt_interval_table[udp_key] << '\n';
-			std::cout << "flow max pakcet size : " << flow_max_pkt_size_table[udp_key] << '\n';
-			std::cout << "flow min pakcet size : " << flow_min_pkt_size_table[udp_key] << '\n';
-			std::cout << "frist arrival: " << flow_first_pkt_time_table[udp_key] << '\n';
-			std::cout << "last arrival: " << flow_last_pkt_time_table[udp_key] << '\n';
-			
-			std::cout << "*flow size: " << flow_byte_size_table[udp_key] << '\n';
-			std::cout << "*Pktclass: " << flow_pg_class_table[udp_key] << '\n';
+			if (flow_pg_class_table[udp_key] == 1)
+			{
+				tmp_vec.push_back(flow_byte_size_table[udp_key]);
+				tmpCount++;
+			}
 
-			std::cout << "\n";
-			// 需要将流从流表中删除
-			// !由于是汇总后一并输出，且使用迭代器，保险起见不再删除
-			// flow_first_pkt_time_table.erase(udp_key);
 		}
+		std::cout << "Total: " << tmpCount << '\n';
+		for (auto iter : tmp_vec)
+			std::cout << iter << '\n';
+		
+		std::cout << "\n\n";
+		std::cout << "PktClass: mid\n";
+		tmpCount = 0;
+		tmp_vec = std::vector<uint32_t>{};
+		for (auto iter : flow_first_pkt_time_table)
+		{
+			auto udp_key = iter.first;
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			if (flow_max_pkt_size_table[udp_key] == 0.0) continue;
+			if (flow_pg_class_table[udp_key] == 2)
+			{
+				tmp_vec.push_back(flow_byte_size_table[udp_key]);
+				tmpCount++;
+			}		
+		}
+		std::cout << "Total: " << tmpCount << '\n';
+		for (auto iter : tmp_vec)
+			std::cout << iter << '\n';
+
 	}
 
 	// 留作后续调度用：尚未声明
