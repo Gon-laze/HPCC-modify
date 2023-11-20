@@ -390,10 +390,6 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			flow_first_pkt_time_table[fivetuples] = current_time;
 			flow_last_pkt_time_table[fivetuples] = current_time;
 			//初始化平均包大小，最大包大小、最小包大小特征
-			//TODO：需要再确认下payloadSize + headerSize是否就是数据包的字节大小
-			// !事实证明并不是，大小恒定为(0,20(tcpHeader?这甚至不是完整包大小))。有必要引入Packet指针协助统计
-			// !分析大概率是产生包头时用的是PeekHeader，其记录信息时统计包大小用的是ReadU16，由于包是空包而视为大小为0
-			// !鉴于（个人）默认使用CPinfo指的是payloadsize，的先只测payloadSize得了，先不管包头
 			flow_max_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
 			flow_min_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
 			flow_avg_pkt_size_table[fivetuples] = (uint64_t)(payload_size);
@@ -447,23 +443,24 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 		// *设置优先级
 		// *PLAN A
-				if (flow_max_pkt_size_table[fivetuples] <= 1369.5 &&
-					flow_avg_burst_size_table[fivetuples] <=6790.036 &&
-					flow_avg_pkt_interval_table[fivetuples] <= 0.568 &&
-					flow_avg_burst_size_table[fivetuples] > 78.0)
-			flow_pg_class_table[fivetuples] = 1;
-		else
-			flow_pg_class_table[fivetuples] = 2;
-		return;
-		// *PLAN B
-		// if (flow_max_pkt_size_table[fivetuples] <= 0.576)
-		// 	flow_pg_class_table[fivetuples] = 1;
-		// else if (flow_avg_burst_size_table[fivetuples] <= 257.008 &&
-		// 		 flow_min_pkt_size_table[fivetuples] <=54.5)
+		// 		if (flow_max_pkt_size_table[fivetuples] <= 1369.5 &&
+		// 			flow_avg_burst_size_table[fivetuples] <=6790.036 &&
+		// 			flow_avg_pkt_interval_table[fivetuples] <= 0.568 &&
+		// 			flow_avg_burst_size_table[fivetuples] > 78.0)
 		// 	flow_pg_class_table[fivetuples] = 1;
 		// else
 		// 	flow_pg_class_table[fivetuples] = 2;
-		// return;
+
+		// *PLAN B
+		if (flow_max_pkt_size_table[fivetuples] <= 0.576)
+			flow_pg_class_table[fivetuples] = 1;
+		else if (flow_avg_burst_size_table[fivetuples] <= 257.008 &&
+				 flow_min_pkt_size_table[fivetuples] <=54.5)
+			flow_pg_class_table[fivetuples] = 1;
+		else
+			flow_pg_class_table[fivetuples] = 2;
+		
+		return;
 	}
 	void SwitchNode::Switch_FeaturePrinter()
 	{

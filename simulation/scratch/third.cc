@@ -749,27 +749,27 @@ int main(int argc, char *argv[])
 	// 	// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
 
 	// }
-	// !先去掉8KB
-	// for (int i=0; i<20; i++)
-	// {
-	// 	std::string fhead{"mix/CPinfo_"};
-	// 	std::string ftail{".txt"};
 
-	// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-	// }
+	for (int i=0; i<20; i++)
+	{
+		std::string fhead{"mix/CPinfo_"};
+		std::string ftail{".txt"};
+
+		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+	}
 	for (int i=0; i<20; i++)
 	{
 		std::string fhead{"mix/big-small-txt2/64KB_"};
 		std::string ftail{".txt"};
 
-		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
 	}
 	for (int i=0; i<60; i++)
 	{
 		std::string fhead{"mix/big-small-txt2/1MB_"};
 		std::string ftail{".txt"};
 
-		flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
+		flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
 	}
 	#endif
 
