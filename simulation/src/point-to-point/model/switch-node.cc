@@ -442,24 +442,67 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		}
 
 		// *设置优先级
-		// *PLAN A
-		// 		if (flow_max_pkt_size_table[fivetuples] <= 1369.5 &&
-		// 			flow_avg_burst_size_table[fivetuples] <=6790.036 &&
-		// 			flow_avg_pkt_interval_table[fivetuples] <= 0.568 &&
-		// 			flow_avg_burst_size_table[fivetuples] > 78.0)
+		// *PLAN A: 5(BEST!)
+		// if (flow_max_pkt_size_table[fivetuples] <= 1369.5 &&
+		// 	flow_avg_burst_size_table[fivetuples] <=6790.036 &&
+		// 	flow_avg_pkt_interval_table[fivetuples] <= 0.568 &&
+		// 	flow_avg_burst_size_table[fivetuples] > 78.0)
 		// 	flow_pg_class_table[fivetuples] = 1;
 		// else
 		// 	flow_pg_class_table[fivetuples] = 2;
 
-		// *PLAN B
-		if (flow_max_pkt_size_table[fivetuples] <= 0.576)
-			flow_pg_class_table[fivetuples] = 1;
-		else if (flow_avg_burst_size_table[fivetuples] <= 257.008 &&
-				 flow_min_pkt_size_table[fivetuples] <=54.5)
+		// // *PLAN A(ver 2): 5
+		// if (flow_max_pkt_size_table[fivetuples] <= 1369.5 &&
+		// 	flow_min_pkt_size_table[fivetuples] <= 218.5 &&
+		// 	flow_avg_pkt_interval_table[fivetuples] >0.004 &&
+		// 	flow_avg_burst_size_table[fivetuples] > 80.621)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else
+		// 	flow_pg_class_table[fivetuples] = 2;
+
+		// // *PLAN B: 4
+		// if (flow_max_pkt_size_table[fivetuples] <= 0.576)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else if (flow_avg_burst_size_table[fivetuples] <= 257.008 &&
+		// 		 flow_min_pkt_size_table[fivetuples] <=54.5)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else
+		// 	flow_pg_class_table[fivetuples] = 2;
+
+		// // *PLAN C: 4
+		// if (flow_max_pkt_size_table[fivetuples] <= 0.611)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else if (flow_avg_pkt_size_table[fivetuples] <= 257.008 &&
+		// 		 flow_avg_pkt_size_table[fivetuples] > 138.572)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else
+		// 	flow_pg_class_table[fivetuples] = 2;
+
+		// // !PLAN D: 2(useless)
+		// if (flow_avg_pkt_interval_table[fivetuples] <= 0.588)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else
+		// 	flow_pg_class_table[fivetuples] = 2;
+		
+		// // *PLAN E: 5(looks bad)
+		// if (flow_max_pkt_interval_table[fivetuples] <= 0.588)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else if (flow_avg_burst_size_table[fivetuples] <= 212.652)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else if (flow_avg_pkt_size_table[fivetuples] <= 257.008 &&
+		// 		 flow_min_pkt_size_table[fivetuples] <= 54.5)
+		// 	flow_pg_class_table[fivetuples] = 1;
+		// else
+		// 	flow_pg_class_table[fivetuples] = 2;
+
+		// *PLAN F: 4(use train_feature, not train_feature2)
+		if (flow_avg_pkt_size_table[fivetuples] <= 749.358 &&
+			flow_avg_pkt_interval_table[fivetuples] <= 0.337 &&
+			flow_max_pkt_interval_table[fivetuples] <= 7.785)
 			flow_pg_class_table[fivetuples] = 1;
 		else
 			flow_pg_class_table[fivetuples] = 2;
-		
+
 		return;
 	}
 	void SwitchNode::Switch_FeaturePrinter()
