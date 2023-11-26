@@ -759,14 +759,14 @@ int main(int argc, char *argv[])
 	}
 	for (int i=0; i<20; i++)
 	{
-		std::string fhead{"mix/big-small-txt2/64KB_"};
+		std::string fhead{"mix/big-small-txt3/64KB_"};
 		std::string ftail{".txt"};
 
 		flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
 	}
 	for (int i=0; i<60; i++)
 	{
-		std::string fhead{"mix/big-small-txt2/1MB_"};
+		std::string fhead{"mix/big-small-txt3/1MB_"};
 		std::string ftail{".txt"};
 
 		flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
@@ -1093,6 +1093,14 @@ int main(int argc, char *argv[])
 	// schedule buffer monitor
 	FILE* qlen_output = fopen(qlen_mon_file.c_str(), "w");
 	Simulator::Schedule(NanoSeconds(qlen_mon_start), &monitor_buffer, qlen_output, &n);
+
+	// 准备运行时的特征打印
+	#ifdef MODIFY_ON
+		// 尝试直接通过switchNode打印流信息
+		for (int i=0; i<node_num; i++)
+			if (n.Get(i)->GetNodeType() > 0)
+				n.Get(i)->Switch_FlowPrinter();
+	#endif
 
 	//
 	// Now, do the actual simulation.

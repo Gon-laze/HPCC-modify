@@ -345,6 +345,7 @@ public:
   #ifdef MODIFY_ON
     virtual void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
     virtual void Switch_FeaturePrinter();
+    virtual void Switch_FlowPrinter();
   #endif
 };
 

@@ -363,7 +363,10 @@ void Node::SwitchNotifyDequeue(uint32_t ifIndex, uint32_t qIndex, Ptr<Packet> p)
 
   void Node::Switch_FeaturePrinter(){
     NS_ASSERT_MSG(false, "Calling Switch_FeaturePrinter() on a non-switch node or this function is not implemented");
+  }
 
+  void Switch_FlowPrinter(){
+    NS_ASSERT_MSG(false, "Calling Switch_FlowPrinter() on a non-switch node or this function is not implemented");
   }
 #endif
 } // namespace ns3

@@ -469,7 +469,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		// else
 		// 	flow_pg_class_table[fivetuples] = 2;
 
-		// // *PLAN C: 4
+		// // // *PLAN C: 4
 		// if (flow_max_pkt_size_table[fivetuples] <= 0.611)
 		// 	flow_pg_class_table[fivetuples] = 1;
 		// else if (flow_avg_pkt_size_table[fivetuples] <= 257.008 &&
@@ -484,7 +484,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		// else
 		// 	flow_pg_class_table[fivetuples] = 2;
 		
-		// // *PLAN E: 5(looks bad)
+		// *PLAN E: 5(looks bad)
 		// if (flow_max_pkt_interval_table[fivetuples] <= 0.588)
 		// 	flow_pg_class_table[fivetuples] = 1;
 		// else if (flow_avg_burst_size_table[fivetuples] <= 212.652)
@@ -495,7 +495,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		// else
 		// 	flow_pg_class_table[fivetuples] = 2;
 
-		// *PLAN F: 4(use train_feature, not train_feature2)
+		// // *PLAN F: 4(use train_feature, not train_feature2)
 		if (flow_avg_pkt_size_table[fivetuples] <= 749.358 &&
 			flow_avg_pkt_interval_table[fivetuples] <= 0.337 &&
 			flow_max_pkt_interval_table[fivetuples] <= 7.785)
@@ -574,11 +574,26 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
 			std::cout << iter << '\n';
+	}
 
+	void Switch_FlowPrinter()
+	{
+		
 	}
 
 	// 留作后续调度用：尚未声明
 	// void SwitchNode::Switch_PktScheduler(){}
+	// 每间隔一定时间，调用的分类函数
+	typedef std::pair<std::string,uint32_t> flow_pair;
+	void FlowClassification() {
+		//切换读写的unordered_map
+		index = 1 - index;
+		//先做一个topK排序，将大流全部筛选出来
+		std::priority_queue<flow_pair,std::vector<flow_pair>,cmp> small_heap;
+		
+		//再对大流做优先级分类，存储到unordered_map当中
+		//这里存在一个设计细节上的问题，就是在完成所有unordered_map的载入前，应当还是采用上上一周期数据分类的结果，然后在当前周期再使用由上一周期计算出的结果
+	}
 #endif
 
 } /* namespace ns3 */
