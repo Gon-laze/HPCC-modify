@@ -29,124 +29,155 @@ class Packet;
 // 	Data_node(T x):content(x){}
 // };
 
-// *使用string作为键值key，内容content任意
 template<typename T>
 class DataElement{
-	std::string		key;
-	T				val;
 
-	bool cmp_greater(const DataElement& x, const DataElement& y)
-	{
-		return x.val > y.val;
-	}
-	bool cmp_less(const DataElement& x, const DataElement& y)
-	{
-		return x.val < y.val;
-	}
+    public:
+        std::string		key;
+        T				val;
 
-	DataElement(T x):val(x){}
+        static bool cmp_greater(const DataElement& x, const DataElement& y)
+        {
+            return x.val > y.val;
+        }
+        static bool cmp_less(const DataElement& x, const DataElement& y)
+        {
+            return x.val < y.val;
+        }
+
+        // DataElement(){}
+        DataElement(const std::string& k, const T& v):key(k),val(v){}
 };
 
 template<typename T>
 class Heap{
 	// 默认最大容纳1024条信息
 	// const MAXSIZE 	= 1024;
+    public:
+        enum cmp_FunctionType{
+            GREATER,
+            LESS
+        };
+        
+        std::vector< DataElement<T> >	vec;
+        bool (*cmp)(const DataElement<T>& x, const DataElement<T>& y);
+        
+        inline DataElement<T> top()	{	return (empty()) ? DataElement<T>({}, {}) : vec.front();	}
+        inline uint32_t size()	    {	return vec.size();	}
+        inline bool empty()		    {	return vec.empty();	}
 
-	enum cmp_FunctionType{
-		GREATER,
-		LESS
-	};
-	
-	std::vector< DataElement<T> >	vec;
-	bool (*cmp)(const T& x, const T& y);
-	
-	inline T top()			{	return (empty()) ? DataElement().val : vec.front().val;	}
-	inline uint32 size()	{	return vec.size();	}
-	inline bool empty()		{	return vec.empty();	}
+        void push(const DataElement<T>& x)
+        {
+            vec.push_back(x);
+            // std::cout << "push x: " << x.key << ' ' << x.val << std::endl;
+            std::push_heap(vec.begin(), vec.end(), (*cmp));
+            return;
+        }
+        void pop()
+        {
+            std::pop_heap(vec.begin(), vec.end(), (*cmp));
+            vec.pop_back();
+            return;
+        }
+        void realign()
+        {
+            std::make_heap(vec.begin(), vec.end(), (*cmp));
+        }
+        uint32_t find(const std::string& k)
+        {
+            uint32_t index;
+            for (index = 0; index<vec.size(); index++)
+                if (vec[index].key == k)
+                    break;
+            if (index >= vec.size())    index = 0xffffffff;
+            return index;
+        }
+        bool renew(const std::string& k, T& val)
+        {
+            uint32_t index = find(k);
+            if (index>=vec.size())	return false;
+            
+            vec[index].val= val;
+            realign();
+            return true;
+        }
+        bool del(const std::string& k)
+        {
+            uint32_t index = find(k);
+            if (index>=vec.size())	return false;
+            
+            vec[index] = vec.back();
+            vec.pop_back();
+            realign();
+            return true;
+        }
 
-	void push(T x)
-	{
-		vec.push_back(x);
-		std::push_heap(vec.begin(), vec.end(), (*cmp));
-		return;
-	}
-	void pop()
-	{
-		std::pop_heap(vec.begin(), vec.end(), (*cmp));
-		vec.pop_back();
-		return;
-	}
-	void realign()
-	{
-		std::make_heap(vec.begin(), vec.end(), (*cmp));
-	}
-	uint32_t search(const std::string& k)
-	{
-		uint32_t index;
-		for (index = 0; index<vec.size(); index++)
-			if (vec[index].key == k)
-				break;
-		return index;
-	}
-	bool renew(const std::string& k, T& val)
-	{
-		uint32_t index = search(k);
-		if (index>=vec.size())	return false;
-		
-		vec[index].val= val;
-		realign();
-		return true;
-	}
-
-	Heap(cmp_FunctionType x)
-	{
-		if (x == GREATER)		cmp = &(DataElement.cmp_greater);
-		else if (x == LESS)		cmp = &(DataElement.cmp_less)
-	}
+        Heap(const cmp_FunctionType& x)
+        {
+            if (x == GREATER)		cmp = &(DataElement<T>::cmp_greater);
+            else if (x == LESS)		cmp = &(DataElement<T>::cmp_less);
+        }
 
 };
 
 template<typename T>
 class T2T_Heap{
-	// std::priority_queue< uint32_t, std::vector<uint32_t>, std::greater<uint32_t> > Top;
-	// std::priority_queue< uint32_t, std::vector<uint32_t>, std::less<uint32_t> > Bottom;
+    public:
+        Heap<T> 			Top{Heap<T>::LESS};
+        Heap<T>				Bottom{Heap<T>::GREATER};
 
-	Heap<T> 			Top(LESS);
-	Heap<T>				Bottom(GREATER);
+        // !为测试改成了0.5。注意及时改回0.2！！！！
+        double superRate = 0.2;
 
-	double superRate = 0.2;
+        inline DataElement<T> top()	{	return Top.top();	}
+        inline uint32_t size()	    {	return Top.size()+Bottom.size();	}
+        inline bool empty()		    {   return Top.empty() && Bottom.empty();	}
 
-	inline T top()			{	return Top.top();	}
-	inline uint32_t size()	{	return Top.size()+Bottom.size();	}
-	inline bool empty()		{	return Top.empty() && Bottom.empty();	}
-
-	void adjust()
-	{
-		uint32_t tmp;
-		while (Top.size()>uint32_t(size()*superRate))						{	tmp=Top.top();	Top.pop();	Bottom.push(tmp);	}
-		while (Top.size()<uint32_t(size()*superRate) && !Bottom.empty())	{	tmp=Bottom.top();	Bottom.pop();	Top.push(tmp);	}
-	}
-	void push(T x)
-	{
-		uint32_t tmp;
-		if (Top.top()>=x)	Top.push(x);
-		else				Bottom.push(x);
-		adjust();
-	}
-	void pop()
-	{
-		uint32_t tmp;
-		tmp = Top.top();
-		Top.pop();
-		adjust();
-	}
-	bool renew(const std::string& k, T& val)
-	{
-		bool isSuccess = Top.renew(k,val) || Bottom.renew(k,val);
-		adjust();
-		return isSuccess;
-	}
+        void adjust()
+        {
+            
+            // TODO：边界过于粗糙而导致1条左右的流误判。想办法修正（例如比较Top和Bottom的top()
+            // *DONE:新增一个调整环节
+            while (Top.size()>uint32_t(size()*superRate) && !Top.empty())	    {	DataElement<T> tmp=Top.top();	Top.pop();	Bottom.push(tmp);	}
+            while (Top.size()<uint32_t(size()*superRate) && !Bottom.empty())	{	DataElement<T> tmp=Bottom.top();	Bottom.pop();	Top.push(tmp);	}
+            if (Top.empty()==false && Bottom.empty()==false)
+            {
+                while (Top.top().val > Bottom.top().val)
+                {   DataElement<T> tmp1=Top.top(), tmp2=Bottom.top();
+                    Top.pop();
+                    Bottom.pop();
+                    Top.push(tmp2);
+                    Bottom.push(tmp1);
+                }             
+            }
+        }
+        void push(const DataElement<T>& x)
+        {
+            if (Top.empty() || Top.top().val>=x.val)	Top.push(x);
+            else				                        Bottom.push(x);
+            adjust();
+        }
+        void pop()
+        {
+            uint32_t tmp;
+            tmp = Top.top();
+            Top.pop();
+            adjust();
+        }
+        bool renew(const std::string& k, T& val)
+        {
+            bool isSuccess = Top.renew(k,val) || Bottom.renew(k,val);
+            adjust();
+            return isSuccess;
+        }
+        bool del(const std::string& k)
+        {
+            bool isSuccess = Top.del(k) || Bottom.del(k);
+            adjust();
+            return isSuccess;
+        }
 };
+
 
 
 class SwitchNode : public Node{
@@ -165,6 +196,7 @@ class SwitchNode : public Node{
 	double m_u[pCnt];
 
 	#ifdef MODIFY_ON
+public:
 	// *由RDMAHw.cc迁移而来：专门针对switchNode进行特征测量（因switchNode并没有实例化RdmaHw）
 	/******************************
 	 * New Stats for switch.h
@@ -172,36 +204,62 @@ class SwitchNode : public Node{
 	//burst的最大包间隔，用于统计流量burst特征信息
 	double burst_max_duration = 0.03;
 	//用于确定当前使用哪组unordered_map存储测量得到的特征，哪组用于写入当前周期内流的特征
-	int index = 0;
-	//所有的流表，其key均使用流五元组构成的字符串 TODO：重写哈希函数，构建key值为五元组的unordered_map
-	//和包的总个数以及总字节数相关的统计table，
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_byte_size_table(2);
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_packet_num_table(2);
+    const uint32_t OLD_DATA = 0;
+    const uint32_t CNT_DATA = 1;
+	
+    uint32_t index = 0;
+	// 所有的流表，其key均使用流五元组构成的字符串 TODO：重写哈希函数，构建key值为五元组的unordered_map
+	// 和包的总个数以及总字节数相关的统计table，
+	std::unordered_map<std::string,uint64_t> flow_byte_size_table[2];
+	std::unordered_map<std::string,uint64_t> flow_packet_num_table[2];
 	//和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
-	std::vector<std::unordered_map<std::string,double>> flow_last_pkt_time_table(2);
-	std::vector<std::unordered_map<std::string,double>> flow_first_pkt_time_table(2);
-	std::vector<std::unordered_map<std::string,double>> flow_min_pkt_interval_table(2);
-	std::vector<std::unordered_map<std::string,double>> flow_max_pkt_interval_table(2);
-	std::vector<std::unordered_map<std::string,double>> flow_avg_pkt_interval_table(2);
+	std::unordered_map<std::string,double> flow_last_pkt_time_table[2];
+	std::unordered_map<std::string,double> flow_first_pkt_time_table[2];
+	std::unordered_map<std::string,double> flow_min_pkt_interval_table[2];
+	std::unordered_map<std::string,double> flow_max_pkt_interval_table[2];
+	std::unordered_map<std::string,double> flow_avg_pkt_interval_table[2];
 	//和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
-	std::vector<std::unordered_map<std::string,uint16_t>> flow_max_pkt_size_table(2);
-	std::vector<std::unordered_map<std::string,uint16_t>> flow_min_pkt_size_table(2);
-	std::vector<std::unordered_map<std::string,uint16_t>> flow_avg_pkt_size_table(2);
+	std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table[2];
+	std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table[2];
+	std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table[2];
 	//和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_current_burst_size_table(2);
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_max_burst_size_table(2);
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_avg_burst_size_table(2);
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_total_burst_size_table(2);
-	std::vector<std::unordered_map<std::string,uint64_t>> flow_burst_num_table(2);
+	std::unordered_map<std::string,uint64_t> flow_current_burst_size_table[2];
+	std::unordered_map<std::string,uint64_t> flow_max_burst_size_table[2];
+	std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table[2];
+	std::unordered_map<std::string,uint64_t> flow_total_burst_size_table[2];
+	std::unordered_map<std::string,uint64_t> flow_burst_num_table[2];
 	//和流速率相关的统计tables，flow speed
-	std::vector<std::unordered_map<std::string,double>> flow_speed_table(2);
+	std::unordered_map<std::string,double> flow_speed_table[2];
+    // 流特征优先级
+	std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
 
-	// 流特征优先级
-	std::vector<std::unordered_map<std::string, uint32_t>> flow_pg_class_table(2);
+    // std::unordered_map<std::string,uint64_t> flow_byte_size_table;
+	// std::unordered_map<std::string,uint64_t> flow_packet_num_table;
+	// //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
+	// std::unordered_map<std::string,double> flow_last_pkt_time_table;
+	// std::unordered_map<std::string,double> flow_first_pkt_time_table;
+	// std::unordered_map<std::string,double> flow_min_pkt_interval_table;
+	// std::unordered_map<std::string,double> flow_max_pkt_interval_table;
+	// std::unordered_map<std::string,double> flow_avg_pkt_interval_table;
+	// //和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
+	// std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table;
+	// std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table;
+	// std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table;
+	// //和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
+	// std::unordered_map<std::string,uint64_t> flow_current_burst_size_table;
+	// std::unordered_map<std::string,uint64_t> flow_max_burst_size_table;
+	// std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table;
+	// std::unordered_map<std::string,uint64_t> flow_total_burst_size_table;
+	// std::unordered_map<std::string,uint64_t> flow_burst_num_table;
+	// //和流速率相关的统计tables，flow speed
+	// std::unordered_map<std::string,double> flow_speed_table[2]
+	// // 流特征优先级
+	// std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
 
 	void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
 	void Switch_FeaturePrinter();
 
+    T2T_Heap<uint64_t>  TOP_20percent;
 	uint32_t FlowPrinter_interval = 3;
 	void Switch_FlowPrinter();
 #endif

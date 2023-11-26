@@ -1099,7 +1099,8 @@ int main(int argc, char *argv[])
 		// 尝试直接通过switchNode打印流信息
 		for (int i=0; i<node_num; i++)
 			if (n.Get(i)->GetNodeType() > 0)
-				n.Get(i)->Switch_FlowPrinter();
+				Simulator::Schedule(Seconds(3.0) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
+
 	#endif
 
 	//
