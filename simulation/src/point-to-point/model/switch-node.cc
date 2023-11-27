@@ -590,10 +590,19 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 	void SwitchNode::Switch_FlowPrinter()
 	{
 		static uint32_t CallNum = 0;
+		std::cout << '\n';
 		
 		for (auto& tb : flow_byte_size_table[OLD_DATA])
+		{
+			// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
+			if (tb.second == 0.0) continue;
+
 			if (TOP_20percent.renew(tb.first, tb.second) == false)
 				TOP_20percent.push({tb.first, tb.second});
+			std::cout << "load: ";
+			std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
+		}
+
 
 		std::cout << "Round: " << CallNum << '\n';
 		
@@ -640,8 +649,8 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 		index = 1;
 
-		Simulator::Schedule(Simulator::Now()+Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
-
+		CallNum++;
+		Simulator::Schedule(Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
 		
 	}
 
