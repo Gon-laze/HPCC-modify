@@ -439,15 +439,10 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			}
 		}
 
-		// //分类只做大小流分流
-		// if(big_flow_table[five_tuples] == 1)
-		// {
-		// 	//决策树
-		// } 
-		// else () {
-		// 	priority = 0;
-		// }
-		// flow_prixxxxx [key].push(priority);
+		// !分类只做大小流分流
+		// TODO: 一定要弄清是CNT还是OLD!!
+		// if (flow_pg_class_table[])
+
 		// *设置优先级
 		// *PLAN A: 5(BEST!)
 		// if (flow_max_pkt_size_table[CNT_DATA][fivetuples] <= 1369.5 &&
@@ -561,7 +556,6 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				tmp_vec.push_back(flow_byte_size_table[CNT_DATA][udp_key]);
 				tmpCount++;
 			}
-
 		}
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
@@ -585,6 +579,25 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
 			std::cout << iter << '\n';
+
+		std::cout << "\n\n";
+		std::cout << "PktClass: low\n";
+		tmpCount = 0;
+		tmp_vec = std::vector<uint32_t>{};
+		for (auto iter : flow_first_pkt_time_table[CNT_DATA])
+		{
+			auto udp_key = iter.first;
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			if (flow_pg_class_table[CNT_DATA][udp_key] == 3)
+			{
+				tmp_vec.push_back(flow_byte_size_table[CNT_DATA][udp_key]);
+				tmpCount++;
+			}		
+		}
+		std::cout << "Total: " << tmpCount << '\n';
+		for (auto iter : tmp_vec)
+			std::cout << iter << '\n';
 	}
 
 	void SwitchNode::Switch_FlowPrinter()
@@ -599,28 +612,59 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 			if (TOP_20percent.renew(tb.first, tb.second) == false)
 				TOP_20percent.push({tb.first, tb.second});
-			std::cout << "load: ";
-			std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
+			// std::cout << "load: ";
+			// std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
 		}
 
 
 		std::cout << "Round: " << CallNum << '\n';
+
+		std::vector< std::pair<std::string, uint32_t> > tmpFlowlist[3];
 		
-		std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
+		// std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
 		for (auto& node : TOP_20percent.Top.vec)
 		{
-			std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+			// std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
 			// !注意用OLD的数据计算CNT的优先级
 			flow_pg_class_table[CNT_DATA][node.key] = 1;
+			tmpFlowlist[0].push_back({node.key, node.val});
 		}
 
-		std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
+		// std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
 		for (auto& node : TOP_20percent.Bottom.vec)
 		{
-			std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+			// std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
 			// !注意用OLD的数据计算CNT的优先级
-			flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// flow_pg_class_table[CNT_DATA][node.key] = 2;
+
+			// *PLAN A: 5(BEST!)
+			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1369.5 &&
+				flow_avg_burst_size_table[CNT_DATA][node.key] <=6790.036 &&
+				flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.568 &&
+				flow_avg_burst_size_table[CNT_DATA][node.key] > 78.0)
+			{	
+				flow_pg_class_table[CNT_DATA][node.key] = 2;
+				tmpFlowlist[1].push_back({node.key, node.val});
+			}
+				
+			else
+			{	
+				flow_pg_class_table[CNT_DATA][node.key] = 3;
+				tmpFlowlist[2].push_back({node.key, node.val});
+			}
 		}
+
+		std::cout << "High class: " << tmpFlowlist[0].size() <<'\n';
+		for (auto& iter : tmpFlowlist[0])
+			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+		std::cout << "Mid class: " << tmpFlowlist[1].size() <<'\n';
+		for (auto& iter : tmpFlowlist[1])
+			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+		std::cout << "Low class: " << tmpFlowlist[2].size() <<'\n';
+		for (auto& iter : tmpFlowlist[2])
+			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+
+		// 打印优先级
 
 		// 实际想把其作为一个锁来使用....
 		index = 0;
