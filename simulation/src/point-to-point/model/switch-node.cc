@@ -447,11 +447,12 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 			// *针对流判断优先级;需要有优先级才能判断
 			// !后续同样可以考虑创建缓冲区并迁移至周期一次的Switch_FlowPrinter()判断中，提高效率
-			if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
-				flow_pg_pktNum_table[flow_pg_class_table[CNT_DATA][fivetuples]-1][fivetuples] += 1;
-			else
-				flow_pg_pktNum_table[0][fivetuples] += 1;
 		}
+
+		if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+			flow_pg_pktNum_table[flow_pg_class_table[CNT_DATA][fivetuples]-1][fivetuples] += 1;
+		else
+			flow_pg_pktNum_table[0][fivetuples] += 1;
 
 		// !分类只做大小流分流
 		// TODO: 一定要弄清是CNT还是OLD!!
@@ -576,9 +577,12 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
 			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
-			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
-			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
-			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+			// std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
+			// std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
+			// std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
 		}		
 		
 		std::cout << "\n\n";
@@ -601,9 +605,9 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
 			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
-			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
-			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
-			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
 		}	
 
 		std::cout << "\n\n";
@@ -626,9 +630,9 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
 			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
-			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
-			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
-			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
 		}	
 	}
 

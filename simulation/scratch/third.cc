@@ -749,33 +749,48 @@ int main(int argc, char *argv[])
 	// 	// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
 
 	// }
-		for (int i=0; i<20; i++)
+		// for (int i=0; i<20; i++)
+		// {
+		// 	std::string fhead{"mix/CPinfo_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<20; i++)
+		// {
+		// 	std::string fhead{"mix/big-small-txt3/64KB_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<60; i++)
+		// {
+		// 	std::string fhead{"mix/big-small-txt3/1MB_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+
+		for (int i=0; i<45; i++)
 		{
-			std::string fhead{"mix/CPinfo_"};
+			std::string fhead{"mix/mix_flows_txt/High_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
 		}
-		for (int i=0; i<20; i++)
+		for (int i=45; i<55; i++)
 		{
-			std::string fhead{"mix/big-small-txt3/64KB_"};
+			std::string fhead{"mix/mix_flows_txt/Middle_"};
 			std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
+			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
 		}
-		for (int i=0; i<60; i++)
+		for (int i=55; i<100; i++)
 		{
-			std::string fhead{"mix/big-small-txt3/1MB_"};
+			std::string fhead{"mix/mix_flows_txt/Low_"};
 			std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
-		}
-
-		for (int i=0; i<100; i++)
-		{
-			std::string fhead{"mix/flowLog_"};
-			std::string ftail{".txt"};
-			// TODO:
+			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
 		}
 	#endif
 
