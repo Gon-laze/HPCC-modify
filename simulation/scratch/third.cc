@@ -150,7 +150,7 @@ uint32_t flow_num;
 #ifdef MODIFY_ON
 	const uint32_t max_fnum = 100;
 	std::ifstream flowPkt_fileGroup[max_fnum];
-	std::ofstream flowLog_fileGroup[64];
+	std::ofstream flowLog_fileGroup[max_fnum];
 #endif
 
 void ReadFlowInput(){
@@ -749,28 +749,34 @@ int main(int argc, char *argv[])
 	// 	// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
 
 	// }
+		for (int i=0; i<20; i++)
+		{
+			std::string fhead{"mix/CPinfo_"};
+			std::string ftail{".txt"};
 
-	for (int i=0; i<20; i++)
-	{
-		std::string fhead{"mix/CPinfo_"};
-		std::string ftail{".txt"};
+			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		}
+		for (int i=0; i<20; i++)
+		{
+			std::string fhead{"mix/big-small-txt3/64KB_"};
+			std::string ftail{".txt"};
 
-		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-	}
-	for (int i=0; i<20; i++)
-	{
-		std::string fhead{"mix/big-small-txt3/64KB_"};
-		std::string ftail{".txt"};
+			flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
+		}
+		for (int i=0; i<60; i++)
+		{
+			std::string fhead{"mix/big-small-txt3/1MB_"};
+			std::string ftail{".txt"};
 
-		flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
-	}
-	for (int i=0; i<60; i++)
-	{
-		std::string fhead{"mix/big-small-txt3/1MB_"};
-		std::string ftail{".txt"};
+			flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
+		}
 
-		flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
-	}
+		for (int i=0; i<100; i++)
+		{
+			std::string fhead{"mix/flowLog_"};
+			std::string ftail{".txt"};
+			// TODO:
+		}
 	#endif
 
 	// 临时测试

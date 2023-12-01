@@ -233,6 +233,9 @@ public:
     // 流特征优先级
 	std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
 
+    // *3是指3个优先级;double为了方便除法
+    std::unordered_map<std::string, double> flow_pg_pktNum_table[3];
+
     // std::unordered_map<std::string,uint64_t> flow_byte_size_table;
 	// std::unordered_map<std::string,uint64_t> flow_packet_num_table;
 	// //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
@@ -262,6 +265,18 @@ public:
     T2T_Heap<uint64_t>  TOP_20percent;
 	uint32_t FlowPrinter_interval = 3;
 	void Switch_FlowPrinter();
+
+    /* 为流的老化而设置的变量；*/
+    // *先将阈值设大，有需求再改
+    const uint64_t  PERIOD_IDLE_THRESHOLD = 5000;
+    const double    SIZE_IDLE_THRESHOLD = 0.0;
+    const double    AGING_ALPHA_SMALL = 0.1;
+    const double    AGING_ALPHA_BIG = 0.9;
+    std::unordered_map<std::string, uint64_t> flow_idle_num_table[2];
+    std::unordered_map<std::string, double> flow_current_frate_table[2];
+    std::unordered_map<std::string, uint64_t> flow_current_size_table[2];
+    
+
 #endif
 
 protected:

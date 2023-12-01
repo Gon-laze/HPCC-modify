@@ -380,7 +380,8 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		#endif
 		//更新流字节数、包个数特征
 		flow_byte_size_table[CNT_DATA][fivetuples] += (uint64_t)(payload_size);
-		flow_packet_num_table[CNT_DATA][fivetuples] += 1;
+		flow_current_size_table[CNT_DATA][fivetuples] += (uint64_t)(payload_size);
+		flow_packet_num_table[CNT_DATA][fivetuples] += 1;	
 		// // !临时测试
 		// std::cout << p->GetSize() << '\t' << ch.m_headerSize << '\t' << ch.GetSerializedSize() << '\n';
 		//当前数据包是当前流上的第一个数据包（上行），则更新流第一个数据包的抵达时间，初始化最大包大小，最小包大小，当前burst等信息
@@ -405,6 +406,12 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			flow_burst_num_table[CNT_DATA][fivetuples] = 0;
 			//初始化流速率特征
 			flow_speed_table[CNT_DATA][fivetuples] = 0.0;
+
+			// *针对流判断优先级
+			flow_pg_pktNum_table[0][fivetuples] = flow_pg_pktNum_table[1][fivetuples] = flow_pg_pktNum_table[2][fivetuples] = 0;
+			// *针对老化初始化
+			flow_idle_num_table[CNT_DATA][fivetuples] = 0;
+			flow_current_frate_table[CNT_DATA][fivetuples] = 0;
 		}
 		//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
 		else
@@ -437,6 +444,13 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				flow_avg_burst_size_table[CNT_DATA][fivetuples] = flow_total_burst_size_table[CNT_DATA][fivetuples] / flow_burst_num_table[CNT_DATA][fivetuples];
 				flow_current_burst_size_table[CNT_DATA][fivetuples] = (uint64_t)(payload_size);
 			}
+
+			// *针对流判断优先级;需要有优先级才能判断
+			// !后续同样可以考虑创建缓冲区并迁移至周期一次的Switch_FlowPrinter()判断中，提高效率
+			if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+				flow_pg_pktNum_table[flow_pg_class_table[CNT_DATA][fivetuples]-1][fivetuples] += 1;
+			else
+				flow_pg_pktNum_table[0][fivetuples] += 1;
 		}
 
 		// !分类只做大小流分流
@@ -540,64 +554,82 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		// }
 		uint32_t tmpCount;
 
-		std::vector<uint32_t>	tmp_vec;
+		std::vector< std::pair<std::string, uint64_t> >	tmp_vec;
 		
 		std::cout << "\n\n";
 		std::cout << "PktClass: High\n";
 		tmpCount = 0;
-		tmp_vec = std::vector<uint32_t>{};
-		for (auto iter : flow_first_pkt_time_table[CNT_DATA])
+		tmp_vec = {};
+		for (auto& iter : flow_first_pkt_time_table[CNT_DATA])
 		{
 			auto udp_key = iter.first;
 			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
 			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
 			if (flow_pg_class_table[CNT_DATA][udp_key] == 1)
 			{
-				tmp_vec.push_back(flow_byte_size_table[CNT_DATA][udp_key]);
+				tmp_vec.push_back({udp_key, flow_byte_size_table[CNT_DATA][udp_key]});
 				tmpCount++;
 			}
 		}
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
-			std::cout << iter << '\n';
+		{
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+		}		
 		
 		std::cout << "\n\n";
 		std::cout << "PktClass: mid\n";
 		tmpCount = 0;
-		tmp_vec = std::vector<uint32_t>{};
-		for (auto iter : flow_first_pkt_time_table[CNT_DATA])
+		tmp_vec = {};
+		for (auto& iter : flow_first_pkt_time_table[CNT_DATA])
 		{
 			auto udp_key = iter.first;
 			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
 			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
 			if (flow_pg_class_table[CNT_DATA][udp_key] == 2)
 			{
-				tmp_vec.push_back(flow_byte_size_table[CNT_DATA][udp_key]);
+				tmp_vec.push_back({udp_key, flow_byte_size_table[CNT_DATA][udp_key]});
 				tmpCount++;
-			}		
+			}
 		}
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
-			std::cout << iter << '\n';
+		{
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+		}	
 
 		std::cout << "\n\n";
 		std::cout << "PktClass: low\n";
 		tmpCount = 0;
-		tmp_vec = std::vector<uint32_t>{};
-		for (auto iter : flow_first_pkt_time_table[CNT_DATA])
+		tmp_vec = {};
+		for (auto& iter : flow_first_pkt_time_table[CNT_DATA])
 		{
 			auto udp_key = iter.first;
 			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
 			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
 			if (flow_pg_class_table[CNT_DATA][udp_key] == 3)
 			{
-				tmp_vec.push_back(flow_byte_size_table[CNT_DATA][udp_key]);
+				tmp_vec.push_back({udp_key, flow_byte_size_table[CNT_DATA][udp_key]});
 				tmpCount++;
-			}		
+			}
 		}
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
-			std::cout << iter << '\n';
+		{
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
+		}	
 	}
 
 	void SwitchNode::Switch_FlowPrinter()
@@ -616,18 +648,28 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			// std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
 		}
 
-
+		// !注意用OLD的数据计算CNT的优先级
 		std::cout << "Round: " << CallNum << '\n';
-
 		std::vector< std::pair<std::string, uint32_t> > tmpFlowlist[3];
-		
+		std::vector<std::string> tmpDellist;
 		// std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
 		for (auto& node : TOP_20percent.Top.vec)
 		{
 			// std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
-			// !注意用OLD的数据计算CNT的优先级
+		
 			flow_pg_class_table[CNT_DATA][node.key] = 1;
 			tmpFlowlist[0].push_back({node.key, node.val});
+
+			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][node.key]  + \
+															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][node.key];
+			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
+				flow_idle_num_table[CNT_DATA][node.key]++;
+			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
+				tmpDellist.push_back(node.key);
+
+			// !注意及时将周期流表清空!
+			flow_current_frate_table[CNT_DATA][node.key] = 0;
+
 		}
 
 		// std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
@@ -645,13 +687,22 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			{	
 				flow_pg_class_table[CNT_DATA][node.key] = 2;
 				tmpFlowlist[1].push_back({node.key, node.val});
-			}
-				
+			}			
 			else
 			{	
 				flow_pg_class_table[CNT_DATA][node.key] = 3;
 				tmpFlowlist[2].push_back({node.key, node.val});
 			}
+
+			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
+															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
+			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
+				flow_idle_num_table[CNT_DATA][node.key]++;
+			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
+				tmpDellist.push_back(node.key);
+				
+			// !注意及时将周期流表清空!
+			flow_current_frate_table[CNT_DATA][node.key] = 0;
 		}
 
 		std::cout << "High class: " << tmpFlowlist[0].size() <<'\n';
@@ -663,6 +714,35 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		std::cout << "Low class: " << tmpFlowlist[2].size() <<'\n';
 		for (auto& iter : tmpFlowlist[2])
 			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+
+
+		// *老化更新流表
+		for (auto& k : tmpDellist)
+		{
+			TOP_20percent.del(k);
+
+			flow_byte_size_table[CNT_DATA].erase(k);
+			flow_packet_num_table[CNT_DATA].erase(k);
+
+			flow_last_pkt_time_table[CNT_DATA].erase(k);
+			flow_first_pkt_time_table[CNT_DATA].erase(k);
+			flow_min_pkt_interval_table[CNT_DATA].erase(k);
+			flow_max_pkt_interval_table[CNT_DATA].erase(k);
+			flow_avg_pkt_interval_table[CNT_DATA].erase(k);
+
+			flow_max_pkt_size_table[CNT_DATA].erase(k);
+			flow_min_pkt_size_table[CNT_DATA].erase(k);
+			flow_avg_pkt_size_table[CNT_DATA].erase(k);
+
+			flow_current_burst_size_table[CNT_DATA].erase(k);
+			flow_max_burst_size_table[CNT_DATA].erase(k);
+			flow_avg_burst_size_table[CNT_DATA].erase(k);
+			flow_total_burst_size_table[CNT_DATA].erase(k);
+			flow_burst_num_table[CNT_DATA].erase(k);
+
+			flow_speed_table[CNT_DATA].erase(k);
+			flow_pg_class_table[CNT_DATA].erase(k);
+		}
 
 		// 打印优先级
 
@@ -695,7 +775,6 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 		CallNum++;
 		Simulator::Schedule(Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
-		
 	}
 
 	// 留作后续调度用：尚未声明
