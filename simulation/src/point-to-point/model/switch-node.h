@@ -225,9 +225,14 @@ public:
 
         // !优先级unorderedmap单独保留：特征与调度分离
         // 流特征优先级
-        std::unordered_map<five_tuples, uint32_t, five_tuples_hash, five_tuples_equal> flow_pg_class_table[2];
+        // std::unordered_map<five_tuples, uint32_t, five_tuples_hash, five_tuples_equal> flow_pg_class_table[2];
         // *3是指3个优先级;double为了方便除法
-        std::unordered_map<five_tuples, double, five_tuples_hash, five_tuples_equal> flow_pg_pktNum_table[3];
+        // std::unordered_map<five_tuples, double, five_tuples_hash, five_tuples_equal> flow_pg_pktNum_table[3];
+        
+        /*为测试换回string，不确定是不是哈希写错了*/
+        std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
+        // *3是指3个优先级;double为了方便除法
+        std::unordered_map<std::string, double> flow_pg_pktNum_table[3];
     #else
         //burst的最大包间隔，用于统计流量burst特征信息
         double burst_max_duration = 0.03;
