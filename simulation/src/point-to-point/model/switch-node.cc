@@ -330,6 +330,69 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 }
 
 #ifdef MODIFY_ON
+	#ifdef ELASTIC_ON
+	void SwitchNode::Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch)
+	{
+		auto current_time = Simulator::Now().GetSeconds();
+		auto payload_size = p->GetSize() - ch.GetSerializedSize();
+		// TODO:直接手动过滤了回传ACK,在无ELASTIC的版本中没有这一步
+		if (payload_size==0)
+			return;
+
+		uint32_t key_sip = ch.sip;
+		uint32_t key_dip = ch.dip;
+		uint16_t key_sport;
+		uint16_t key_dport;
+		uint8_t key_proto = ch.l3Prot;
+		//TCP
+		if(ch.l3Prot == 0x06)
+		{
+			key_sport = ch.tcp.sport;
+			key_dport = ch.tcp.dport;
+		}
+		//UDP
+		else if(ch.l3Prot == 0x11)
+		{ 
+			key_sport = ch.tcp.sport;
+			key_dport = ch.tcp.dport;
+		}
+		//NACK && ACK
+		else if(ch.l3Prot == 0xFD || ch.l3Prot == 0xFC)
+		{
+			key_sport = ch.tcp.sport;
+			key_dport = ch.tcp.dport;
+		}
+		//control protocols and other
+		else
+		{
+			return;
+		}
+		five_tuples fivetuples(key_sip, key_dip, key_sport, key_dport, key_proto);
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint 1 begin\n";
+		#endif
+		// !用simulator试一试
+		// !以下换成了纯payloadsize大小，有需要换回p->Getsize()
+
+		#ifdef CHECKPOINT_ON
+			std::cout << "checkpoint 1 end\n";
+		#endif
+		elastic->insert(&fivetuples, current_time, payload_size);
+		// ftSet.insert(fivetuples);
+
+		// 	// *针对流判断优先级;需要有优先级才能判断
+		// 	// !后续同样可以考虑创建缓冲区并迁移至周期一次的Switch_FlowPrinter()判断中，提高效率
+		// }
+
+		if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+			flow_pg_pktNum_table[flow_pg_class_table[CNT_DATA][fivetuples]-1][fivetuples] += 1;
+		else
+			flow_pg_pktNum_table[0][fivetuples] += 1;
+
+
+		return;
+	}
+	#else
 	void SwitchNode::Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch)
 	{
 		auto ip2string = [](uint32_t ip)
@@ -522,10 +585,98 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 		return;
 	}
-	//3s 300s调用一次 kill
-	void printPriority() {
-		//输出到文件打印（unordered_map）
+
+	#endif
+
+	#ifdef ELASTIC_ON
+	void SwitchNode::Switch_FeaturePrinter()
+	{
+		uint32_t tmpCount;
+
+		std::vector< std::pair<five_tuples, uint64_t> >	tmp_vec;
+		
+		std::cout << "\n\n";
+		std::cout << "PktClass: High\n";
+		tmpCount = 0;
+		tmp_vec = {};
+		for (auto& iter : flow_pg_class_table[CNT_DATA])
+		{
+			auto udp_key = iter.first;
+			flow_features tmpfeature;
+			uint32_t size_result;
+			elastic->query(&udp_key, tmpfeature, size_result);
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			if (flow_pg_class_table[CNT_DATA][udp_key] == 1)
+			{
+				tmp_vec.push_back({udp_key, tmpfeature.total_size});
+				tmpCount++;
+			}
+		}
+		std::cout << "Total: " << tmpCount << '\n';
+		for (auto iter : tmp_vec)
+		{
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			std::cout << "\tid: " << iter.first.flow_key << "\tsize: " << iter.second << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
+		}		
+		
+		std::cout << "\n\n";
+		std::cout << "PktClass: mid\n";
+		tmpCount = 0;
+		tmp_vec = {};
+		for (auto& iter : flow_pg_class_table[CNT_DATA])
+		{
+			auto udp_key = iter.first;
+			flow_features tmpfeature;
+			uint32_t size_result;
+			elastic->query(&udp_key, tmpfeature, size_result);
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			if (flow_pg_class_table[CNT_DATA][udp_key] == 2)
+			{
+				tmp_vec.push_back({udp_key, tmpfeature.total_size});
+				tmpCount++;
+			}
+		}
+		std::cout << "Total: " << tmpCount << '\n';
+		for (auto iter : tmp_vec)
+		{
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			std::cout << "\tid: " << iter.first.flow_key << "\tsize: " << iter.second << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
+		}		
+
+		std::cout << "\n\n";
+		std::cout << "PktClass: low\n";
+		tmpCount = 0;
+		tmp_vec = {};
+		for (auto& iter : flow_pg_class_table[CNT_DATA])
+		{
+			auto udp_key = iter.first;
+			flow_features tmpfeature;
+			uint32_t size_result;
+			elastic->query(&udp_key, tmpfeature, size_result);
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			if (flow_pg_class_table[CNT_DATA][udp_key] == 3)
+			{
+				tmp_vec.push_back({udp_key, tmpfeature.total_size});
+				tmpCount++;
+			}
+		}
+		std::cout << "Total: " << tmpCount << '\n';
+		for (auto iter : tmp_vec)
+		{
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			std::cout << "\tid: " << iter.first.flow_key << "\tsize: " << iter.second << '\n';
+			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
+			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
+			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
+		}		
 	}
+	#else
 	void SwitchNode::Switch_FeaturePrinter()
 	{
 		// 如果在流表中找到了当前流
@@ -635,7 +786,137 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
 		}	
 	}
+	#endif
 
+	#ifdef ELASTIC_ON
+	void SwitchNode::Switch_FlowPrinter()
+	{
+		static uint32_t CallNum = 0;
+		std::cout << '\n';
+
+		// for (auto& tb : flow_byte_size_table[OLD_DATA])
+		// {
+		// 	// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
+		// 	if (tb.second == 0.0) continue;
+
+		// 	if (TOP_20percent.renew(tb.first, tb.second) == false)
+		// 		TOP_20percent.push({tb.first, tb.second});
+		// 	// std::cout << "load: ";
+		// 	// std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
+		// }
+		flow_features feature_result;
+		uint32_t size_result;
+		std::vector<std::pair<five_tuples, flow_features>> WithoutSmall_vec;
+		std::vector<std::pair<five_tuples, flow_features>> Small_vec;
+
+		std::cout << "Round: " << CallNum << '\n';
+		std::vector< std::pair<five_tuples, uint32_t> > tmpFlowlist[3];
+		// TODO: 目前Elastic未实现老化；注意后续补充
+		// std::vector<std::string> tmpDellist;
+
+		// 筛选出8KB以上的流，允许0.2的偏差
+		elastic->get_heavy_hitters((int)(0.8*64*1024), WithoutSmall_vec, Small_vec);
+
+		// std::cout << "High class: " << Small_vec.size() <<'\n';
+		for (auto& iter : Small_vec)
+		{
+		
+			flow_pg_class_table[CNT_DATA][iter.first] = 1;
+			tmpFlowlist[0].push_back({iter.first, iter.second.total_size});
+
+			// TODO: 目前Elastic未实现老化；注意后续补充
+			// flow_current_frate_table[CNT_DATA][iter.key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][iter.key]  + \
+			// 												(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][iter.key];
+			// if (flow_current_frate_table[CNT_DATA][iter.key] < SIZE_IDLE_THRESHOLD)
+			// 	flow_idle_num_table[CNT_DATA][iter.key]++;
+			// if (flow_idle_num_table[CNT_DATA][iter.key] >= PERIOD_IDLE_THRESHOLD)
+			// 	tmpDellist.push_back(iter.key);
+
+			// // !注意及时将周期流表清空!
+			// flow_current_frate_table[CNT_DATA][iter.key] = 0;
+
+		}
+
+		// std::cout << "low class: " << WithoutSmall_vec.size() <<'\n';
+		for (auto& iter : WithoutSmall_vec)
+		{
+			// std::cout << "\tid: " << iter.key << "\tsize: " << iter.val << '\n';
+			// !注意用OLD的数据计算CNT的优先级
+			// flow_pg_class_table[CNT_DATA][iter.key] = 2;
+
+			// *PLAN A: 5(BEST!)
+			if (iter.second.max_pkt_size <= 1369.5 &&
+				iter.second.avg_burst_size <=6790.036 &&
+				iter.second.avg_pkt_interval <= 0.568 &&
+				iter.second.avg_burst_size > 78.0)
+			{	
+				flow_pg_class_table[CNT_DATA][iter.first] = 2;
+				tmpFlowlist[1].push_back({iter.first, iter.second.total_size});
+			}			
+			else
+			{	
+				flow_pg_class_table[CNT_DATA][iter.first] = 3;
+				tmpFlowlist[2].push_back({iter.first, iter.second.total_size});
+			}
+
+			// TODO: 目前Elastic未实现老化；注意后续补充
+			// flow_current_frate_table[CNT_DATA][iter.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][iter.key]  + \
+			// 												(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][iter.key];
+			// if (flow_current_frate_table[CNT_DATA][iter.key] < SIZE_IDLE_THRESHOLD)
+			// 	flow_idle_num_table[CNT_DATA][iter.key]++;
+			// if (flow_idle_num_table[CNT_DATA][iter.key] >= PERIOD_IDLE_THRESHOLD)
+			// 	tmpDellist.push_back(iter.key);
+				
+			// // !注意及时将周期流表清空!
+			// flow_current_frate_table[CNT_DATA][iter.key] = 0;
+		}
+
+		std::cout << "High class: " << tmpFlowlist[0].size() <<'\n';
+		for (auto& iter : tmpFlowlist[0])
+			std::cout << "\tid: " << iter.first.flow_key << "\tsize: " << iter.second << '\n';
+		std::cout << "Mid class: " << tmpFlowlist[1].size() <<'\n';
+		for (auto& iter : tmpFlowlist[1])
+			std::cout << "\tid: " << iter.first.flow_key << "\tsize: " << iter.second << '\n';
+		std::cout << "Low class: " << tmpFlowlist[2].size() <<'\n';
+		for (auto& iter : tmpFlowlist[2])
+			std::cout << "\tid: " << iter.first.flow_key << "\tsize: " << iter.second << '\n';
+
+
+		// // *老化更新流表
+		// for (auto& k : tmpDellist)
+		// {
+		// 	TOP_20percent.del(k);
+
+		// 	flow_byte_size_table[CNT_DATA].erase(k);
+		// 	flow_packet_num_table[CNT_DATA].erase(k);
+
+		// 	flow_last_pkt_time_table[CNT_DATA].erase(k);
+		// 	flow_first_pkt_time_table[CNT_DATA].erase(k);
+		// 	flow_min_pkt_interval_table[CNT_DATA].erase(k);
+		// 	flow_max_pkt_interval_table[CNT_DATA].erase(k);
+		// 	flow_avg_pkt_interval_table[CNT_DATA].erase(k);
+
+		// 	flow_max_pkt_size_table[CNT_DATA].erase(k);
+		// 	flow_min_pkt_size_table[CNT_DATA].erase(k);
+		// 	flow_avg_pkt_size_table[CNT_DATA].erase(k);
+
+		// 	flow_current_burst_size_table[CNT_DATA].erase(k);
+		// 	flow_max_burst_size_table[CNT_DATA].erase(k);
+		// 	flow_avg_burst_size_table[CNT_DATA].erase(k);
+		// 	flow_total_burst_size_table[CNT_DATA].erase(k);
+		// 	flow_burst_num_table[CNT_DATA].erase(k);
+
+		// 	flow_speed_table[CNT_DATA].erase(k);
+		// 	flow_pg_class_table[CNT_DATA].erase(k);
+		// }
+		index = 0;
+		flow_pg_class_table[OLD_DATA] = flow_pg_class_table[CNT_DATA];
+		index = 1;
+
+		CallNum++;
+		Simulator::Schedule(Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
+	}
+	#else
 	void SwitchNode::Switch_FlowPrinter()
 	{
 		static uint32_t CallNum = 0;
@@ -780,7 +1061,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		CallNum++;
 		Simulator::Schedule(Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
 	}
-
+	#endif
 	// 留作后续调度用：尚未声明
 	// void SwitchNode::Switch_PktScheduler(){}
 

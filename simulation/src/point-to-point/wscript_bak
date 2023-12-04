@@ -52,11 +52,6 @@ def build(bld):
 		'model/switch-mmu.h',
 		'model/pint.h',
 		'helper/sim-setting.h',
-        'model/BOBHash32.h',
-        'model/ElasticSketch.h',
-        'model/HeavyPart.h',
-        'model/LightPart.h',
-        'model/param.h',
         ]
 
     if (bld.env['ENABLE_EXAMPLES']):

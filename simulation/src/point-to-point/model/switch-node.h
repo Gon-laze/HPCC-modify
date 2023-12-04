@@ -13,21 +13,38 @@
 	#include<algorithm>
 #endif
 
+#define ELASTIC_ON
+
+#ifdef ELASTIC_ON
+    #include "ElasticSketch.h"
+    #include "param.h"
+    extern "C" 
+    {
+        #include <pcap.h>
+        #include <time.h>
+        #include <sys/socket.h>
+        #include <sys/types.h>
+        #include <dirent.h>
+    }
+#endif
+
 namespace ns3 {
 
 class Packet;
 
+#ifdef ELASTIC_ON
+#else
 // *仅针对为了构建数据结构而临时创建的节点类
 // !和ns3中服务器节点Node类没有任何关联
-// template<typename T>
-// class Data_node{
-// 	T content;
-// 	Data_node<T>*	lchild = 0;
-// 	Data_node<T>*	rchild = 0;
-// 	Data_node<T>*	parent = 0;
+template<typename T>
+class Data_node{
+	T content;
+	Data_node<T>*	lchild = 0;
+	Data_node<T>*	rchild = 0;
+	Data_node<T>*	parent = 0;
 
-// 	Data_node(T x):content(x){}
-// };
+	Data_node(T x):content(x){}
+};
 
 template<typename T>
 class DataElement{
@@ -177,7 +194,7 @@ class T2T_Heap{
             return isSuccess;
         }
 };
-
+#endif
 
 
 class SwitchNode : public Node{
@@ -201,69 +218,86 @@ public:
 	/******************************
 	 * New Stats for switch.h
 	 *****************************/
-	//burst的最大包间隔，用于统计流量burst特征信息
-	double burst_max_duration = 0.03;
-	//用于确定当前使用哪组unordered_map存储测量得到的特征，哪组用于写入当前周期内流的特征
+    #ifdef ELASTIC_ON
+        ElasticSketch<BUCKET_NUM,TOTAL_MEMORY_IN_BYTES> * elastic = new ElasticSketch<BUCKET_NUM,TOTAL_MEMORY_IN_BYTES>();
+        // 仅需记录五元组信息
+        // std::set<five_tuples> ftSet;
+
+        // !优先级unorderedmap单独保留：特征与调度分离
+        // 流特征优先级
+        std::unordered_map<five_tuples, uint32_t, five_tuples_hash, five_tuples_equal> flow_pg_class_table[2];
+        // *3是指3个优先级;double为了方便除法
+        std::unordered_map<five_tuples, double, five_tuples_hash, five_tuples_equal> flow_pg_pktNum_table[3];
+    #else
+        //burst的最大包间隔，用于统计流量burst特征信息
+        double burst_max_duration = 0.03;
+        //用于确定当前使用哪组unordered_map存储测量得到的特征，哪组用于写入当前周期内流的特征
+        // 所有的流表，其key均使用流五元组构成的字符串 TODO：重写哈希函数，构建key值为五元组的unordered_map
+        // 和包的总个数以及总字节数相关的统计table，
+        std::unordered_map<std::string,uint64_t> flow_byte_size_table[2];
+        std::unordered_map<std::string,uint64_t> flow_packet_num_table[2];
+        //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
+        std::unordered_map<std::string,double> flow_last_pkt_time_table[2];
+        std::unordered_map<std::string,double> flow_first_pkt_time_table[2];
+        std::unordered_map<std::string,double> flow_min_pkt_interval_table[2];
+        std::unordered_map<std::string,double> flow_max_pkt_interval_table[2];
+        std::unordered_map<std::string,double> flow_avg_pkt_interval_table[2];
+        //和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
+        std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table[2];
+        std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table[2];
+        std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table[2];
+        //和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
+        std::unordered_map<std::string,uint64_t> flow_current_burst_size_table[2];
+        std::unordered_map<std::string,uint64_t> flow_max_burst_size_table[2];
+        std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table[2];
+        std::unordered_map<std::string,uint64_t> flow_total_burst_size_table[2];
+        std::unordered_map<std::string,uint64_t> flow_burst_num_table[2];
+        //和流速率相关的统计tables，flow speed
+        std::unordered_map<std::string,double> flow_speed_table[2];
+
+
+        // std::unordered_map<std::string,uint64_t> flow_byte_size_table;
+        // std::unordered_map<std::string,uint64_t> flow_packet_num_table;
+        // //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
+        // std::unordered_map<std::string,double> flow_last_pkt_time_table;
+        // std::unordered_map<std::string,double> flow_first_pkt_time_table;
+        // std::unordered_map<std::string,double> flow_min_pkt_interval_table;
+        // std::unordered_map<std::string,double> flow_max_pkt_interval_table;
+        // std::unordered_map<std::string,double> flow_avg_pkt_interval_table;
+        // //和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
+        // std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table;
+        // std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table;
+        // std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table;
+        // //和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
+        // std::unordered_map<std::string,uint64_t> flow_current_burst_size_table;
+        // std::unordered_map<std::string,uint64_t> flow_max_burst_size_table;
+        // std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table;
+        // std::unordered_map<std::string,uint64_t> flow_total_burst_size_table;
+        // std::unordered_map<std::string,uint64_t> flow_burst_num_table;
+        // //和流速率相关的统计tables，flow speed
+        // std::unordered_map<std::string,double> flow_speed_table[2]
+        // // 流特征优先级
+        // std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
+
+        // !优先级unorderedmap单独保留：特征与调度分离
+        // 流特征优先级
+        std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
+        // *3是指3个优先级;double为了方便除法
+        std::unordered_map<std::string, double> flow_pg_pktNum_table[3];
+    
+        T2T_Heap<uint64_t>  TOP_20percent;
+        
+    #endif
+
     const uint32_t OLD_DATA = 0;
     const uint32_t CNT_DATA = 1;
-	
+    
     uint32_t index = 0;
-	// 所有的流表，其key均使用流五元组构成的字符串 TODO：重写哈希函数，构建key值为五元组的unordered_map
-	// 和包的总个数以及总字节数相关的统计table，
-	std::unordered_map<std::string,uint64_t> flow_byte_size_table[2];
-	std::unordered_map<std::string,uint64_t> flow_packet_num_table[2];
-	//和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
-	std::unordered_map<std::string,double> flow_last_pkt_time_table[2];
-	std::unordered_map<std::string,double> flow_first_pkt_time_table[2];
-	std::unordered_map<std::string,double> flow_min_pkt_interval_table[2];
-	std::unordered_map<std::string,double> flow_max_pkt_interval_table[2];
-	std::unordered_map<std::string,double> flow_avg_pkt_interval_table[2];
-	//和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
-	std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table[2];
-	std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table[2];
-	std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table[2];
-	//和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
-	std::unordered_map<std::string,uint64_t> flow_current_burst_size_table[2];
-	std::unordered_map<std::string,uint64_t> flow_max_burst_size_table[2];
-	std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table[2];
-	std::unordered_map<std::string,uint64_t> flow_total_burst_size_table[2];
-	std::unordered_map<std::string,uint64_t> flow_burst_num_table[2];
-	//和流速率相关的统计tables，flow speed
-	std::unordered_map<std::string,double> flow_speed_table[2];
-    // 流特征优先级
-	std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
 
-    // *3是指3个优先级;double为了方便除法
-    std::unordered_map<std::string, double> flow_pg_pktNum_table[3];
+    void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
+    void Switch_FeaturePrinter();
 
-    // std::unordered_map<std::string,uint64_t> flow_byte_size_table;
-	// std::unordered_map<std::string,uint64_t> flow_packet_num_table;
-	// //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
-	// std::unordered_map<std::string,double> flow_last_pkt_time_table;
-	// std::unordered_map<std::string,double> flow_first_pkt_time_table;
-	// std::unordered_map<std::string,double> flow_min_pkt_interval_table;
-	// std::unordered_map<std::string,double> flow_max_pkt_interval_table;
-	// std::unordered_map<std::string,double> flow_avg_pkt_interval_table;
-	// //和包大小相关的统计tables，包大小特征：max_pkt_size min_pkt_size avg_pkt_size
-	// std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table;
-	// std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table;
-	// std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table;
-	// //和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
-	// std::unordered_map<std::string,uint64_t> flow_current_burst_size_table;
-	// std::unordered_map<std::string,uint64_t> flow_max_burst_size_table;
-	// std::unordered_map<std::string,uint64_t> flow_avg_burst_size_table;
-	// std::unordered_map<std::string,uint64_t> flow_total_burst_size_table;
-	// std::unordered_map<std::string,uint64_t> flow_burst_num_table;
-	// //和流速率相关的统计tables，flow speed
-	// std::unordered_map<std::string,double> flow_speed_table[2]
-	// // 流特征优先级
-	// std::unordered_map<std::string, uint32_t> flow_pg_class_table[2];
-
-	void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
-	void Switch_FeaturePrinter();
-
-    T2T_Heap<uint64_t>  TOP_20percent;
-	uint32_t FlowPrinter_interval = 3;
+    uint32_t FlowPrinter_interval = 3;
 	void Switch_FlowPrinter();
 
     /* 为流的老化而设置的变量；*/
@@ -275,7 +309,7 @@ public:
     std::unordered_map<std::string, uint64_t> flow_idle_num_table[2];
     std::unordered_map<std::string, double> flow_current_frate_table[2];
     std::unordered_map<std::string, uint64_t> flow_current_size_table[2];
-    
+
 
 #endif
 
