@@ -148,7 +148,7 @@ uint32_t flow_num;
 // !理论上一次只会读一个流，所以实际不用开数组（不过还是先等调通再说吧）
 // !发现还是要的：一旦simulation启动将无法打开其他文件，只能预先写好
 #ifdef MODIFY_ON
-	const uint32_t max_fnum = 100;
+	const uint32_t max_fnum = 300;
 	std::ifstream flowPkt_fileGroup[max_fnum];
 	std::ofstream flowLog_fileGroup[max_fnum];
 #endif
@@ -771,26 +771,27 @@ int main(int argc, char *argv[])
 		// 	flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
 		// }
 
-		for (int i=0; i<45; i++)
+		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/mix_flows_txt/High_"};
+			std::string fhead{"mix/300_mix_txt/high/high_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+			// std::cout << "high: " << i << '\n';
 		}
-		for (int i=45; i<55; i++)
+		for (int i=0; i<30; i++)
 		{
-			std::string fhead{"mix/mix_flows_txt/Middle_"};
+			std::string fhead{"mix/300_mix_txt/middle/middle_"};
 			std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+			flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
 		}
-		for (int i=55; i<100; i++)
+		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/mix_flows_txt/Low_"};
+			std::string fhead{"mix/300_mix_txt/low/low_"};
 			std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
 		}
 	#endif
 

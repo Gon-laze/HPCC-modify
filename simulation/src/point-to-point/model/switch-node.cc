@@ -698,39 +698,83 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			// 	tmpFlowlist[2].push_back({node.key, node.val});
 			// }
 
-			// flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
-			// 												(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
-			// if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
-			// 	flow_idle_num_table[CNT_DATA][node.key]++;
-			// if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
-			// 	tmpDellist.push_back(node.key);
-
 			// *PLAN G: 6(have a try!)
-			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 710.759)
+			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 710.759)
+			// {
+			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <=1.012)
+			// 	{
+			// 		if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 20107.286)
+			// 		{
+			// 			if (flow_speed_table[CNT_DATA][node.key] <= 224.188)
+			// 			{
+			// 				if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 91.0)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				else
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 			}
+			// 			else
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 		}
+			// 		else
+			// 		{
+			// 			if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.11)
+			// 			{
+			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				else
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 			}
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
+			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 		else
+			// 		{
+			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1379.5)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			else
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 		}
+			// 	}
+			// }
+			// else
+			// {
+			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
+			// 	{
+			// 		if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 		else
+			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 	}
+			// 	else
+			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// }
+
+			// PLAN H
+			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 745.683)
 			{
-				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <=1.012)
+				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
 				{
-					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 20107.286)
+					if (flow_speed_table[CNT_DATA][node.key] <= 96693.512)
 					{
-						if (flow_speed_table[CNT_DATA][node.key] <= 224.188)
-						{
-							if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 91.0)
-								flow_pg_class_table[CNT_DATA][node.key] = 2;
-							else
-								flow_pg_class_table[CNT_DATA][node.key] = 3;
-						}
-						else
+						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 19740.933)
 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+						else
+						{
+							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+								flow_pg_class_table[CNT_DATA][node.key] = 3;
+							else
+								flow_pg_class_table[CNT_DATA][node.key] = 2;
+						}
 					}
 					else
 					{
-						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.11)
-						{
-							if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-								flow_pg_class_table[CNT_DATA][node.key] = 2;
-							else
-								flow_pg_class_table[CNT_DATA][node.key] = 3;
-						}
+						if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1273.0)
+							flow_pg_class_table[CNT_DATA][node.key] = 3;
+						else
+							flow_pg_class_table[CNT_DATA][node.key] = 2;
 					}
 				}
 				else
@@ -739,7 +783,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 						flow_pg_class_table[CNT_DATA][node.key] = 3;
 					else
 					{
-						if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1379.5)
+						if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
 							flow_pg_class_table[CNT_DATA][node.key] = 2;
 						else
 							flow_pg_class_table[CNT_DATA][node.key] = 3;
@@ -747,17 +791,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				}
 			}
 			else
-			{
-				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
-				{
-					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-						flow_pg_class_table[CNT_DATA][node.key] = 2;
-					else
-						flow_pg_class_table[CNT_DATA][node.key] = 3;
-				}
-				else
-					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			}
+				flow_pg_class_table[CNT_DATA][node.key] = 3;
 
 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
 															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
