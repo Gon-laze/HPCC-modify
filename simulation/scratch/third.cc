@@ -163,13 +163,24 @@ void ScheduleFlowInputs(){
 	while (flow_input.idx < flow_num && Seconds(flow_input.start_time) == Simulator::Now()){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		// *尝试传入fstream指针
-		#ifdef MODIFY_ON
+		#ifdef MODIFY_ON复用get
 			std::cout << "CP1\n";
 			// if (flowPkt_fileGroup[flow_input.idx].is_open())
 			// 	std::cout << "init Test begin!\n";
 			// else
 			// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
+			// !针对switchNode而临时设立的统计部分。不要轻易复用!
+			for (int u=0; u<node_num; u++) if (n->Get(u)->GetNodeType() == 1)
+			{
+				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n->Get(u));
+				uint32 origin_pg;
+				if (flow_input.indx < 135)			origin_pg = 1;
+				else if (flow_input.indx < 165)		origin_pg = 2;
+				else								origin_pg = 3;
+				sw->load_OriginFlow_msg(serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, 0x11, origin_pg);
+			}
+			
 		#else
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
 		#endif
@@ -1126,7 +1137,7 @@ int main(int argc, char *argv[])
 	#endif
 
 	//
-	// Now, do the actual simulation.
+	// Now, do the origin simulation.
 	//
 	std::cout << "Running Simulation.\n";
 	fflush(stdout);
@@ -1144,7 +1155,7 @@ int main(int argc, char *argv[])
 				n.Get(i)->Switch_FeaturePrinter();
 		
 		for (int i=0; i<max_fnum; i++)
-			flowPkt_fileGroup[flow_input.idx].close();
+			flowPkt_fileGroup[i].close();
 	#endif
 
 	endt = clock();

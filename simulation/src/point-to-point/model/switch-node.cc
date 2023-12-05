@@ -583,6 +583,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
 			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
+			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';
 		}		
 		
 		std::cout << "\n\n";
@@ -608,6 +609,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
 			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
+			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';		
 		}	
 
 		std::cout << "\n\n";
@@ -633,6 +635,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
 			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
+			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';		
 		}	
 	}
 
@@ -901,6 +904,21 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 	// 	//再对大流做优先级分类，存储到unordered_map当中
 	// 	//这里存在一个设计细节上的问题，就是在完成所有unordered_map的载入前，应当还是采用上上一周期数据分类的结果，然后在当前周期再使用由上一周期计算出的结果
 	// }
+
+	void SwitchNode::load_OriginFlow_msg(Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint8_t protocol, uint32_t pg)
+	{
+		auto ip2string = [](uint32_t ip)
+		{
+			return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
+		};
+		std::string result = 	ip2string(sip) + " " + \
+								ip2string(dip) + " " + \
+								std::to_string(sport) + " " + \
+								std::to_string(dport) + " " + \
+								std::to_string(protocol);
+		origin_pg[result] = pg;
+	}
+
 #endif
 
 } /* namespace ns3 */
