@@ -170,6 +170,16 @@ void ScheduleFlowInputs(){
 			// else
 			// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
+			for (int u=0; u<5; u++) if (n.Get(u)->GetNodeType() == 1)
+			{
+				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(u));
+				uint32_t origin_pg;
+				if (flow_input.idx < 45)			origin_pg = 1;
+				else if (flow_input.idx < 55)		origin_pg = 2;
+				else								origin_pg = 3;
+				sw->load_OriginFlow_msg(serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, 0x11, origin_pg);
+			}		
+		
 		#else
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
 		#endif

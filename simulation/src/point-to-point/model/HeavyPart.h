@@ -49,7 +49,7 @@ public:
 			min_counter = 0;
 			//最小值初始化为第0个counter内流的total_size
 			min_counter_val = GetCounterVal(buckets[pos].val[0].total_size);
-			//开始遍历所有的counter
+			//开始遍历所有的counter（但不遍历最后一个counter，因为那是存放vote-的地方）
 			for(int i = 0; i < COUNTER_PER_BUCKET - 1; i++)
 			{
 				//如果当前counter的key和fp匹配一致，那么就代表找到了可以直接插入的地方
@@ -60,6 +60,7 @@ public:
 				//如果当前的counter为空，且在此counter前还没有找到过空的counter
 				if(buckets[pos].key[i].empty() == true && empty == -1){
 					empty = i;
+					break;
 				}
 				//如果当前counter的total_size小于最小min_counter_val，那么就更新min_counter_val以及最小counter的位置
 				if(min_counter_val > GetCounterVal(buckets[pos].val[i].total_size)){
@@ -105,8 +106,9 @@ public:
 		swap_val = buckets[pos].val[min_counter].total_size;
 
 		//保留新的流
-		//将vote-重新设置为1
+		//将vote-重新设置为0
 		buckets[pos].val[MAX_VALID_COUNTER].total_size = 0;
+		//将待插入元素插入到min_counter的位置
 		buckets[pos].key[min_counter].copy(fp);
 		//先初始化min_counter处的val
 		buckets[pos].val[min_counter].initialize();

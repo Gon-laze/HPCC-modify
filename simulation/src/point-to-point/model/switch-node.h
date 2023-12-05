@@ -315,6 +315,8 @@ public:
     std::unordered_map<std::string, double> flow_current_frate_table[2];
     std::unordered_map<std::string, uint64_t> flow_current_size_table[2];
 
+    void load_OriginFlow_msg(Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint8_t protocol, uint32_t pg);
+    std::unordered_map<std::string, uint32_t> origin_pg;
 
 #endif
 

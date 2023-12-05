@@ -101,7 +101,7 @@ public:
         return heavy_part.get_bucket_num(); 
     }
 
-    void get_heavy_hitters(int threshold, std::vector<std::pair<five_tuples, flow_features>> & results_greater,  std::vector<std::pair<five_tuples, flow_features>> & results_less)
+    void get_heavy_hitters(int threshold, std::vector<std::pair<five_tuples, flow_features>> & results)
     {
         //相当于遍历整个heavy part
         for (int i = 0; i < bucket_num; ++i) 
@@ -118,10 +118,10 @@ public:
                 //由于是对heavy part中非空的key做查询，因此最后一定可以查询到
                 query(&key, val, light_total_size);
                 //当查询到的流的total_size大于阈值时
-                if (val.total_size >= threshold) 
-                    results_greater.push_back(std::make_pair(key, val));
-                else
-                    results_less.push_back(std::make_pair(key, val));
+                if (GetCounterVal(val.total_size) >= threshold) 
+                {
+                    results.push_back(std::make_pair(key, val));
+                }
             }
         }
     }
