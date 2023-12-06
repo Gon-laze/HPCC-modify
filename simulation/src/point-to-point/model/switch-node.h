@@ -126,7 +126,7 @@ class T2T_Heap{
         Heap<T> 			Top{Heap<T>::LESS};
         Heap<T>				Bottom{Heap<T>::GREATER};
 
-        // !为测试改成了0.45。注意及时改回0.2！！！！
+        // !为测试改成了0.5。注意及时改回0.2！！！！
         double superRate = 0.45;
 
         inline DataElement<T> top()	{	return Top.top();	}

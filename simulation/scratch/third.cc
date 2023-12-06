@@ -805,48 +805,71 @@ int main(int argc, char *argv[])
 		// 	flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
 		// }
 
+		// for (int i=0; i<135; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_another_txt/MICE/MICE_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	// std::cout << "high: " << i << '\n';
+		// }
+		// for (int i=0; i<10; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_another_txt/GAME/GAME_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<10; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_another_txt/VMEETING/VMEETING_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+145].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<10; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_another_txt/VOICE/VOICE_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+155].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<45; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_another_txt/VOD/VOD_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<90; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_another_txt/FILE/FILE_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+210].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+
 		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/300_mix_another_txt/MICE/MICE_"};
+			std::string fhead{"mix/300_mix_size_txt/high/high_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
 			// std::cout << "high: " << i << '\n';
 		}
-		for (int i=0; i<10; i++)
+		for (int i=0; i<30; i++)
 		{
-			std::string fhead{"mix/300_mix_another_txt/GAME/GAME_"};
+			std::string fhead{"mix/300_mix_size_txt/middle/middle_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
 		}
-		for (int i=0; i<10; i++)
+		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/300_mix_another_txt/VMEETING/VMEETING_"};
-			std::string ftail{".txt"};
-
-			flowPkt_fileGroup[i+145].open(fhead.append(std::to_string(i).append(ftail)));
-		}
-		for (int i=0; i<10; i++)
-		{
-			std::string fhead{"mix/300_mix_another_txt/VOICE/VOICE_"};
-			std::string ftail{".txt"};
-
-			flowPkt_fileGroup[i+155].open(fhead.append(std::to_string(i).append(ftail)));
-		}
-		for (int i=0; i<45; i++)
-		{
-			std::string fhead{"mix/300_mix_another_txt/VOD/VOD_"};
+			std::string fhead{"mix/300_mix_size_txt/low/low_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
-		}
-		for (int i=0; i<90; i++)
-		{
-			std::string fhead{"mix/300_mix_another_txt/FILE/FILE_"};
-			std::string ftail{".txt"};
-
-			flowPkt_fileGroup[i+210].open(fhead.append(std::to_string(i).append(ftail)));
 		}
 	#endif
 

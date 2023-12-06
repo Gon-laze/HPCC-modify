@@ -926,135 +926,443 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			// }
 		
 			// PLAN J: also huge....
-			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
+			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
+			// {
+			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
+			// 	{
+			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
+			// 		{
+			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			else
+			// 			{
+			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+			// 				{
+			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
+			// 					{
+			// 						if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					}
+			// 					else
+			// 					{
+			// 						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 					}
+			// 				}
+			// 				else
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			}
+			// 		}
+			// 		else
+			// 		{
+			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 			else
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+			// 		{
+			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <=30.065)
+			// 			{
+			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+			// 				{
+			// 					if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 				else
+			// 				{
+			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
+			// 					{
+			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					}
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 			}
+			// 			else
+			// 			{
+			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				else
+			// 				{
+			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 210.797)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					else
+			// 					{
+			// 						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 225.946)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					}
+			// 				}
+			// 			}
+			// 		}
+			// 		else
+			// 		{
+			// 			if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
+			// 			{
+			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
+			// 				{
+			// 					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 				else
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			}
+			// 			else
+			// 			{
+			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				else
+			// 				{
+			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+			// 					{
+			// 						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 712.585)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					}
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
+			// else
+			// {
+			// 	if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1479.5)
+			// 	{
+			// 		if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.013)
+			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 		else
+			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 	}
+			// 	else
+			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// }
+
+			// // PLAN K
+			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
+			// {
+			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
+			// 	{
+			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
+			// 		{
+			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			else
+			// 			{
+			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+			// 				{
+			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
+			// 					{
+			// 						if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					}
+			// 					else
+			// 					{
+			// 						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 					}
+			// 				}
+			// 				else
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			}
+			// 		}
+			// 		else
+			// 		{
+			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 			else
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+			// 		{
+			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.065)
+			// 			{
+			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+			// 				{
+			// 					// !以下一句判断为false仅有1个样本；可考虑后续剪枝
+			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 140.942)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 				else
+			// 				{
+			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
+			// 					{
+			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 						else
+			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					}
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 			}
+			// 			else
+			// 			{
+			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				else
+			// 				{
+			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] > 201.797 && \
+			// 						flow_avg_burst_size_table[CNT_DATA][node.key] <= 255.946)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				}
+			// 			}
+			// 		}
+			// 		else
+			// 		{
+			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 9.647)
+			// 			{
+			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				else
+			// 				{
+			// 					if (flow_speed_table[CNT_DATA][node.key] > 1148.687 && \
+			// 						flow_min_pkt_interval_table[CNT_DATA][node.key] >0.016)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 			}
+			// 			else
+			// 			{
+			// 				if (flow_speed_table[CNT_DATA][node.key] <= 8.301)
+			// 				{
+			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 5413118)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 				}
+			// 				else
+			// 				{
+			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 507.24 && \
+			// 						flow_max_pkt_interval_table[CNT_DATA][node.key] <= 437.66)
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 					else
+			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				}
+			// 			}
+			// 		}
+			// 	}
+			// }
+			// else
+			// {	
+			// 	// !同前：仅有1个样本优先级为2，可考虑剪枝
+			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053 && \
+			// 		flow_avg_pkt_size_table[CNT_DATA][node.key] > 950.288)
+			// 		flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 	else
+			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// }
+
+			#define VOICE 		2
+			#define VMEETING 	2
+			#define GAME		2
+			#define FILE		3
+			#define VOD			3
+
+			// plan K: 5 class
+			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 562.5)
 			{
-				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
+				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.061)
 				{
-					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
+					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.028)
 					{
-						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
-							flow_pg_class_table[CNT_DATA][node.key] = 2;
-						else
+						if (flow_max_burst_size_table[CNT_DATA][node.key] <= 5533.0)
 						{
-							if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 945.0)
+								flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+							else
 							{
-								if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
-								{
-									if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
-										flow_pg_class_table[CNT_DATA][node.key] = 3;
-									else
-										flow_pg_class_table[CNT_DATA][node.key] = 2;
-								}
+								if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1546.5)
+									flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
 								else
 								{
-									if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
-										flow_pg_class_table[CNT_DATA][node.key] = 2;
+									if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+										flow_pg_class_table[CNT_DATA][node.key] = VOICE;
 									else
-										flow_pg_class_table[CNT_DATA][node.key] = 3;
+										flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
 								}
 							}
+						}
+						else
+						{
+							if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 68.0)
+								flow_pg_class_table[CNT_DATA][node.key] = VOICE;
 							else
-								flow_pg_class_table[CNT_DATA][node.key] = 2;
+							{
+								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+									flow_pg_class_table[CNT_DATA][node.key] = VOD;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+							}
 						}
 					}
 					else
 					{
-						if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-							flow_pg_class_table[CNT_DATA][node.key] = 3;
+						if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 92.496)
+						{
+							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 956.5)
+								flow_pg_class_table[CNT_DATA][node.key] = GAME;
+							else
+								flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+						}
 						else
-							flow_pg_class_table[CNT_DATA][node.key] = 2;
+							flow_pg_class_table[CNT_DATA][node.key] = GAME;
 					}
 				}
 				else
 				{
-					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.264)
 					{
-						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <=30.065)
+						if (flow_max_burst_size_table[CNT_DATA][node.key] <= 212.0)
 						{
-							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
-							{
-								if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
-									flow_pg_class_table[CNT_DATA][node.key] = 2;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = 3;
-							}
+							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.656)
+								flow_pg_class_table[CNT_DATA][node.key] = VOICE;
 							else
 							{
-								if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
-								{
-									if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
-										flow_pg_class_table[CNT_DATA][node.key] = 3;
-									else
-										flow_pg_class_table[CNT_DATA][node.key] = 2;
-								}
+								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 1.06 && \
+									flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.0)
+									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
 								else
-									flow_pg_class_table[CNT_DATA][node.key] = 3;
+									flow_pg_class_table[CNT_DATA][node.key] = VOD;
 							}
 						}
 						else
 						{
-							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
-								flow_pg_class_table[CNT_DATA][node.key] = 3;
+							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
+								flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
 							else
-							{
-								if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 210.797)
-									flow_pg_class_table[CNT_DATA][node.key] = 2;
-								else
-								{
-									if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 225.946)
-										flow_pg_class_table[CNT_DATA][node.key] = 3;
-									else
-										flow_pg_class_table[CNT_DATA][node.key] = 2;
-								}
-							}
+								flow_pg_class_table[CNT_DATA][node.key] = FILE;
 						}
 					}
 					else
 					{
-						if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
+						if (flow_speed_table[CNT_DATA][node.key] <= 304.515)
 						{
-							if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
-							{
-								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
-									flow_pg_class_table[CNT_DATA][node.key] = 2;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = 3;
-							}
+							if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 38.5)
+								flow_pg_class_table[CNT_DATA][node.key] = FILE;
 							else
-								flow_pg_class_table[CNT_DATA][node.key] = 2;
+							{
+								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 301.012)
+									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = FILE;
+							}
 						}
 						else
-						{
-							if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-								flow_pg_class_table[CNT_DATA][node.key] = 2;
-							else
-							{
-								if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
-								{
-									if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 712.585)
-										flow_pg_class_table[CNT_DATA][node.key] = 3;
-									else
-										flow_pg_class_table[CNT_DATA][node.key] = 2;
-								}
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = 2;
-							}
-						}
+							flow_pg_class_table[CNT_DATA][node.key] = FILE;
 					}
 				}
 			}
 			else
 			{
-				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1479.5)
+				if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
 				{
-					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.013)
-						flow_pg_class_table[CNT_DATA][node.key] = 2;
+					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
+					{
+						if (flow_speed_table[CNT_DATA][node.key] <= 1130.516)
+						{
+							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
+							{
+								if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 96.175)
+									flow_pg_class_table[CNT_DATA][node.key] = FILE;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+							}
+							else
+								flow_pg_class_table[CNT_DATA][node.key] = VOD;
+						}
+						else
+						{
+							if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1396.5)
+							{
+								if (flow_min_pkt_size_table[CNT_DATA][node.key] > 82.5 && \
+									flow_avg_pkt_size_table[CNT_DATA][node.key] <= 364.498)
+									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+							}
+							else
+							{
+								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.029)
+									flow_pg_class_table[CNT_DATA][node.key] = VOD;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+							}
+						}
+					}
 					else
-						flow_pg_class_table[CNT_DATA][node.key] = 3;
+					{
+						if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 617.542)
+						{
+							if (flow_speed_table[CNT_DATA][node.key] <= 13221.144)
+							{
+								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.409)
+								{
+									if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+										flow_pg_class_table[CNT_DATA][node.key] = VOD;
+									else
+										flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+								}
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = VOD;
+							}
+							else
+							{
+								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 599.864)
+									flow_pg_class_table[CNT_DATA][node.key] = FILE;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+							}
+						}
+						else
+							flow_pg_class_table[CNT_DATA][node.key] = VOD;
+					}
 				}
 				else
-					flow_pg_class_table[CNT_DATA][node.key] = 3;
+				{
+					if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 52.5)
+					{
+						if (flow_min_pkt_size_table[CNT_DATA][node.key] > 48.5 && \
+							flow_max_pkt_size_table[CNT_DATA][node.key] <= 1479.0)
+							flow_pg_class_table[CNT_DATA][node.key] = VOD;
+						else
+							flow_pg_class_table[CNT_DATA][node.key] = FILE;
+					}
+					else
+						flow_pg_class_table[CNT_DATA][node.key] = FILE;
+				}
 			}
+
 
 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
 															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
