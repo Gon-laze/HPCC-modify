@@ -554,6 +554,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		// 	// flow_first_pkt_time_table.erase(udp_key);
 		// }
 		uint32_t tmpCount;
+		double TPCount[3];
 
 		std::vector< std::pair<std::string, uint64_t> >	tmp_vec;
 		
@@ -572,19 +573,27 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				tmpCount++;
 			}
 		}
+		TPCount[0] = 0;
+		TPCount[1] = 0;
+		TPCount[2] = 0;
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
 		{
 			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
 			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
-			// std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\n';
-			// std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\n';
-			// std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\n';
 			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
 			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
 			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';
-		}		
+
+			if (origin_pg[iter.first] == 1)				TPCount[0]++;
+			else if (origin_pg[iter.first] == 2)		TPCount[1]++;
+			else if (origin_pg[iter.first] == 3)		TPCount[2]++;
+		}
+		std::cout << "\'\'\'\'Percentage: " << TPCount[0]/tmp_vec.size() << ':' \
+											<< TPCount[1]/tmp_vec.size() << ':' \
+											<< TPCount[2]/tmp_vec.size() << ':' \
+											<< "\'\'\'\'\n";
 		
 		std::cout << "\n\n";
 		std::cout << "PktClass: mid\n";
@@ -601,6 +610,9 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				tmpCount++;
 			}
 		}
+		TPCount[0] = 0;
+		TPCount[1] = 0;
+		TPCount[2] = 0;
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
 		{
@@ -609,8 +621,17 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
 			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
-			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';		
-		}	
+			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';
+
+			if (origin_pg[iter.first] == 1)				TPCount[0]++;
+			else if (origin_pg[iter.first] == 2)		TPCount[1]++;
+			else if (origin_pg[iter.first] == 3)		TPCount[2]++;
+		}
+		std::cout << "\'\'\'\'Percentage: " << TPCount[0]/tmp_vec.size() << ':' \
+											<< TPCount[1]/tmp_vec.size() << ':' \
+											<< TPCount[2]/tmp_vec.size() << ':' \
+											<< "\'\'\'\'\n";
+
 
 		std::cout << "\n\n";
 		std::cout << "PktClass: low\n";
@@ -627,6 +648,9 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				tmpCount++;
 			}
 		}
+		TPCount[0] = 0;
+		TPCount[1] = 0;
+		TPCount[2] = 0;
 		std::cout << "Total: " << tmpCount << '\n';
 		for (auto iter : tmp_vec)
 		{
@@ -635,8 +659,17 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			std::cout << "\t" << "1: " << flow_pg_pktNum_table[0][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[0][iter.first] << '\n';
 			std::cout << "\t" << "2: " << flow_pg_pktNum_table[1][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[1][iter.first] << '\n';
 			std::cout << "\t" << "3: " << flow_pg_pktNum_table[2][iter.first]/totalPktNum << '\t' <<  flow_pg_pktNum_table[2][iter.first] << '\n';
-			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';		
-		}	
+			std::cout << "\t" << "origin pg: " << origin_pg[iter.first] << '\n';
+
+			if (origin_pg[iter.first] == 1)				TPCount[0]++;
+			else if (origin_pg[iter.first] == 2)		TPCount[1]++;
+			else if (origin_pg[iter.first] == 3)		TPCount[2]++;
+		}
+		std::cout << "\'\'\'\'Percentage: " << TPCount[0]/tmp_vec.size() << ':' \
+											<< TPCount[1]/tmp_vec.size() << ':' \
+											<< TPCount[2]/tmp_vec.size() << ':' \
+											<< "\'\'\'\'\n";
+	
 	}
 
 	void SwitchNode::Switch_FlowPrinter()
@@ -756,25 +789,70 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			// }
 
 			// PLAN H
-			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 745.683)
+			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 745.683)
+			// {
+			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
+			// 	{
+			// 		if (flow_speed_table[CNT_DATA][node.key] <= 96693.512)
+			// 		{
+			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 19740.933)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			else
+			// 			{
+			// 				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 				else
+			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			}
+			// 		}
+			// 		else
+			// 		{
+			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1273.0)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 			else
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 		}
+			// 	}
+			// 	else
+			// 	{
+			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
+			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 		else
+			// 		{
+			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+			// 			else
+			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// 		}
+			// 	}
+			// }
+			// else
+			// 	flow_pg_class_table[CNT_DATA][node.key] = 3;
+			// PLAN I: huge!!!!
+			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
 			{
-				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
+				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
 				{
-					if (flow_speed_table[CNT_DATA][node.key] <= 96693.512)
+					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
 					{
-						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 19740.933)
+						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
 							flow_pg_class_table[CNT_DATA][node.key] = 2;
 						else
 						{
-							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
-								flow_pg_class_table[CNT_DATA][node.key] = 3;
+							if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+							{
+								if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+									flow_pg_class_table[CNT_DATA][node.key] = 3;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = 2;
+							}
 							else
 								flow_pg_class_table[CNT_DATA][node.key] = 2;
 						}
 					}
 					else
 					{
-						if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1273.0)
+						if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
 							flow_pg_class_table[CNT_DATA][node.key] = 3;
 						else
 							flow_pg_class_table[CNT_DATA][node.key] = 2;
@@ -782,19 +860,70 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				}
 				else
 				{
-					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
-						flow_pg_class_table[CNT_DATA][node.key] = 3;
+					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+					{
+						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.065)
+						{
+							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+							{
+								if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 140.942)
+									flow_pg_class_table[CNT_DATA][node.key] = 2;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = 3;
+							}
+							else
+							{
+								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.058)
+									flow_pg_class_table[CNT_DATA][node.key] = 2;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = 3;
+							}
+						}
+						else
+						{
+							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
+								flow_pg_class_table[CNT_DATA][node.key] = 3;
+							else
+								flow_pg_class_table[CNT_DATA][node.key] = 2;
+						}
+					}
 					else
 					{
-						if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
-							flow_pg_class_table[CNT_DATA][node.key] = 2;
+						if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
+						{
+							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
+								flow_pg_class_table[CNT_DATA][node.key] = 2;
+							else
+							{
+								if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
+									flow_pg_class_table[CNT_DATA][node.key] = 3;
+								else
+									flow_pg_class_table[CNT_DATA][node.key] = 2;
+							}
+						}
 						else
-							flow_pg_class_table[CNT_DATA][node.key] = 3;
+						{
+							if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.308)
+								flow_pg_class_table[CNT_DATA][node.key] = 3;
+							else
+								flow_pg_class_table[CNT_DATA][node.key] = 2;
+						}
 					}
 				}
 			}
 			else
-				flow_pg_class_table[CNT_DATA][node.key] = 3;
+			{
+				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
+				{
+					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 950.288)
+						flow_pg_class_table[CNT_DATA][node.key] = 3;
+					else
+						flow_pg_class_table[CNT_DATA][node.key] = 2;
+				}
+				else
+					flow_pg_class_table[CNT_DATA][node.key] = 3;
+			}
+		
 
 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
 															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
@@ -911,8 +1040,8 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
 		};
-		std::string result = 	ip2string(sip) + " " + \
-								ip2string(dip) + " " + \
+		std::string result = 	ip2string(sip.Get()) + " " + \
+								ip2string(dip.Get()) + " " + \
 								std::to_string(sport) + " " + \
 								std::to_string(dport) + " " + \
 								std::to_string(protocol);
