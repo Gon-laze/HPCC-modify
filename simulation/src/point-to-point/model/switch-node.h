@@ -222,6 +222,7 @@ public:
 	std::unordered_map<std::string,uint16_t> flow_max_pkt_size_table[2];
 	std::unordered_map<std::string,uint16_t> flow_min_pkt_size_table[2];
 	std::unordered_map<std::string,uint16_t> flow_avg_pkt_size_table[2];
+    std::unordered_map<std::string,uint16_t> flow_gap_pkt_size_table[2];
 	//和burst相关的统计tables，burst特征：max_burst_size avg_burst_size
 	std::unordered_map<std::string,uint64_t> flow_current_burst_size_table[2];
 	std::unordered_map<std::string,uint64_t> flow_max_burst_size_table[2];
@@ -263,12 +264,12 @@ public:
 	void Switch_FeaturePrinter();
 
     T2T_Heap<uint64_t>  TOP_20percent;
-	uint32_t FlowPrinter_interval = 3;
+	uint32_t FlowPrinter_interval = 1;
 	void Switch_FlowPrinter();
 
     /* 为流的老化而设置的变量；*/
     // *先将阈值设大，有需求再改
-    const uint64_t  PERIOD_IDLE_THRESHOLD = 5000;
+    const uint64_t  PERIOD_IDLE_THRESHOLD = 100000;
     const double    SIZE_IDLE_THRESHOLD = 0.0;
     const double    AGING_ALPHA_SMALL = 0.1;
     const double    AGING_ALPHA_BIG = 0.9;

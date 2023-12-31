@@ -146,7 +146,7 @@ void RdmaClient::StartApplication (void)
   Ptr<Node> node = GetNode();
   Ptr<RdmaDriver> rdma = node->GetObject<RdmaDriver>();
   #ifdef MODIFY_ON
-    std::cout << "CP3\n";
+    std::cout << "CP3: new Rdma client.\n";
     rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, m_Custom_Packet_Info_input_ptr, MakeCallback(&RdmaClient::Finish, this));
   #else
     rdma->AddQueuePair(m_size, m_pg, m_sip, m_dip, m_sport, m_dport, m_win, m_baseRtt, MakeCallback(&RdmaClient::Finish, this));

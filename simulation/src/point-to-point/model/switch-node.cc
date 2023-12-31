@@ -394,6 +394,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			flow_max_pkt_size_table[CNT_DATA][fivetuples] = (uint64_t)(payload_size);
 			flow_min_pkt_size_table[CNT_DATA][fivetuples] = (uint64_t)(payload_size);
 			flow_avg_pkt_size_table[CNT_DATA][fivetuples] = (uint64_t)(payload_size);
+			flow_gap_pkt_size_table[CNT_DATA][fivetuples] = 0;
 			//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
 			flow_max_pkt_interval_table[CNT_DATA][fivetuples] = 0.0;
 			flow_min_pkt_interval_table[CNT_DATA][fivetuples] = 1000000000;
@@ -423,6 +424,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			flow_max_pkt_size_table[CNT_DATA][fivetuples] = std::max((uint64_t)flow_max_pkt_size_table[CNT_DATA][fivetuples], (uint64_t)(payload_size));
 			flow_min_pkt_size_table[CNT_DATA][fivetuples] = std::min((uint64_t)flow_min_pkt_size_table[CNT_DATA][fivetuples],(uint64_t)(payload_size));
 			flow_avg_pkt_size_table[CNT_DATA][fivetuples] = flow_byte_size_table[CNT_DATA][fivetuples] / flow_packet_num_table[CNT_DATA][fivetuples];
+			flow_gap_pkt_size_table[CNT_DATA][fivetuples] = flow_max_pkt_size_table[CNT_DATA][fivetuples] - flow_min_pkt_size_table[CNT_DATA][fivetuples];
 			//更新化最大包到达间隔，最小包到达间隔, 平均包到达间隔
 			flow_max_pkt_interval_table[CNT_DATA][fivetuples] = std::max((double)flow_max_pkt_interval_table[CNT_DATA][fivetuples], pkt_interval);
 			flow_min_pkt_interval_table[CNT_DATA][fivetuples] = std::min((double)flow_min_pkt_interval_table[CNT_DATA][fivetuples], pkt_interval);
@@ -669,13 +671,55 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 											<< TPCount[1]/tmp_vec.size() << ':' \
 											<< TPCount[2]/tmp_vec.size() << ':' \
 											<< "\'\'\'\'\n";
-	
+		
+		double finalPercentage[3][3] = {};
+		for (auto& iter : flow_first_pkt_time_table[CNT_DATA])
+		{
+			auto udp_key = iter.first;
+			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
+			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			auto totalPktNum = flow_pg_pktNum_table[0][iter.first] + flow_pg_pktNum_table[1][iter.first] + flow_pg_pktNum_table[2][iter.first];
+			if (origin_pg[udp_key] == 1)
+			{
+				finalPercentage[0][0] += flow_pg_pktNum_table[0][iter.first]/totalPktNum;
+				finalPercentage[0][1] += flow_pg_pktNum_table[1][iter.first]/totalPktNum;
+				finalPercentage[0][2] += flow_pg_pktNum_table[2][iter.first]/totalPktNum;
+			}
+			else if (origin_pg[udp_key] == 2)
+			{
+				finalPercentage[1][0] += flow_pg_pktNum_table[0][iter.first]/totalPktNum;
+				finalPercentage[1][1] += flow_pg_pktNum_table[1][iter.first]/totalPktNum;
+				finalPercentage[1][2] += flow_pg_pktNum_table[2][iter.first]/totalPktNum;
+			}
+			else if (origin_pg[udp_key] == 3)
+			{
+				finalPercentage[2][0] += flow_pg_pktNum_table[0][iter.first]/totalPktNum;
+				finalPercentage[2][1] += flow_pg_pktNum_table[1][iter.first]/totalPktNum;
+				finalPercentage[2][2] += flow_pg_pktNum_table[2][iter.first]/totalPktNum;
+			}
+		}
+
+		const uint32_t HIGH_NUM = 135;
+		const uint32_t MIDDLE_NUM = 30;
+		const uint32_t LOW_NUM = 135;
+
+		std::cout << "final_acc_Percentage: \n";
+		std::cout << "\t" << "1: \t" << finalPercentage[0][0]/HIGH_NUM << '\t' <<  \
+										finalPercentage[0][1]/HIGH_NUM << '\t' <<  \
+										finalPercentage[0][2]/HIGH_NUM << '\n';
+		std::cout << "\t" << "2: \t" << finalPercentage[1][0]/MIDDLE_NUM << '\t' <<  \
+										finalPercentage[1][1]/MIDDLE_NUM << '\t' <<  \
+										finalPercentage[1][2]/MIDDLE_NUM << '\n';
+		std::cout << "\t" << "3: \t" << finalPercentage[2][0]/LOW_NUM << '\t' <<  \
+										finalPercentage[2][1]/LOW_NUM << '\t' <<  \
+										finalPercentage[2][2]/LOW_NUM << '\n';
 	}
 
 	void SwitchNode::Switch_FlowPrinter()
 	{
 		static uint32_t CallNum = 0;
-		std::cout << '\n';
+		bool Canout = (CallNum%1000 == 0);
+		if (Canout) std::cout << '\n';
 		
 		for (auto& tb : flow_byte_size_table[OLD_DATA])
 		{
@@ -684,18 +728,18 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 			if (TOP_20percent.renew(tb.first, tb.second) == false)
 				TOP_20percent.push({tb.first, tb.second});
-			// std::cout << "load: ";
-			// std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
+			// if (Canout) std::cout << "load: ";
+			// if (Canout) std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
 		}
 
 		// !注意用OLD的数据计算CNT的优先级
-		std::cout << "Round: " << CallNum << '\n';
+		if (Canout) std::cout << "Round: " << CallNum << '\n';
 		std::vector< std::pair<std::string, uint32_t> > tmpFlowlist[3];
 		std::vector<std::string> tmpDellist;
-		// std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
+		// if (Canout) std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
 		for (auto& node : TOP_20percent.Top.vec)
 		{
-			// std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
 		
 			flow_pg_class_table[CNT_DATA][node.key] = 1;
 			tmpFlowlist[0].push_back({node.key, node.val});
@@ -712,10 +756,10 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 		}
 
-		// std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
+		// if (Canout) std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
 		for (auto& node : TOP_20percent.Bottom.vec)
 		{
-			// std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
 			// !注意用OLD的数据计算CNT的优先级
 			// flow_pg_class_table[CNT_DATA][node.key] = 2;
 
@@ -1363,6 +1407,181 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				}
 			}
 
+			// plan L: new feature:gap_pkt_size
+// if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 520.50)
+//  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 256.50)
+//   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 3.51)
+//    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 212.00)
+//     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//     else
+//      if(flow_speed_table[CNT_DATA][node.key] <= 45.40)
+//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//      else
+//       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.00)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//    else
+//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2430.67)
+//      if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
+//       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = GAME;
+//      else
+//       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.01)
+//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//     else
+//      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+//       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 22830.26)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//   else
+//    if(flow_speed_table[CNT_DATA][node.key] <= 2.53)
+//      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//    else
+//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2553.10)
+//      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.00)
+//       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 9.00)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//      else
+//       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 15.01)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//  else
+//   if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+//    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 5583.50)
+//     if(flow_speed_table[CNT_DATA][node.key] <= 8834.90)
+//      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2004.00)
+//       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.08)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//      else
+//       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//    else
+//     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 8176.00)
+//       flow_pg_class_table[CNT_DATA][node.key] = GAME;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//   else
+//    if(flow_speed_table[CNT_DATA][node.key] <= 839.73)
+//     if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.19)
+//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//    else
+//     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.04)
+//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.72)
+//        flow_pg_class_table[CNT_DATA][node.key] = GAME;
+//      else
+//       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 122.26)
+//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// else
+//  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1349.50)
+//   if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
+//    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 179.32)
+//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//    else
+//     if(flow_speed_table[CNT_DATA][node.key] <= 1130.52)
+//      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.00)
+//       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 725.50)
+//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//     else
+//      if(flow_speed_table[CNT_DATA][node.key] <= 5866.14)
+//        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//      else
+//       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 1378.00)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//   else
+//    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 33998.50)
+//     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 853.00)
+//       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//     else
+//       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+//    else
+//     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 961.00)
+//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.41)
+//       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.50)
+//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+//      else
+//       if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
+//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//       else
+//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//     else
+//      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 48423.50)
+//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//  else
+//   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 35.22)
+//    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
+//     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.56)
+//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.71)
+//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//     else
+//      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 16986.83)
+//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//    else
+//     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2568.50)
+//       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//     else
+//      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
+//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//   else
+//    if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1419.00)
+//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 5920.59)
+//       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//     else
+//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 128.29)
+//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+//      else
+//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+//    else
+//      flow_pg_class_table[CNT_DATA][node.key] = VOD;
+
+
+			if (flow_pg_class_table[CNT_DATA][node.key] == 2)			tmpFlowlist[1].push_back({node.key, node.val});
+			else if (flow_pg_class_table[CNT_DATA][node.key] == 3)		tmpFlowlist[2].push_back({node.key, node.val});
+
 
 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
 															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
@@ -1375,17 +1594,17 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			flow_current_frate_table[CNT_DATA][node.key] = 0;
 		}
 
-		std::cout << "High class: " << tmpFlowlist[0].size() <<'\n';
+		if (Canout) std::cout << "High class: " << tmpFlowlist[0].size() <<'\n';
 		for (auto& iter : tmpFlowlist[0])
-			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
-		std::cout << "Mid class: " << tmpFlowlist[1].size() <<'\n';
+			if (Canout) std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+		if (Canout) std::cout << "Mid class: " << tmpFlowlist[1].size() <<'\n';
 		for (auto& iter : tmpFlowlist[1])
-			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
-		std::cout << "Low class: " << tmpFlowlist[2].size() <<'\n';
+			if (Canout) std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+		if (Canout) std::cout << "Low class: " << tmpFlowlist[2].size() <<'\n';
 		for (auto& iter : tmpFlowlist[2])
-			std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
+			if (Canout) std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
 
-		std::cout << TOP_20percent.size() << ':' << TOP_20percent.Top.size() << ':' << TOP_20percent.Bottom.size() << '\n';
+		if (Canout) std::cout << TOP_20percent.size() << ':' << TOP_20percent.Top.size() << ':' << TOP_20percent.Bottom.size() << '\n';
 
 
 		// *老化更新流表
@@ -1405,6 +1624,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			flow_max_pkt_size_table[CNT_DATA].erase(k);
 			flow_min_pkt_size_table[CNT_DATA].erase(k);
 			flow_avg_pkt_size_table[CNT_DATA].erase(k);
+			flow_gap_pkt_size_table[CNT_DATA].erase(k);
 
 			flow_current_burst_size_table[CNT_DATA].erase(k);
 			flow_max_burst_size_table[CNT_DATA].erase(k);
@@ -1433,6 +1653,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		flow_max_pkt_size_table[OLD_DATA] 			= flow_max_pkt_size_table[CNT_DATA];
 		flow_min_pkt_size_table[OLD_DATA] 			= flow_min_pkt_size_table[CNT_DATA];
 		flow_avg_pkt_size_table[OLD_DATA] 			= flow_avg_pkt_size_table[CNT_DATA];
+		flow_gap_pkt_size_table[OLD_DATA]			= flow_gap_pkt_size_table[CNT_DATA];
 
 		flow_current_burst_size_table[OLD_DATA] 	= flow_current_burst_size_table[CNT_DATA];
 		flow_max_burst_size_table[OLD_DATA] 		= flow_max_burst_size_table[CNT_DATA];
@@ -1446,7 +1667,10 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		index = 1;
 
 		CallNum++;
-		Simulator::Schedule(Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
+		// if (Simulator::Now().GetSeconds() <= 15.0)
+		// 	Simulator::Schedule(Seconds(0.2), &SwitchNode::Switch_FlowPrinter, this);
+		// else
+			Simulator::Schedule(Seconds(FlowPrinter_interval), &SwitchNode::Switch_FlowPrinter, this);
 	}
 
 	// 留作后续调度用：尚未声明

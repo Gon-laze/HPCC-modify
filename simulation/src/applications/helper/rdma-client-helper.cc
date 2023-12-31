@@ -68,7 +68,7 @@ RdmaClientHelper::Install (NodeContainer c)
   for (NodeContainer::Iterator i = c.Begin (); i != c.End (); ++i)
     {
       Ptr<Node> node = *i;
-      std::cout << "CP2\n";
+      std::cout << "CP2: RdmaClient Helper start.\n";
       Ptr<RdmaClient> client = m_factory.Create<RdmaClient> ();
       node->AddApplication (client);
       apps.Add (client);

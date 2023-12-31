@@ -302,7 +302,7 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 	qp->SetBaseRtt(baseRtt);
 	qp->SetVarWin(m_var_win);
 	qp->SetAppNotifyCallback(notifyAppFinish);
-	std::cout << "CP5\n";
+	std::cout << "CP5: QP configure set.\n";
 	// 初始化包数目以及输入, 打开日志记录准备输入
 	#ifdef MODIFY_ON
 		qp->m_sent = 0;
@@ -355,7 +355,7 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 			// Custom_Packet_Info_log << "Test begin!\n";
 		#endif
 	#endif
-	std::cout << "CP6\n";
+	std::cout << "CP6: QP configure set successfully!\n";
 	// add qp
 	uint32_t nic_idx = GetNicIdxOfQp(qp);
 	m_nic[nic_idx].qpGrp->AddQp(qp);

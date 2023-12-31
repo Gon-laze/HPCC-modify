@@ -164,7 +164,7 @@ void ScheduleFlowInputs(){
 		uint32_t port = portNumder[flow_input.src][flow_input.dst]++; // get a new port number 
 		// *尝试传入fstream指针
 		#ifdef MODIFY_ON
-			std::cout << "CP1\n";
+			std::cout << "CP1: Read flows.\n";
 			// if (flowPkt_fileGroup[flow_input.idx].is_open())
 			// 	std::cout << "init Test begin!\n";
 			// else
@@ -178,6 +178,15 @@ void ScheduleFlowInputs(){
 				if (flow_input.idx < 135)			origin_pg = 1;
 				else if (flow_input.idx < 165)		origin_pg = 2;
 				else								origin_pg = 3;
+
+				// if (flow_input.idx < 45)			origin_pg = 1;
+				// else if (flow_input.idx < 180)		origin_pg = 2;
+				// else								origin_pg = 3;
+
+
+				// if (flow_input.idx < 45)			origin_pg = 1;
+				// else if (flow_input.idx < 55)		origin_pg = 2;
+				// else								origin_pg = 3;
 				sw->load_OriginFlow_msg(serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, 0x11, origin_pg);
 			}
 			
@@ -760,26 +769,26 @@ int main(int argc, char *argv[])
 	// 	// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[i]<< '\n';	   
 
 	// }
-		// for (int i=0; i<20; i++)
+		// for (int i=0; i<60; i++)
 		// {
-		// 	std::string fhead{"mix/CPinfo_"};
+		// 	std::string fhead{"mix/300_big_small_txt/small/small_"};
 		// 	std::string ftail{".txt"};
 
 		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
 		// }
-		// for (int i=0; i<20; i++)
-		// {
-		// 	std::string fhead{"mix/big-small-txt3/64KB_"};
-		// 	std::string ftail{".txt"};
-
-		// 	flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
-		// }
 		// for (int i=0; i<60; i++)
 		// {
-		// 	std::string fhead{"mix/big-small-txt3/1MB_"};
+		// 	std::string fhead{"mix/300_big_small_txt/middle/middle_"};
 		// 	std::string ftail{".txt"};
 
-		// 	flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	flowPkt_fileGroup[i+60].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<180; i++)
+		// {
+		// 	std::string fhead{"mix/300_big_small_txt/big/big_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+120].open(fhead.append(std::to_string(i).append(ftail)));
 		// }
 
 		// for (int i=0; i<135; i++)
@@ -871,6 +880,109 @@ int main(int argc, char *argv[])
 
 			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
 		}
+
+		// for (int i=0; i<45; i++)
+		// {
+		// 	std::string fhead{"mix/100_mix_size_txt/high/high_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=45; i<55; i++)
+		// {
+		// 	std::string fhead{"mix/100_mix_size_txt/middle/middle_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i-45).append(ftail)));
+		// }
+		// for (int i=55; i<100; i++)
+		// {
+		// 	std::string fhead{"mix/100_mix_size_txt/low/low_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i-55).append(ftail)));
+		// }
+
+		// for (int i=0; i<20; i++)
+		// {
+		// 	std::string fhead{"mix/100_big_small_txt/middle/middle_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=20; i<80; i++)
+		// {
+		// 	std::string fhead{"mix/100_big_small_txt/big/big_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i-20).append(ftail)));
+		// }
+
+		// for (int i=0; i<45; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_txt2/high/high_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=45; i<180; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_txt2/middle/middle_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i-45).append(ftail)));
+		// }
+		// for (int i=180; i<300; i++)
+		// {
+		// 	std::string fhead{"mix/300_mix_txt2/low/low_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i-180).append(ftail)));
+		// }
+		
+		// for (int i=0; i<20; i++)
+		// {
+		// 	std::string fhead{"mix/100_big_small_noshapping_txt/small/small_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<20; i++)
+		// {
+		// 	std::string fhead{"mix/100_big_small_noshapping_txt/middle/middle_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+20].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<60; i++)
+		// {
+		// 	std::string fhead{"mix/100_big_small_noshapping_txt/big/big_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+40].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+
+		// for (int i=0; i<60; i++)
+		// {
+		// 	std::string fhead{"mix/300_big_small_noshapping_txt/small/small_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<60; i++)
+		// {
+		// 	std::string fhead{"mix/300_big_small_noshapping_txt/middle/middle_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+60].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
+		// for (int i=0; i<180; i++)
+		// {
+		// 	std::string fhead{"mix/300_big_small_noshapping_txt/big/big_"};
+		// 	std::string ftail{".txt"};
+
+		// 	flowPkt_fileGroup[i+120].open(fhead.append(std::to_string(i).append(ftail)));
+		// }
 	#endif
 
 	// 临时测试
@@ -1199,7 +1311,7 @@ int main(int argc, char *argv[])
 		// 尝试直接通过switchNode打印流信息
 		for (int i=0; i<node_num; i++)
 			if (n.Get(i)->GetNodeType() > 0)
-				Simulator::Schedule(Seconds(3.0) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
+				Simulator::Schedule(Seconds(2) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
 
 	#endif
 
