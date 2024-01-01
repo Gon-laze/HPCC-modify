@@ -26,6 +26,10 @@
 #include "ns3/point-to-point-net-device.h"
 #include "ns3/event-id.h"
 
+#ifndef MODIFY_ON
+#define MODIFY_ON
+#endif
+
 namespace ns3 {
 
 	class TraceContainer;
@@ -43,12 +47,29 @@ namespace ns3 {
 		uint32_t GetNBytesTotal() const;
 		uint32_t GetLastQueue();
 
+		#ifdef MODIFY_ON
+			Ptr<Packet> Dequeue_QoS(bool paused[]);
+		#endif
+
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqEnqueue;
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqDequeue;
 
 	private:
 		bool DoEnqueue(Ptr<Packet> p, uint32_t qIndex);
+
 		Ptr<Packet> DoDequeueRR(bool paused[]);
+		#ifdef MODIFY_ON
+			Ptr<Packet> DoDequeueSP(bool paused[]);
+			Ptr<Packet> DoDequeueWRR(bool paused[]);
+			Ptr<Packet> DoDequeueWFQ(bool paused[]);
+
+			// *仅针对WRR设置：每个优先级每轮的发包数目上限
+			static const int WRR_MAXPNUM = 128;
+			int WRR_token[qCnt + 1] = {};
+			// *仅针对WRR设置：每个优先级每轮的发包大小上限
+			static const int WFQ_MAXPNUM = 1024;
+			int WFQ_token[qCnt + 1] = {};
+		#endif
 		//for compatibility
 		virtual bool DoEnqueue(Ptr<Packet> p);
 		virtual Ptr<Packet> DoDequeue(void);

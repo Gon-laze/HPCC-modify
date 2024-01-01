@@ -179,6 +179,223 @@ namespace ns3 {
 		return packet;
 	}
 
+	#ifdef MODIFY_ON
+	Ptr<Packet>
+		BEgressQueue::Dequeue_QoS(bool paused[])
+	{
+		NS_LOG_FUNCTION(this);
+
+		// *根据具体的需求可变更算法（SP,WRR,WFQ）
+		Ptr<Packet> packet = DoDequeueSP(paused);
+		if (packet != 0)
+		{
+			NS_ASSERT(m_nBytes >= packet->GetSize());
+			NS_ASSERT(m_nPackets > 0);
+			m_nBytes -= packet->GetSize();
+			m_nPackets--;
+			NS_LOG_LOGIC("m_traceDequeue (packet)");
+			m_traceDequeue(packet);
+		}
+		return packet;
+	}
+
+	Ptr<Packet>
+		BEgressQueue::DoDequeueSP(bool paused[]) //this is for switch only
+	{
+		NS_LOG_FUNCTION(this);
+
+		if (m_bytesInQueueTotal == 0)
+		{
+			NS_LOG_LOGIC("Queue empty");
+			return 0;
+		}
+		bool found = false;
+		uint32_t qIndex;
+
+		if (m_queues[0]->GetNPackets() > 0) //0 is the highest priority
+		{
+			found = true;
+			qIndex = 0;
+		}
+
+		if (!found)
+		{
+			for (qIndex = 1; qIndex <= qCnt; qIndex++)
+			{
+				if (!paused[(qIndex) % qCnt] && m_queues[(qIndex) % qCnt]->GetNPackets() > 0)  //round robin
+				{
+					found = true;
+					break;
+				}
+			}
+			// qIndex = (qIndex + m_rrlast) % qCnt;
+		}
+
+		if (found)
+		{
+			Ptr<Packet> p = m_queues[qIndex]->Dequeue();
+			m_traceBeqDequeue(p, qIndex);
+			m_bytesInQueueTotal -= p->GetSize();
+			m_bytesInQueue[qIndex] -= p->GetSize();
+			if (qIndex != 0)
+			{
+				m_rrlast = qIndex;
+			}
+			m_qlast = qIndex;
+			NS_LOG_LOGIC("Popped " << p);
+			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
+			return p;
+		}
+		NS_LOG_LOGIC("Nothing can be sent");
+		return 0;
+	}
+	
+	Ptr<Packet>
+		BEgressQueue::DoDequeueWRR(bool paused[]) //this is for switch only
+	{
+		NS_LOG_FUNCTION(this);
+
+		if (m_bytesInQueueTotal == 0)
+		{
+			NS_LOG_LOGIC("Queue empty");
+			return 0;
+		}
+		bool found = false;
+		uint32_t qIndex;
+
+		if (m_queues[0]->GetNPackets() > 0) //0 is the highest priority
+		{
+			found = true;
+			qIndex = 0;
+		}
+
+		if (!found)
+		{
+			int empty_num;
+			while(1)
+			{
+				empty_num = 0;
+				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+					if (WRR_token[tmpI] <= 0)
+						empty_num++;
+				
+				if (empty_num < qCnt)
+					break;
+				else
+				{
+					for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+						WRR_token[tmpI] += WRR_MAXPNUM;
+				}
+			}
+
+			for (qIndex = 1; qIndex <= qCnt; qIndex++)
+			{
+				int i = (qIndex + m_rrlast) % qCnt;
+				if (!paused[i] && m_queues[i]->GetNPackets() > 0 && WRR_token[i] > 0)  // 注意token判别环节
+				{
+					
+					found = true;
+					break;
+				}
+			}
+			qIndex = (qIndex + m_rrlast) % qCnt;
+		}
+
+		if (found)
+		{
+			Ptr<Packet> p = m_queues[qIndex]->Dequeue();
+			m_traceBeqDequeue(p, qIndex);
+			m_bytesInQueueTotal -= p->GetSize();
+			m_bytesInQueue[qIndex] -= p->GetSize();
+			if (qIndex != 0)
+			{
+				m_rrlast = qIndex;
+			}
+			m_qlast = qIndex;
+			// !注意新增的token减少环节
+			WRR_token[qIndex]--;
+			NS_LOG_LOGIC("Popped " << p);
+			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
+			return p;
+		}
+		NS_LOG_LOGIC("Nothing can be sent");
+		return 0;
+	}
+
+	Ptr<Packet>
+		BEgressQueue::DoDequeueWFQ(bool paused[]) //this is for switch only
+	{
+		NS_LOG_FUNCTION(this);
+
+		if (m_bytesInQueueTotal == 0)
+		{
+			NS_LOG_LOGIC("Queue empty");
+			return 0;
+		}
+		bool found = false;
+		uint32_t qIndex;
+
+		if (m_queues[0]->GetNPackets() > 0) //0 is the highest priority
+		{
+			found = true;
+			qIndex = 0;
+		}
+
+		if (!found)
+		{
+			int empty_num;
+			while(1)
+			{
+				empty_num = 0;
+				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+					if (WFQ_token[tmpI] <= 0)
+						empty_num++;
+				
+				if (empty_num < qCnt)
+					break;
+				else
+				{
+					for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+						WFQ_token[tmpI] += WFQ_MAXPNUM;
+				}
+			}
+
+			for (qIndex = 1; qIndex <= qCnt; qIndex++)
+			{
+				int i = qIndex;
+				if (!paused[i] && m_queues[i]->GetNPackets() > 0 && WFQ_token[i] > 0)  // 注意token判别环节
+				{
+					
+					found = true;
+					break;
+				}
+			}
+			qIndex = (qIndex + m_rrlast) % qCnt;
+		}
+
+		if (found)
+		{
+			Ptr<Packet> p = m_queues[qIndex]->Dequeue();
+			m_traceBeqDequeue(p, qIndex);
+			m_bytesInQueueTotal -= p->GetSize();
+			m_bytesInQueue[qIndex] -= p->GetSize();
+			if (qIndex != 0)
+			{
+				m_rrlast = qIndex;
+			}
+			m_qlast = qIndex;
+			// !注意新增的token减少环节
+			WRR_token[qIndex] -= p->GetSize();
+			NS_LOG_LOGIC("Popped " << p);
+			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
+			return p;
+		}
+		NS_LOG_LOGIC("Nothing can be sent");
+		return 0;
+	}
+
+	#endif
+
 	bool
 		BEgressQueue::DoEnqueue(Ptr<Packet> p)	//for compatiability
 	{

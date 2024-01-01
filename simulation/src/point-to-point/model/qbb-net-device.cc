@@ -317,7 +317,12 @@ namespace ns3 {
 			}
 			return;
 		}else{   //switch, doesn't care about qcn, just send
+			// TODO: 改用其他的调度算法
+			#ifdef MODIFY_ON
+			p = m_queue->Dequeue_QoS(m_paused);
+			#else
 			p = m_queue->DequeueRR(m_paused);		//this is round-robin
+			#endif
 			if (p != 0){
 				m_snifferTrace(p);
 				m_promiscSnifferTrace(p);
