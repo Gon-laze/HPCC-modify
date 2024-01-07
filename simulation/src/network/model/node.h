@@ -40,6 +40,13 @@
 	#define CHECKPOINT_ON
 #endif
 
+#ifdef MODIFY_ON
+	#include<unordered_map>
+	#include<algorithm>
+  #include<string>
+#endif
+
+
 
 namespace ns3 {
 
@@ -343,9 +350,14 @@ public:
   // 仅为供给SwitchNode统计特征而留下的虚函数接口；理论上Node不可用
  
   #ifdef MODIFY_ON
+    // 为switch设计，采用虚函数的方式
     virtual void Switch_FeatureGenerator(Ptr<const Packet> p, CustomHeader &ch);
     virtual void Switch_FeaturePrinter();
     virtual void Switch_FlowPrinter();
+
+    // 仅为node设计，用实函数（不要在switchNode内调用）
+    // ?既然是继承类，后续不妨全部移至Node内实现？
+    std::unordered_map <std::string,double> flow_last_arrive_table;
   #endif
 };
 

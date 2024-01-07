@@ -1,0 +1,2048 @@
+ENABLE_QCN			Yes
+USE_DYNAMIC_PFC_THRESHOLD	Yes
+PACKET_PAYLOAD_SIZE		1000
+TOPOLOGY_FILE			mix/topology.txt
+FLOW_FILE			mix/flow.txt
+TRACE_FILE			mix/trace.txt
+TRACE_OUTPUT_FILE		mix/mix.tr
+FCT_OUTPUT_FILE		mix/fct.txt
+PFC_OUTPUT_FILE				mix/pfc.txt
+SIMULATOR_STOP_TIME		20000
+CC_MODE		3
+ALPHA_RESUME_INTERVAL		1
+RATE_DECREASE_INTERVAL		4
+CLAMP_TARGET_RATE		No
+RP_TIMER			900
+EWMA_GAIN			0.00390625
+FAST_RECOVERY_TIMES		1
+RATE_AI				50Mb/s
+RATE_HAI			100Mb/s
+MIN_RATE		100Mb/s
+DCTCP_RATE_AI				1000Mb/s
+ERROR_RATE_PER_LINK		0
+L2_CHUNK_SIZE			4000
+L2_ACK_INTERVAL			1
+L2_BACK_TO_ZERO			No
+HAS_WIN		1
+GLOBAL_T		1
+VAR_WIN		1
+FAST_REACT		1
+U_TARGET		0.95
+MI_THRESH		0
+INT_MULTI				1
+MULTI_RATE				0
+SAMPLE_FEEDBACK				0
+PINT_LOG_BASE				1.05
+PINT_PROB				1
+RATE_BOUND		1
+ACK_HIGH_PRIO		0
+LINK_DOWN				0 0 0
+ENABLE_TRACE				1
+KMAX_MAP				 25000000000 400 50000000000 800 100000000000 1600
+KMIN_MAP				 25000000000 100 50000000000 200 100000000000 400
+PMAX_MAP				 25000000000 0.2 50000000000 0.2 100000000000 0.2
+BUFFER_SIZE				32
+QLEN_MON_FILE				mix/qlen.txt
+QLEN_MON_START				2000000000
+QLEN_MON_END				2010000000
+Add: node 0 device Num: 1
+Add: node 1 device Num: 1
+Add: node 2 device Num: 1
+Add: node 3 device Num: 1
+Add: node 4 device Num: 1
+init: node 1 device Num: 1
+init: node 2 device Num: 1
+init: node 3 device Num: 1
+init: node 4 device Num: 1
+Add: node 1 device Num: 2
+Add: node 0 device Num: 2
+Add: node 2 device Num: 2
+Add: node 0 device Num: 3
+Add: node 3 device Num: 2
+Add: node 0 device Num: 4
+Add: node 0 device Num: 5
+Add: node 4 device Num: 2
+Node[1] has m_nic Nums 2
+	Node[1]m_nic[0]QpGrpstatus:
+	Node[1]m_nic[1]QpGrpstatus:
+Node[2] has m_nic Nums 2
+	Node[2]m_nic[0]QpGrpstatus:
+	Node[2]m_nic[1]QpGrpstatus:
+Node[3] has m_nic Nums 2
+	Node[3]m_nic[0]QpGrpstatus:
+	Node[3]m_nic[1]QpGrpstatus:
+Node[4] has m_nic Nums 2
+	Node[4]m_nic[0]QpGrpstatus:
+	Node[4]m_nic[1]QpGrpstatus:
+maxRtt=4160 maxBdp=52000
+Running Simulation.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configur

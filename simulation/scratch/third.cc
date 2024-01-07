@@ -1337,6 +1337,22 @@ int main(int argc, char *argv[])
 			flowPkt_fileGroup[i].close();
 	#endif
 
+	// /新增收端检测
+	// #ifdef MODIFY_ON
+		
+	// 	for (int i=0; i<node_num; i++)
+	// 	{
+	// 		if (n.Get(i)->GetNodeType() > 0)	continue;
+			
+	// 		Ptr<Node> nptr = n.Get(i);
+	// 		std::cout << "Node id: " << nptr->GetId() << '\n';
+	// 		for (auto iter : nptr->flow_last_pkt_time_table)
+	// 			std::cout << '\t' << iter.first << '\t' << iter.second << '\n';
+			
+	// 	}
+
+	// #endif
+
 	endt = clock();
 	std::cout << (double)(endt - begint) / CLOCKS_PER_SEC << "\n";
 

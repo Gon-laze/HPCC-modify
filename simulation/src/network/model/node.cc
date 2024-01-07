@@ -276,6 +276,7 @@ Node::NonPromiscReceiveFromDevice (Ptr<NetDevice> device, Ptr<const Packet> pack
   return ReceiveFromDevice (device, packet, protocol, from, device->GetAddress (), NetDevice::PacketType (0), false);
 }
 
+// !这个有点意思，可能是接受包的上游函数。有需要的话记得看看
 bool
 Node::ReceiveFromDevice (Ptr<NetDevice> device, Ptr<const Packet> packet, uint16_t protocol,
                          const Address &from, const Address &to, NetDevice::PacketType packetType, bool promiscuous)

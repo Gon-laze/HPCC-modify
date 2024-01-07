@@ -117,7 +117,25 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 		if (ch.l3Prot == 0xFF || ch.l3Prot == 0xFE || (m_ackHighPrio && (ch.l3Prot == 0xFD || ch.l3Prot == 0xFC))){  //QCN or PFC or NACK, go highest priority
 			qIndex = 0;
 		}else{
-			qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+			// !改用测量而得到的优先级作为新的qIndex优先级。该部分尚未测试
+			// TODO: qindex设置成其他值出错了。为什么？
+			// #ifdef MODIFY_ON
+			// 	auto ip2string = [](uint32_t ip)
+			// 	{
+			// 		return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
+			// 	};
+			// 	std::string key_sip = ip2string(ch.sip);
+			// 	std::string key_dip = ip2string(ch.dip);
+			// 	std::string key_sport = std::to_string(ch.udp.sport);
+			// 	std::string key_dport = std::to_string(ch.udp.dport);
+			// 	std::string key_proto = std::to_string(ch.l3Prot);
+			// 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+			// qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]); // if TCP, put to queue 1	
+			// #else
+			// 	qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+			// #endif
+				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+
 		}
 
 		// admission control

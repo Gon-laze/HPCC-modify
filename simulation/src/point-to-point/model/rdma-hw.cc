@@ -639,7 +639,6 @@ void RdmaHw::DeleteRxQp(uint32_t dip, uint16_t pg, uint16_t dport){
 // 	return;
 // }
 
-
 int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	/*
 	CustomerHeader中，udp协议的构成元素
@@ -681,6 +680,24 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	}
 	rxQp->m_ecn_source.total++;
 	rxQp->m_milestone_rx = m_ack_interval;
+
+
+	// *收端包统计
+	#ifdef MODIFY_ON
+		auto ip2string = [](uint32_t ip)
+		{
+			return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
+		};
+		std::string key_sip = ip2string(ch.sip);
+		std::string key_dip = ip2string(ch.dip);
+		std::string key_sport = std::to_string(ch.udp.sport);
+		std::string key_dport = std::to_string(ch.udp.dport);
+		std::string key_proto = std::to_string(ch.l3Prot);
+		std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+
+		m_node->flow_last_arrive_table[fivetuples] = Simulator::Now().GetSeconds();
+	#endif
+
 
 	int x = ReceiverCheckSeq(ch.udp.seq, rxQp, payload_size);
 	if (x == 1 || x == 2){ //generate ACK or NACK
@@ -848,6 +865,7 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 }
 
 int RdmaHw::Receive(Ptr<Packet> p, CustomHeader &ch){
+	// *目前回放只采用UDP，所以接收端测量只在ReciveUdp内实现
 	if (ch.l3Prot == 0x11){ // UDP
 		#ifdef CHECKPOINT_ON
 			std::cout << "checkpoint UDP begin\n";
