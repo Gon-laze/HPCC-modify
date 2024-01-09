@@ -280,6 +280,10 @@ public:
     // !为了比较新旧优先级而设置
     void load_OriginFlow_msg(Ipv4Address sip, Ipv4Address dip, uint16_t sport, uint16_t dport, uint8_t protocol, uint32_t pg);
     std::unordered_map<std::string, uint32_t> origin_pg;
+
+    // *为IFC而临时设置：为每个优先级统计当前流数目
+    // 基于qCnt = 8
+    double pg_queueRate[8+1] = {};
 #endif
 
 protected:

@@ -51,6 +51,10 @@
 
 NS_LOG_COMPONENT_DEFINE("QbbNetDevice");
 
+#ifdef MODIFY_ON
+#include<ns3/switch-node.h>
+#endif
+
 namespace ns3 {
 	
 	uint32_t RdmaEgressQueue::ack_q_idx = 3;
@@ -319,7 +323,10 @@ namespace ns3 {
 		}else{   //switch, doesn't care about qcn, just send
 			// TODO: 改用其他的调度算法
 			#ifdef MODIFY_ON
-			p = m_queue->Dequeue_QoS(m_paused);
+			// *改用IFC
+			uint32_t* queuesize = new uint32_t[qCnt+1];
+			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(m_node);
+			p = m_queue->Dequeue_QoS(m_paused, sw->pg_queueRate);
 			#else
 			p = m_queue->DequeueRR(m_paused);		//this is round-robin
 			#endif

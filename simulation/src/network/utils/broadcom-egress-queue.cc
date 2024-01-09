@@ -180,13 +180,34 @@ namespace ns3 {
 	}
 
 	#ifdef MODIFY_ON
+	// *不附带参数，用于SP，WRR，WFQ
+	// Ptr<Packet>
+	// 	BEgressQueue::Dequeue_QoS(bool paused[])
+	// {
+	// 	NS_LOG_FUNCTION(this);
+
+	// 	// *根据具体的需求可变更算法（SP,WRR,WFQ）
+	// 	Ptr<Packet> packet = DoDequeueSP(paused);
+	// 	if (packet != 0)
+	// 	{
+	// 		NS_ASSERT(m_nBytes >= packet->GetSize());
+	// 		NS_ASSERT(m_nPackets > 0);
+	// 		m_nBytes -= packet->GetSize();
+	// 		m_nPackets--;
+	// 		NS_LOG_LOGIC("m_traceDequeue (packet)");
+	// 		m_traceDequeue(packet);
+	// 	}
+	// 	return packet;
+	// }
+
+	// *附带参数，用于IFC
 	Ptr<Packet>
-		BEgressQueue::Dequeue_QoS(bool paused[])
+		BEgressQueue::Dequeue_QoS(bool paused[], void* args)
 	{
 		NS_LOG_FUNCTION(this);
 
-		// *根据具体的需求可变更算法（SP,WRR,WFQ）
-		Ptr<Packet> packet = DoDequeueSP(paused);
+		// *根据具体的需求可变更算法(（IFC）
+		Ptr<Packet> packet = DoDequeueIFC(paused, args);
 		if (packet != 0)
 		{
 			NS_ASSERT(m_nBytes >= packet->GetSize());
@@ -364,6 +385,83 @@ namespace ns3 {
 			{
 				int i = qIndex;
 				if (!paused[i] && m_queues[i]->GetNPackets() > 0 && WFQ_token[i] > 0)  // 注意token判别环节
+				{
+					
+					found = true;
+					break;
+				}
+			}
+			qIndex = (qIndex + m_rrlast) % qCnt;
+		}
+
+		if (found)
+		{
+			Ptr<Packet> p = m_queues[qIndex]->Dequeue();
+			m_traceBeqDequeue(p, qIndex);
+			m_bytesInQueueTotal -= p->GetSize();
+			m_bytesInQueue[qIndex] -= p->GetSize();
+			if (qIndex != 0)
+			{
+				m_rrlast = qIndex;
+			}
+			m_qlast = qIndex;
+			// !注意新增的token减少环节
+			WRR_token[qIndex] -= p->GetSize();
+			NS_LOG_LOGIC("Popped " << p);
+			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
+			return p;
+		}
+		NS_LOG_LOGIC("Nothing can be sent");
+		return 0;
+	}
+	
+	Ptr<Packet>
+		BEgressQueue::DoDequeueIFC(bool paused[], double queueSize[]) //this is for switch only
+	{
+		NS_LOG_FUNCTION(this);
+
+		if (m_bytesInQueueTotal == 0)
+		{
+			NS_LOG_LOGIC("Queue empty");
+			return 0;
+		}
+		bool found = false;
+		uint32_t qIndex;
+
+		if (m_queues[0]->GetNPackets() > 0) //0 is the highest priority
+		{
+			found = true;
+			qIndex = 0;
+		}
+
+		if (!found)
+		{
+			int empty_num;
+			while(1)
+			{
+				empty_num = 0;
+				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+					if (IFC_token[tmpI] <= 0)
+						empty_num++;
+				
+				if (empty_num < qCnt)
+					break;
+				else
+				{
+					int tmpSize = IFC_MAXPNUM;
+					for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+					{
+						tmpSize = (int)(tmpSize*(1.0-queueSize[tmpI-1]));
+						IFC_token[tmpI] += tmpSize;
+					}
+
+				}
+			}
+
+			for (qIndex = 1; qIndex <= qCnt; qIndex++)
+			{
+				int i = qIndex;
+				if (!paused[i] && m_queues[i]->GetNPackets() > 0 && IFC_token[i] > 0)  // 注意token判别环节
 				{
 					
 					found = true;

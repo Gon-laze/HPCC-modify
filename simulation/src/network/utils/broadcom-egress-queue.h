@@ -49,6 +49,7 @@ namespace ns3 {
 
 		#ifdef MODIFY_ON
 			Ptr<Packet> Dequeue_QoS(bool paused[]);
+			Ptr<Packet> Dequeue_QoS(bool paused[], void* args);
 		#endif
 
 		TracedCallback<Ptr<const Packet>, uint32_t> m_traceBeqEnqueue;
@@ -62,6 +63,7 @@ namespace ns3 {
 			Ptr<Packet> DoDequeueSP(bool paused[]);
 			Ptr<Packet> DoDequeueWRR(bool paused[]);
 			Ptr<Packet> DoDequeueWFQ(bool paused[]);
+			Ptr<Packet> DoDequeueIFC(bool paused[], double[]);
 
 			// *仅针对WRR设置：每个优先级每轮的发包数目上限
 			static const int WRR_MAXPNUM = 128;
@@ -69,6 +71,9 @@ namespace ns3 {
 			// *仅针对WRR设置：每个优先级每轮的发包大小上限
 			static const int WFQ_MAXPNUM = 1024;
 			int WFQ_token[qCnt + 1] = {};
+			// *仅针对IFC设置：基于比例分配发包数目大小上限
+			static const int IFC_MAXPNUM = 2048;
+			int IFC_token[qCnt + 1] = {};
 		#endif
 		//for compatibility
 		virtual bool DoEnqueue(Ptr<Packet> p);
