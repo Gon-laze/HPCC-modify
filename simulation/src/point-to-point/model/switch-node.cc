@@ -1629,7 +1629,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 		if (Canout) std::cout << TOP_20percent.size() << ':' << TOP_20percent.Top.size() << ':' << TOP_20percent.Bottom.size() << '\n';
 
-		// *为IFC添加
+		// *为IFC添加, 设置pg_queueRate
 		bool all_empty = true;
 		for (int i=0; i<3; i++)
 			all_empty = all_empty || tmpFlowlist[i].empty();
@@ -1644,7 +1644,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			for (int i=1; i<=3; i++)
 				tmp_totalNum += tmpFlowlist[i].size();
 			for (int i=1; i<=3; i++)
-				pg_queueRate += tmpFlowlist[i].size() / tmp_totalNum;
+				pg_queueRate[i] = tmpFlowlist[i].size() / tmp_totalNum;
 		}
 
 		// *老化更新流表

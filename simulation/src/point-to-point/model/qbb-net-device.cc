@@ -327,6 +327,7 @@ namespace ns3 {
 			uint32_t* queuesize = new uint32_t[qCnt+1];
 			Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(m_node);
 			p = m_queue->Dequeue_QoS(m_paused, sw->pg_queueRate);
+			// p = m_queue->DequeueRR(m_paused);		//this is round-robin
 			#else
 			p = m_queue->DequeueRR(m_paused);		//this is round-robin
 			#endif
