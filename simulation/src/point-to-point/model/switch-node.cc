@@ -120,21 +120,21 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 			// !改用测量而得到的优先级作为新的qIndex优先级。该部分尚未测试
 			// TODO: qindex设置成其他值出错了。为什么？
 			#ifdef MODIFY_ON
-				auto ip2string = [](uint32_t ip)
-				{
-					return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
-				};
-				std::string key_sip = ip2string(ch.sip);
-				std::string key_dip = ip2string(ch.dip);
-				std::string key_sport = std::to_string(ch.udp.sport);
-				std::string key_dport = std::to_string(ch.udp.dport);
-				std::string key_proto = std::to_string(ch.l3Prot);
-				std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
-				// *每次运用优先级都要检测（否则将初始化为0导致一系列错误）！！
-				// *多次踩这个坑太荒唐了......
-				if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
-					qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
-				else
+			// 	auto ip2string = [](uint32_t ip)
+			// 	{
+			// 		return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
+			// 	};
+			// 	std::string key_sip = ip2string(ch.sip);
+			// 	std::string key_dip = ip2string(ch.dip);
+			// 	std::string key_sport = std::to_string(ch.udp.sport);
+			// 	std::string key_dport = std::to_string(ch.udp.dport);
+			// 	std::string key_proto = std::to_string(ch.l3Prot);
+			// 	std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
+			// 	// *每次运用优先级都要检测（否则将初始化为0导致一系列错误）！！
+			// 	// *多次踩这个坑太荒唐了......
+			// 	if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+			// 		qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
+			// 	else
 					qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 			#else
 				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
