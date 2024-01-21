@@ -421,6 +421,7 @@ namespace ns3 {
 		NS_LOG_FUNCTION(this);
 
 		// fprintf(stderr, "DoDequeueIFC begin.\n");
+		printf("%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", IFC_token[0], IFC_token[1], IFC_token[2], IFC_token[3], IFC_token[4], IFC_token[5], IFC_token[6], IFC_token[7], IFC_token[8]);
 
 		if (m_bytesInQueueTotal == 0)
 		{
@@ -454,12 +455,16 @@ namespace ns3 {
 					for (int tmpI = 1; tmpI <= qCnt; tmpI++)
 					{
 						// 取上界避免死循环
+						printf("%d\n", tmpSize);
 						tmpSize = (int)(tmpSize*(1.0-queueSize[tmpI-1]));
-						IFC_token[tmpI] += (tmpSize+1);
+						// !是否由于时延过大而出错?
+						IFC_token[tmpI] = IFC_token[tmpI]+(tmpSize+1);
 					}
 
 				}
 			}
+
+			printf("\t%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", IFC_token[0], IFC_token[1], IFC_token[2], IFC_token[3], IFC_token[4], IFC_token[5], IFC_token[6], IFC_token[7], IFC_token[8]);
 
 			for (qIndex = 1; qIndex <= qCnt; qIndex++)
 			{
