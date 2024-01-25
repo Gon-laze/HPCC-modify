@@ -357,7 +357,11 @@ public:
 
     // 仅为node设计，用实函数（不要在switchNode内调用）
     // ?既然是继承类，后续不妨全部移至Node内实现？
-    std::unordered_map <std::string,double> flow_last_arrive_table;
+    std::unordered_map <std::string, double> flow_last_arrive_table;
+    std::unordered_map <std::string, double> flow_total_arrive_table;
+    std::unordered_map <std::string, double> flow_last_send_table;
+    std::unordered_map <std::string, double> flow_total_send_table;
+    std::unordered_map <std::string, uint32_t> flow_total_num_table;
   #endif
 };
 

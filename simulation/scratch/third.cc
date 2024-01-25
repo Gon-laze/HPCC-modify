@@ -1338,22 +1338,39 @@ int main(int argc, char *argv[])
 	#endif
 
 	// /新增收端检测
-	// #ifdef MODIFY_ON
-		
-	// 	for (int i=0; i<node_num; i++)
-	// 	{
-	// 		if (n.Get(i)->GetNodeType() > 0)	continue;
-			
-	// 		Ptr<Node> nptr = n.Get(i);
-	// 		std::cout << "Node id: " << nptr->GetId() << '\n';
-	// 		for (auto iter : nptr->flow_last_pkt_time_table)
-	// 			std::cout << '\t' << iter.first << '\t' << iter.second << '\n';
-			
-	// 	}
+	#ifdef MODIFY_ON
+		std::cout.precision(10);
 
-	// #endif
+		std::cout 	<< "flow id:" << "\t\t" 
+					<< "last send:" << "\t\t" 
+					<< "last arrive:" << "\t\t"
+					<< "send num:" << "\t\t"
+					<< "receive num" << "\t\t"
+					<< "avg delay:" << '\n'; 
+		Ptr<Node> receiveNodePtr = n.Get(4);
+		for (int i=1; i<=3; i++)
+		{
+			if (n.Get(i)->GetNodeType() > 0)	continue;
+			Ptr<Node> nptr = n.Get(i);
+			std::cout << "" << nptr->GetId() << '\n';
+			for (auto iter : nptr->flow_last_send_table)
+			{
+				auto key = iter.first;
+				std::cout 	<< key << "\t\t"
+							<< nptr->flow_last_send_table[key] << "\t\t"
+							<< receiveNodePtr->flow_last_arrive_table[key] << "\t\t"
+							<< nptr->flow_total_num_table[key] << "\t\t"
+							<< receiveNodePtr->flow_total_num_table[key] << "\t\t"
+							// ?希望没有丢包，否则收发端数目不一致....
+							<< (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key]) / nptr->flow_total_num_table[key] << '\n';
+			}
+			
+		}
+
+	#endif
 
 	endt = clock();
 	std::cout << (double)(endt - begint) / CLOCKS_PER_SEC << "\n";
 
 }
+

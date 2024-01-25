@@ -186,7 +186,7 @@ namespace ns3 {
 		NS_LOG_FUNCTION(this);
 
 		// *根据具体的需求可变更算法（SP,WRR,WFQ）
-		Ptr<Packet> packet = DoDequeueSP(paused);
+		Ptr<Packet> packet = DoDequeueWRR(paused);
 		if (packet != 0)
 		{
 			NS_ASSERT(m_nBytes >= packet->GetSize());

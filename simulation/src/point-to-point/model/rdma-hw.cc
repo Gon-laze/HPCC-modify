@@ -354,6 +354,18 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 			// 	std::cout << "Test failed!\n";
 			// Custom_Packet_Info_log << "Test begin!\n";
 		#endif
+
+		// *将string五元组也一并在创建的时候生成，以便收端统计
+		auto ip2string = [](uint32_t ip)
+		{
+			return 	 std::to_string(ip>>24 & 0xff)+':'+std::to_string(ip>>16 & 0xff)+':'+std::to_string(ip>>8 & 0xff)+std::to_string(ip & 0xff);
+		};
+		qp->QpFivetuples = 	ip2string(sip.Get()) + " " + \
+								ip2string(dip.Get()) + " " + \
+								std::to_string(sport) + " " + \
+								std::to_string(dport) + " " + \
+								std::to_string(0x11);
+
 	#endif
 	std::cout << "CP6: QP configure set successfully!\n";
 	// add qp
@@ -644,7 +656,7 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 	CustomerHeader中，udp协议的构成元素
 	struct {
 		  uint16_t sport;        //!< Source port
-		  uint16_t dport;   //!< Destination port
+		  uint16_t dport;   	//!< Destination port
 		  uint16_t payload_size;
 		  // SeqTsHeader
 		  uint16_t pg;
@@ -666,7 +678,7 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 			// std::cout << "##########################\n";
 			// std::cout << "CCmode: " << m_cc_mode << '\n';
 			// std::cout.precision(10);
-			// std::cout << Simulator::Now().GetSeconds() << '\t' << payload_size << "\n";
+			// std::cout << Simulator::Now().GetSe++conds() << '\t' << payload_size << "\n";
 		#endif
 	#endif
 
@@ -695,7 +707,21 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 		std::string key_proto = std::to_string(ch.l3Prot);
 		std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
 
-		m_node->flow_last_arrive_table[fivetuples] = Simulator::Now().GetSeconds();
+		double arriveTime = Simulator::Now().GetSeconds();
+
+		// std::cout << m_node->GetId() << ":arrive\n";
+		if (m_node->flow_last_arrive_table.find(fivetuples) == m_node->flow_total_arrive_table.end())
+		{
+			m_node->flow_last_arrive_table[fivetuples] = arriveTime;
+			m_node->flow_total_arrive_table[fivetuples] = 0.0;
+			m_node->flow_total_num_table[fivetuples] = 1;
+		}
+		else
+		{
+			m_node->flow_last_arrive_table[fivetuples] = arriveTime;
+			m_node->flow_total_num_table[fivetuples] += arriveTime;
+			m_node->flow_total_num_table[fivetuples]++;
+		}
 	#endif
 
 
@@ -1063,9 +1089,25 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	qp->snd_nxt += payload_size;
 	qp->m_ipid++;
 
-	// !暂时用qp和payloadsize凑数。自定义流量的话改为传Ptr<Packet>后解包即可
+	// 生成下一个qIndex时一并记录发包时间以及时延
+	// !实际上为了精确，这部分应该迁移到发包瞬间前。但考虑到fivetuples创建时延以及此方法执行后立刻触发TransmitStart()，先按照这样妥协一下
 	#ifdef MODIFY_ON
-		// Generate_feature_qp(qp, payload_size);
+		double sendTime = Simulator::Now().GetSeconds();
+
+		// std::cout << m_node->GetId() << ":send\n";
+		if (m_node->flow_last_send_table.find(qp->QpFivetuples) == m_node->flow_total_send_table.end())
+		{
+			m_node->flow_last_send_table[qp->QpFivetuples] = sendTime;
+			m_node->flow_total_send_table[qp->QpFivetuples] = 0.0;
+			m_node->flow_total_num_table[qp->QpFivetuples] = 1;
+		}
+		else
+		{
+			m_node->flow_last_send_table[qp->QpFivetuples] = sendTime;
+			m_node->flow_total_num_table[qp->QpFivetuples] += sendTime;
+			m_node->flow_total_num_table[qp->QpFivetuples]++;
+		}
+
 	#endif
 
 	// return

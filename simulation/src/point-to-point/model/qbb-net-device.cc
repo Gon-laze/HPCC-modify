@@ -320,6 +320,7 @@ namespace ns3 {
 			// TODO: 改用其他的调度算法
 			#ifdef MODIFY_ON
 			p = m_queue->Dequeue_QoS(m_paused);
+			// p = m_queue->DequeueRR(m_paused);
 			#else
 			p = m_queue->DequeueRR(m_paused);		//this is round-robin
 			#endif

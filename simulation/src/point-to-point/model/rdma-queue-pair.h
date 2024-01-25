@@ -59,6 +59,9 @@ public:
 			const char logName[] = "Pkt_log.txt";
 			bool is_Loginit = false;
 		#endif
+		
+		// *string形式的五元组
+		std::string QpFivetuples;
 	#endif
 
 	/******************************
