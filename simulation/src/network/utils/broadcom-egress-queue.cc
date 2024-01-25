@@ -293,14 +293,21 @@ namespace ns3 {
 		if (!found)
 		{
 			int empty_num;
+			int working_num;
 			while(1)
 			{
 				empty_num = 0;
+				working_num = 0;
 				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
-					if (WRR_token[tmpI] <= 0)
-						empty_num++;
+				{
+					if (m_queues[tmpI]->GetNPackets() > 0)
+					{
+						working_num++;
+						if (WRR_token[tmpI] <= 0)	empty_num++;
+					}
+				}
 				
-				if (empty_num < qCnt)
+				if (empty_num < working_num)
 					break;
 				else
 				{
@@ -308,6 +315,16 @@ namespace ns3 {
 						WRR_token[tmpI] += WRR_MAXPNUM;
 				}
 			}
+
+			// for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+			// 	std::cout << WRR_token[tmpI] << '\t';
+			// std::cout << '\n';
+
+			// std::cout << "-------------\n";
+
+			// for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+			// 	std::cout << m_queues[tmpI]->GetNPackets() << '\t';
+			// std::cout << '\n';
 
 			for (qIndex = 1; qIndex <= qCnt; qIndex++)
 			{
@@ -319,7 +336,10 @@ namespace ns3 {
 					break;
 				}
 			}
+			// std::cout << "qIndex:" << qIndex << '\n';
+			// std::cout << "m_rrlast:" << m_rrlast << '\n';
 			qIndex = (qIndex + m_rrlast) % qCnt;
+			// std::cout << "final qIndex:" << qIndex << '\n';
 		}
 
 		if (found)
@@ -340,6 +360,7 @@ namespace ns3 {
 			return p;
 		}
 		NS_LOG_LOGIC("Nothing can be sent");
+		// std::cout << "Nothing can be sent" << '\n';
 		return 0;
 	}
 
@@ -365,14 +386,21 @@ namespace ns3 {
 		if (!found)
 		{
 			int empty_num;
+			int working_num;
 			while(1)
 			{
 				empty_num = 0;
+				working_num = 0;
 				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
-					if (WFQ_token[tmpI] <= 0)
-						empty_num++;
+				{
+					if (m_queues[tmpI]->GetNPackets() > 0)
+					{
+						working_num++;
+						if (WFQ_token[tmpI] <= 0)	empty_num++;
+					}
+				}
 				
-				if (empty_num < qCnt)
+				if (empty_num < working_num)
 					break;
 				else
 				{
@@ -391,7 +419,6 @@ namespace ns3 {
 					break;
 				}
 			}
-			// qIndex = (qIndex + m_rrlast) % qCnt;
 		}
 
 		if (found)
@@ -406,7 +433,7 @@ namespace ns3 {
 			}
 			m_qlast = qIndex;
 			// !注意新增的token减少环节
-			WFQ_token[qIndex] -= p->GetSize();
+			WRR_token[qIndex] -= p->GetSize();
 			NS_LOG_LOGIC("Popped " << p);
 			NS_LOG_LOGIC("Number bytes " << m_bytesInQueueTotal);
 			return p;
@@ -414,14 +441,16 @@ namespace ns3 {
 		NS_LOG_LOGIC("Nothing can be sent");
 		return 0;
 	}
-	
+
 	Ptr<Packet>
 		BEgressQueue::DoDequeueIFC(bool paused[], double queueSize[]) //this is for switch only
 	{
 		NS_LOG_FUNCTION(this);
 
 		// fprintf(stderr, "DoDequeueIFC begin.\n");
-		printf("%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", IFC_token[0], IFC_token[1], IFC_token[2], IFC_token[3], IFC_token[4], IFC_token[5], IFC_token[6], IFC_token[7], IFC_token[8]);
+		// for (int i=0; i<=qCnt; i++)
+		// 	std::cout << queueSize[i] << '\t';
+		// std::cout << '\n';
 
 		if (m_bytesInQueueTotal == 0)
 		{
@@ -440,14 +469,21 @@ namespace ns3 {
 		if (!found)
 		{
 			int empty_num;
+			int working_num;
 			while(1)
 			{
 				empty_num = 0;
+				working_num = 0;
 				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
-					if (IFC_token[tmpI] <= 0)
-						empty_num++;
+				{
+					if (m_queues[tmpI]->GetNPackets() > 0)
+					{
+						working_num++;
+						if (IFC_token[tmpI] <= 0)	empty_num++;
+					}
+				}
 				
-				if (empty_num < qCnt)
+				if (empty_num < working_num)
 					break;
 				else
 				{
@@ -455,7 +491,8 @@ namespace ns3 {
 					for (int tmpI = 1; tmpI <= qCnt; tmpI++)
 					{
 						// 取上界避免死循环
-						printf("%d\n", tmpSize);
+						// printf("%d\n", tmpSize);
+						// if (m_queues[tmpI]->GetNPackets() == 0)		continue;
 						tmpSize = (int)(tmpSize*(1.0-queueSize[tmpI-1]));
 						// !是否由于时延过大而出错?
 						IFC_token[tmpI] = IFC_token[tmpI]+(tmpSize+1);
@@ -464,7 +501,11 @@ namespace ns3 {
 				}
 			}
 
-			printf("\t%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", IFC_token[0], IFC_token[1], IFC_token[2], IFC_token[3], IFC_token[4], IFC_token[5], IFC_token[6], IFC_token[7], IFC_token[8]);
+		// for (int i=0; i<=qCnt; i++)
+		// 	std::cout << IFC_token[i] << '\t';
+		// std::cout << '\n';
+
+			// printf("\t%lf %lf %lf %lf %lf %lf %lf %lf %lf\n", IFC_token[0], IFC_token[1], IFC_token[2], IFC_token[3], IFC_token[4], IFC_token[5], IFC_token[6], IFC_token[7], IFC_token[8]);
 
 			for (qIndex = 1; qIndex <= qCnt; qIndex++)
 			{
