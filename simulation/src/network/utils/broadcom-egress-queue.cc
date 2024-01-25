@@ -186,7 +186,7 @@ namespace ns3 {
 		NS_LOG_FUNCTION(this);
 
 		// *根据具体的需求可变更算法（SP,WRR,WFQ）
-		Ptr<Packet> packet = DoDequeueWRR(paused);
+		Ptr<Packet> packet = DoDequeueWFQ(paused);
 		if (packet != 0)
 		{
 			NS_ASSERT(m_nBytes >= packet->GetSize());
@@ -272,14 +272,21 @@ namespace ns3 {
 		if (!found)
 		{
 			int empty_num;
+			int working_num;
 			while(1)
 			{
 				empty_num = 0;
+				working_num = 0;
 				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
-					if (WRR_token[tmpI] <= 0)
-						empty_num++;
+				{
+					if (m_queues[tmpI]->GetNPackets() > 0)
+					{
+						working_num++;
+						if (WRR_token[tmpI] <= 0)	empty_num++;
+					}
+				}
 				
-				if (empty_num < qCnt)
+				if (empty_num < working_num)
 					break;
 				else
 				{
@@ -287,6 +294,16 @@ namespace ns3 {
 						WRR_token[tmpI] += WRR_MAXPNUM;
 				}
 			}
+
+			// for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+			// 	std::cout << WRR_token[tmpI] << '\t';
+			// std::cout << '\n';
+
+			// std::cout << "-------------\n";
+
+			// for (int tmpI = 1; tmpI <= qCnt; tmpI++)
+			// 	std::cout << m_queues[tmpI]->GetNPackets() << '\t';
+			// std::cout << '\n';
 
 			for (qIndex = 1; qIndex <= qCnt; qIndex++)
 			{
@@ -298,7 +315,10 @@ namespace ns3 {
 					break;
 				}
 			}
+			// std::cout << "qIndex:" << qIndex << '\n';
+			// std::cout << "m_rrlast:" << m_rrlast << '\n';
 			qIndex = (qIndex + m_rrlast) % qCnt;
+			// std::cout << "final qIndex:" << qIndex << '\n';
 		}
 
 		if (found)
@@ -319,6 +339,7 @@ namespace ns3 {
 			return p;
 		}
 		NS_LOG_LOGIC("Nothing can be sent");
+		// std::cout << "Nothing can be sent" << '\n';
 		return 0;
 	}
 
@@ -344,14 +365,21 @@ namespace ns3 {
 		if (!found)
 		{
 			int empty_num;
+			int working_num;
 			while(1)
 			{
 				empty_num = 0;
+				working_num = 0;
 				for (int tmpI = 1; tmpI <= qCnt; tmpI++)
-					if (WFQ_token[tmpI] <= 0)
-						empty_num++;
+				{
+					if (m_queues[tmpI]->GetNPackets() > 0)
+					{
+						working_num++;
+						if (WFQ_token[tmpI] <= 0)	empty_num++;
+					}
+				}
 				
-				if (empty_num < qCnt)
+				if (empty_num < working_num)
 					break;
 				else
 				{
@@ -370,7 +398,6 @@ namespace ns3 {
 					break;
 				}
 			}
-			qIndex = (qIndex + m_rrlast) % qCnt;
 		}
 
 		if (found)
