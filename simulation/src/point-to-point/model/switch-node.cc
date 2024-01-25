@@ -738,884 +738,939 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 										finalPercentage[2][2]/LOW_NUM << '\n';
 	}
 
+
+	/**
+	 * @brief 改用pias的形式
+	 * 
+	 */
 	void SwitchNode::Switch_FlowPrinter()
 	{
 		static uint32_t CallNum = 0;
 		bool Canout = (CallNum%1000 == 0);
 		if (Canout) std::cout << '\n';
 		
-		for (auto& tb : flow_byte_size_table[OLD_DATA])
-		{
-			// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
-			if (tb.second == 0.0) continue;
+		// for (auto& tb : flow_byte_size_table[OLD_DATA])
+		// {
+		// 	// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
+		// 	if (tb.second == 0.0) continue;
 
-			if (TOP_20percent.renew(tb.first, tb.second) == false)
-				TOP_20percent.push({tb.first, tb.second});
-			// if (Canout) std::cout << "load: ";
-			// if (Canout) std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
-		}
+		// 	if (TOP_20percent.renew(tb.first, tb.second) == false)
+		// 		TOP_20percent.push({tb.first, tb.second});
+		// 	// if (Canout) std::cout << "load: ";
+		// 	// if (Canout) std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
+		// }
 
 		// !注意用OLD的数据计算CNT的优先级
 		if (Canout) std::cout << "Round: " << CallNum << '\n';
 		std::vector< std::pair<std::string, uint32_t> > tmpFlowlist[3];
 		std::vector<std::string> tmpDellist;
-		// if (Canout) std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
-		for (auto& node : TOP_20percent.Top.vec)
+
+		// *PIAS方式区分优先级
+		for (auto& tb:flow_byte_size_table[CNT_DATA])
 		{
-			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
-		
-			flow_pg_class_table[CNT_DATA][node.key] = 1;
-			tmpFlowlist[0].push_back({node.key, node.val});
-
-			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][node.key]  + \
-															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][node.key];
-			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
-				flow_idle_num_table[CNT_DATA][node.key]++;
-			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
-				tmpDellist.push_back(node.key);
-
-			// !注意及时将周期流表清空!
-			flow_current_frate_table[CNT_DATA][node.key] = 0;
-
-		}
-
-		// if (Canout) std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
-		for (auto& node : TOP_20percent.Bottom.vec)
-		{
-			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
-			// !注意用OLD的数据计算CNT的优先级
-			// flow_pg_class_table[CNT_DATA][node.key] = 2;
-
-			// *PLAN A: 5(BEST!)
-			// if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1369.5 &&
-			// 	flow_avg_burst_size_table[CNT_DATA][node.key] <=6790.036 &&
-			// 	flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.568 &&
-			// 	flow_avg_burst_size_table[CNT_DATA][node.key] > 78.0)
-			// {	
-			// 	flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 	tmpFlowlist[1].push_back({node.key, node.val});
-			// }			
-			// else
-			// {	
-			// 	flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 	tmpFlowlist[2].push_back({node.key, node.val});
-			// }
-
-			// *PLAN G: 6(have a try!)
-			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 710.759)
-			// {
-			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <=1.012)
-			// 	{
-			// 		if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 20107.286)
-			// 		{
-			// 			if (flow_speed_table[CNT_DATA][node.key] <= 224.188)
-			// 			{
-			// 				if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 91.0)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 			}
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.11)
-			// 			{
-			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 			}
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 		else
-			// 		{
-			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1379.5)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 		}
-			// 	}
-			// }
-			// else
-			// {
-			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
-			// 	{
-			// 		if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		else
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 	}
-			// 	else
-			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// }
-
-			// PLAN H
-			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 745.683)
-			// {
-			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
-			// 	{
-			// 		if (flow_speed_table[CNT_DATA][node.key] <= 96693.512)
-			// 		{
-			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 19740.933)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			else
-			// 			{
-			// 				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1273.0)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 		else
-			// 		{
-			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 		}
-			// 	}
-			// }
-			// else
-			// 	flow_pg_class_table[CNT_DATA][node.key] = 3;
-
-			// PLAN I: huge!!!!
-			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
-			// {
-			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
-			// 	{
-			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
-			// 		{
-			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			else
-			// 			{
-			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
-			// 				{
-			// 					if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				}
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
-			// 		{
-			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.065)
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
-			// 				{
-			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 140.942)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 				else
-			// 				{
-			// 					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.058)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 			}
-			// 			else
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				else
-			// 				{
-			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				}
-			// 			}
-			// 			else
-			// 			{
-			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.308)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 		}
-			// 	}
-			// }
-			// else
-			// {
-			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
-			// 	{
-			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 950.288)
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 		else
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 	}
-			// 	else
-			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// }
-		
-			// PLAN J: also huge....
-			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
-			// {
-			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
-			// 	{
-			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
-			// 		{
-			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			else
-			// 			{
-			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
-			// 				{
-			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
-			// 					{
-			// 						if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					}
-			// 					else
-			// 					{
-			// 						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 					}
-			// 				}
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
-			// 		{
-			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <=30.065)
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
-			// 				{
-			// 					if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 				else
-			// 				{
-			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
-			// 					{
-			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					}
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 			}
-			// 			else
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				else
-			// 				{
-			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 210.797)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 					{
-			// 						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 225.946)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					}
-			// 				}
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
-			// 			{
-			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
-			// 				{
-			// 					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 			else
-			// 			{
-			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				else
-			// 				{
-			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
-			// 					{
-			// 						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 712.585)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					}
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// }
-			// else
-			// {
-			// 	if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1479.5)
-			// 	{
-			// 		if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.013)
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		else
-			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 	}
-			// 	else
-			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// }
-
-			// // PLAN K
-			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
-			// {
-			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
-			// 	{
-			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
-			// 		{
-			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			else
-			// 			{
-			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
-			// 				{
-			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
-			// 					{
-			// 						if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					}
-			// 					else
-			// 					{
-			// 						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 					}
-			// 				}
-			// 				else
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 			else
-			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 		}
-			// 	}
-			// 	else
-			// 	{
-			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
-			// 		{
-			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.065)
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
-			// 				{
-			// 					// !以下一句判断为false仅有1个样本；可考虑后续剪枝
-			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 140.942)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 				else
-			// 				{
-			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
-			// 					{
-			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 						else
-			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					}
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 			}
-			// 			else
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				else
-			// 				{
-			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] > 201.797 && \
-			// 						flow_avg_burst_size_table[CNT_DATA][node.key] <= 255.946)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				}
-			// 			}
-			// 		}
-			// 		else
-			// 		{
-			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 9.647)
-			// 			{
-			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
-			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				else
-			// 				{
-			// 					if (flow_speed_table[CNT_DATA][node.key] > 1148.687 && \
-			// 						flow_min_pkt_interval_table[CNT_DATA][node.key] >0.016)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 			}
-			// 			else
-			// 			{
-			// 				if (flow_speed_table[CNT_DATA][node.key] <= 8.301)
-			// 				{
-			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 5413118)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 				}
-			// 				else
-			// 				{
-			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 507.24 && \
-			// 						flow_max_pkt_interval_table[CNT_DATA][node.key] <= 437.66)
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 					else
-			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// 				}
-			// 			}
-			// 		}
-			// 	}
-			// }
-			// else
-			// {	
-			// 	// !同前：仅有1个样本优先级为2，可考虑剪枝
-			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053 && \
-			// 		flow_avg_pkt_size_table[CNT_DATA][node.key] > 950.288)
-			// 		flow_pg_class_table[CNT_DATA][node.key] = 2;
-			// 	else
-			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
-			// }
-
-			#define VOICE 		2
-			#define VMEETING 	2
-			#define GAME		2
-			#define FILE		3
-			#define VOD			3
-
-			// plan K: 5 class
-			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 562.5)
+			if (tb.second == 0.0) continue;
+			
+			std::string key = tb.first;
+			uint32_t val = tb.second;
+			if (tb.second <= 16*1024)
 			{
-				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.061)
-				{
-					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.028)
-					{
-						if (flow_max_burst_size_table[CNT_DATA][node.key] <= 5533.0)
-						{
-							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 945.0)
-								flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-							else
-							{
-								if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1546.5)
-									flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-								else
-								{
-									if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
-										flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-									else
-										flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-								}
-							}
-						}
-						else
-						{
-							if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 68.0)
-								flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-							else
-							{
-								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
-									flow_pg_class_table[CNT_DATA][node.key] = VOD;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-							}
-						}
-					}
-					else
-					{
-						if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 92.496)
-						{
-							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 956.5)
-								flow_pg_class_table[CNT_DATA][node.key] = GAME;
-							else
-								flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-						}
-						else
-							flow_pg_class_table[CNT_DATA][node.key] = GAME;
-					}
-				}
-				else
-				{
-					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.264)
-					{
-						if (flow_max_burst_size_table[CNT_DATA][node.key] <= 212.0)
-						{
-							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.656)
-								flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-							else
-							{
-								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 1.06 && \
-									flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.0)
-									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VOD;
-							}
-						}
-						else
-						{
-							if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
-								flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-							else
-								flow_pg_class_table[CNT_DATA][node.key] = FILE;
-						}
-					}
-					else
-					{
-						if (flow_speed_table[CNT_DATA][node.key] <= 304.515)
-						{
-							if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 38.5)
-								flow_pg_class_table[CNT_DATA][node.key] = FILE;
-							else
-							{
-								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 301.012)
-									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = FILE;
-							}
-						}
-						else
-							flow_pg_class_table[CNT_DATA][node.key] = FILE;
-					}
-				}
+				flow_pg_class_table[CNT_DATA][key] = 1;
+				tmpFlowlist[0].push_back({key, val});
+
+				flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][key]  + \
+															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][key];
+				if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
+					flow_idle_num_table[CNT_DATA][key]++;
+				if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
+					tmpDellist.push_back(key);
+			}
+			else if (tb.second <= 896*1024)
+			{
+				flow_pg_class_table[CNT_DATA][key] = 2;
+				tmpFlowlist[1].push_back({key, val});
+
+				flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][key]  + \
+															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][key];
+				if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
+					flow_idle_num_table[CNT_DATA][key]++;
+				if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
+					tmpDellist.push_back(key);
 			}
 			else
 			{
-				if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
-				{
-					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
-					{
-						if (flow_speed_table[CNT_DATA][node.key] <= 1130.516)
-						{
-							if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
-							{
-								if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 96.175)
-									flow_pg_class_table[CNT_DATA][node.key] = FILE;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-							}
-							else
-								flow_pg_class_table[CNT_DATA][node.key] = VOD;
-						}
-						else
-						{
-							if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1396.5)
-							{
-								if (flow_min_pkt_size_table[CNT_DATA][node.key] > 82.5 && \
-									flow_avg_pkt_size_table[CNT_DATA][node.key] <= 364.498)
-									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-							}
-							else
-							{
-								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.029)
-									flow_pg_class_table[CNT_DATA][node.key] = VOD;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-							}
-						}
-					}
-					else
-					{
-						if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 617.542)
-						{
-							if (flow_speed_table[CNT_DATA][node.key] <= 13221.144)
-							{
-								if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.409)
-								{
-									if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
-										flow_pg_class_table[CNT_DATA][node.key] = VOD;
-									else
-										flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-								}
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VOD;
-							}
-							else
-							{
-								if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 599.864)
-									flow_pg_class_table[CNT_DATA][node.key] = FILE;
-								else
-									flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-							}
-						}
-						else
-							flow_pg_class_table[CNT_DATA][node.key] = VOD;
-					}
-				}
-				else
-				{
-					if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 52.5)
-					{
-						if (flow_min_pkt_size_table[CNT_DATA][node.key] > 48.5 && \
-							flow_max_pkt_size_table[CNT_DATA][node.key] <= 1479.0)
-							flow_pg_class_table[CNT_DATA][node.key] = VOD;
-						else
-							flow_pg_class_table[CNT_DATA][node.key] = FILE;
-					}
-					else
-						flow_pg_class_table[CNT_DATA][node.key] = FILE;
-				}
+				flow_pg_class_table[CNT_DATA][key] = 3;
+				tmpFlowlist[2].push_back({key, val});
+
+				flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][key]  + \
+															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][key];
+				if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
+					flow_idle_num_table[CNT_DATA][key]++;
+				if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
+					tmpDellist.push_back(key);
 			}
-
-			// plan L: new feature:gap_pkt_size
-// if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 520.50)
-//  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 256.50)
-//   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 3.51)
-//    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 212.00)
-//     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
-//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//     else
-//      if(flow_speed_table[CNT_DATA][node.key] <= 45.40)
-//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//      else
-//       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.00)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//    else
-//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2430.67)
-//      if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
-//       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
-//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = GAME;
-//      else
-//       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.01)
-//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//     else
-//      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
-//       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 22830.26)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//   else
-//    if(flow_speed_table[CNT_DATA][node.key] <= 2.53)
-//      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//    else
-//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2553.10)
-//      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.00)
-//       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 9.00)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//      else
-//       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 15.01)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//  else
-//   if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
-//    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 5583.50)
-//     if(flow_speed_table[CNT_DATA][node.key] <= 8834.90)
-//      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2004.00)
-//       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.08)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//      else
-//       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//    else
-//     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 8176.00)
-//       flow_pg_class_table[CNT_DATA][node.key] = GAME;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//   else
-//    if(flow_speed_table[CNT_DATA][node.key] <= 839.73)
-//     if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.19)
-//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//    else
-//     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.04)
-//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.72)
-//        flow_pg_class_table[CNT_DATA][node.key] = GAME;
-//      else
-//       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 122.26)
-//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = GAME;
-// else
-//  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1349.50)
-//   if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
-//    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
-//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 179.32)
-//       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//    else
-//     if(flow_speed_table[CNT_DATA][node.key] <= 1130.52)
-//      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.00)
-//       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 725.50)
-//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//     else
-//      if(flow_speed_table[CNT_DATA][node.key] <= 5866.14)
-//        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//      else
-//       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 1378.00)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//   else
-//    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 33998.50)
-//     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 853.00)
-//       flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//     else
-//       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-//    else
-//     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 961.00)
-//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.41)
-//       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.50)
-//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-//      else
-//       if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
-//         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//       else
-//         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//     else
-//      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 48423.50)
-//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//  else
-//   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 35.22)
-//    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
-//     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.56)
-//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.71)
-//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//     else
-//      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 16986.83)
-//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//    else
-//     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2568.50)
-//       flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//     else
-//      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
-//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//   else
-//    if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1419.00)
-//     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 5920.59)
-//       flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//     else
-//      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 128.29)
-//        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-//      else
-//        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-//    else
-//      flow_pg_class_table[CNT_DATA][node.key] = VOD;
-
-
-			if (flow_pg_class_table[CNT_DATA][node.key] == 2)			tmpFlowlist[1].push_back({node.key, node.val});
-			else if (flow_pg_class_table[CNT_DATA][node.key] == 3)		tmpFlowlist[2].push_back({node.key, node.val});
-
-
-			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
-															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
-			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
-				flow_idle_num_table[CNT_DATA][node.key]++;
-			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
-				tmpDellist.push_back(node.key);
-				
-			// !注意及时将周期流表清空!
-			flow_current_frate_table[CNT_DATA][node.key] = 0;
 		}
+
+
+		// if (Canout) std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
+// 		for (auto& node : TOP_20percent.Top.vec)
+// 		{
+// 			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+		
+// 			flow_pg_class_table[CNT_DATA][node.key] = 1;
+// 			tmpFlowlist[0].push_back({node.key, node.val});
+
+// 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][node.key]  + \
+// 															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][node.key];
+// 			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
+// 				flow_idle_num_table[CNT_DATA][node.key]++;
+// 			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
+// 				tmpDellist.push_back(node.key);
+
+// 			// !注意及时将周期流表清空!
+// 			flow_current_frate_table[CNT_DATA][node.key] = 0;
+
+// 		}
+
+// 		// if (Canout) std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
+// 		for (auto& node : TOP_20percent.Bottom.vec)
+// 		{
+// 			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+// 			// !注意用OLD的数据计算CNT的优先级
+// 			// flow_pg_class_table[CNT_DATA][node.key] = 2;
+
+// 			// *PLAN A: 5(BEST!)
+// 			// if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1369.5 &&
+// 			// 	flow_avg_burst_size_table[CNT_DATA][node.key] <=6790.036 &&
+// 			// 	flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.568 &&
+// 			// 	flow_avg_burst_size_table[CNT_DATA][node.key] > 78.0)
+// 			// {	
+// 			// 	flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 	tmpFlowlist[1].push_back({node.key, node.val});
+// 			// }			
+// 			// else
+// 			// {	
+// 			// 	flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 	tmpFlowlist[2].push_back({node.key, node.val});
+// 			// }
+
+// 			// *PLAN G: 6(have a try!)
+// 			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 710.759)
+// 			// {
+// 			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <=1.012)
+// 			// 	{
+// 			// 		if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 20107.286)
+// 			// 		{
+// 			// 			if (flow_speed_table[CNT_DATA][node.key] <= 224.188)
+// 			// 			{
+// 			// 				if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 91.0)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 			}
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.11)
+// 			// 			{
+// 			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 			}
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1379.5)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 		}
+// 			// 	}
+// 			// }
+// 			// else
+// 			// {
+// 			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
+// 			// 	{
+// 			// 		if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		else
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 	}
+// 			// 	else
+// 			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// }
+
+// 			// PLAN H
+// 			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 745.683)
+// 			// {
+// 			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
+// 			// 	{
+// 			// 		if (flow_speed_table[CNT_DATA][node.key] <= 96693.512)
+// 			// 		{
+// 			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 19740.933)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1273.0)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.068)
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 		}
+// 			// 	}
+// 			// }
+// 			// else
+// 			// 	flow_pg_class_table[CNT_DATA][node.key] = 3;
+
+// 			// PLAN I: huge!!!!
+// 			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
+// 			// {
+// 			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
+// 			// 	{
+// 			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
+// 			// 		{
+// 			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+// 			// 				{
+// 			// 					if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				}
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+// 			// 		{
+// 			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.065)
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+// 			// 				{
+// 			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 140.942)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.058)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.308)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 		}
+// 			// 	}
+// 			// }
+// 			// else
+// 			// {
+// 			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053)
+// 			// 	{
+// 			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 950.288)
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 		else
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 	}
+// 			// 	else
+// 			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// }
+		
+// 			// PLAN J: also huge....
+// 			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
+// 			// {
+// 			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
+// 			// 	{
+// 			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
+// 			// 		{
+// 			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+// 			// 				{
+// 			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
+// 			// 					{
+// 			// 						if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					}
+// 			// 					else
+// 			// 					{
+// 			// 						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 					}
+// 			// 				}
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+// 			// 		{
+// 			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <=30.065)
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+// 			// 				{
+// 			// 					if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
+// 			// 					{
+// 			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					}
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 210.797)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 					{
+// 			// 						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 225.946)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					}
+// 			// 				}
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 309.5)
+// 			// 			{
+// 			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.053)
+// 			// 				{
+// 			// 					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+// 			// 					{
+// 			// 						if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 712.585)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					}
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				}
+// 			// 			}
+// 			// 		}
+// 			// 	}
+// 			// }
+// 			// else
+// 			// {
+// 			// 	if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1479.5)
+// 			// 	{
+// 			// 		if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.013)
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		else
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 	}
+// 			// 	else
+// 			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// }
+
+// 			// // PLAN K
+// 			// if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 817.493)
+// 			// {
+// 			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.144)
+// 			// 	{
+// 			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 10.024)
+// 			// 		{
+// 			// 			if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 21045.681)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+// 			// 				{
+// 			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 97.082)
+// 			// 					{
+// 			// 						if (flow_speed_table[CNT_DATA][node.key] <= 4877.312)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					}
+// 			// 					else
+// 			// 					{
+// 			// 						if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.059)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 					}
+// 			// 				}
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.0)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 239.761)
+// 			// 		{
+// 			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 30.065)
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+// 			// 				{
+// 			// 					// !以下一句判断为false仅有1个样本；可考虑后续剪枝
+// 			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 140.942)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 30.014)
+// 			// 					{
+// 			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.0)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					}
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 30.093)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] > 201.797 && \
+// 			// 						flow_avg_burst_size_table[CNT_DATA][node.key] <= 255.946)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				}
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 9.647)
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.884)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_speed_table[CNT_DATA][node.key] > 1148.687 && \
+// 			// 						flow_min_pkt_interval_table[CNT_DATA][node.key] >0.016)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_speed_table[CNT_DATA][node.key] <= 8.301)
+// 			// 				{
+// 			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 5413118)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 				}
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 507.24 && \
+// 			// 						flow_max_pkt_interval_table[CNT_DATA][node.key] <= 437.66)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// 				}
+// 			// 			}
+// 			// 		}
+// 			// 	}
+// 			// }
+// 			// else
+// 			// {	
+// 			// 	// !同前：仅有1个样本优先级为2，可考虑剪枝
+// 			// 	if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.053 && \
+// 			// 		flow_avg_pkt_size_table[CNT_DATA][node.key] > 950.288)
+// 			// 		flow_pg_class_table[CNT_DATA][node.key] = 2;
+// 			// 	else
+// 			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
+// 			// }
+
+// 			// #define VOICE 		2
+// 			// #define VMEETING 	2
+// 			// #define GAME		2
+// 			// #define FILE		3
+// 			// #define VOD			3
+
+// 			// !截至2024.1均采用该版本(应该标为PLAN L)
+// 			// // plan K: 5 class
+// 			// if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 562.5)
+// 			// {
+// 			// 	if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.061)
+// 			// 	{
+// 			// 		if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.028)
+// 			// 		{
+// 			// 			if (flow_max_burst_size_table[CNT_DATA][node.key] <= 5533.0)
+// 			// 			{
+// 			// 				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 945.0)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_max_burst_size_table[CNT_DATA][node.key] <= 1546.5)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// 			// 					else
+// 			// 					{
+// 			// 						if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// 			// 					}
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_min_pkt_interval_table[CNT_DATA][node.key] <= 68.0)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.019)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 				}
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 92.496)
+// 			// 			{
+// 			// 				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 956.5)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// 			// 			}
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.264)
+// 			// 		{
+// 			// 			if (flow_max_burst_size_table[CNT_DATA][node.key] <= 212.0)
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.656)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 1.06 && \
+// 			// 						flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.0)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.012)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_speed_table[CNT_DATA][node.key] <= 304.515)
+// 			// 			{
+// 			// 				if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 38.5)
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 301.012)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 		}
+// 			// 	}
+// 			// }
+// 			// else
+// 			// {
+// 			// 	if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1388.0)
+// 			// 	{
+// 			// 		if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
+// 			// 		{
+// 			// 			if (flow_speed_table[CNT_DATA][node.key] <= 1130.516)
+// 			// 			{
+// 			// 				if (flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.0)
+// 			// 				{
+// 			// 					if (flow_avg_burst_size_table[CNT_DATA][node.key] <= 96.175)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 				}
+// 			// 				else
+// 			// 					flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 			}
+// 			// 			else
+// 			// 			{
+// 			// 				if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1396.5)
+// 			// 				{
+// 			// 					if (flow_min_pkt_size_table[CNT_DATA][node.key] > 82.5 && \
+// 			// 						flow_avg_pkt_size_table[CNT_DATA][node.key] <= 364.498)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// 			// 				}
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.029)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 				}
+// 			// 			}
+// 			// 		}
+// 			// 		else
+// 			// 		{
+// 			// 			if (flow_avg_pkt_size_table[CNT_DATA][node.key] <= 617.542)
+// 			// 			{
+// 			// 				if (flow_speed_table[CNT_DATA][node.key] <= 13221.144)
+// 			// 				{
+// 			// 					if (flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.409)
+// 			// 					{
+// 			// 						if (flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.5)
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 						else
+// 			// 							flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// 			// 					}
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 				}
+// 			// 				else
+// 			// 				{
+// 			// 					if (flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 599.864)
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 					else
+// 			// 						flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// 			// 				}
+// 			// 			}
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 		}
+// 			// 	}
+// 			// 	else
+// 			// 	{
+// 			// 		if (flow_min_pkt_size_table[CNT_DATA][node.key] <= 52.5)
+// 			// 		{
+// 			// 			if (flow_min_pkt_size_table[CNT_DATA][node.key] > 48.5 && \
+// 			// 				flow_max_pkt_size_table[CNT_DATA][node.key] <= 1479.0)
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// 			// 			else
+// 			// 				flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 		}
+// 			// 		else
+// 			// 			flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// 			// 	}
+// 			// }
+
+// 			// plan L: new feature:gap_pkt_size
+// // if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 520.50)
+// //  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 256.50)
+// //   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 3.51)
+// //    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 212.00)
+// //     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //     else
+// //      if(flow_speed_table[CNT_DATA][node.key] <= 45.40)
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //      else
+// //       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.00)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //    else
+// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2430.67)
+// //      if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
+// //       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// //      else
+// //       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.01)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //     else
+// //      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+// //       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 22830.26)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //   else
+// //    if(flow_speed_table[CNT_DATA][node.key] <= 2.53)
+// //      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //    else
+// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2553.10)
+// //      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.00)
+// //       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 9.00)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //      else
+// //       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 15.01)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //  else
+// //   if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+// //    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 5583.50)
+// //     if(flow_speed_table[CNT_DATA][node.key] <= 8834.90)
+// //      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2004.00)
+// //       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.08)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //      else
+// //       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //    else
+// //     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 8176.00)
+// //       flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //   else
+// //    if(flow_speed_table[CNT_DATA][node.key] <= 839.73)
+// //     if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.19)
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //    else
+// //     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.04)
+// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.72)
+// //        flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// //      else
+// //       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 122.26)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = GAME;
+// // else
+// //  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1349.50)
+// //   if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
+// //    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 179.32)
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //    else
+// //     if(flow_speed_table[CNT_DATA][node.key] <= 1130.52)
+// //      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.00)
+// //       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 725.50)
+// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //     else
+// //      if(flow_speed_table[CNT_DATA][node.key] <= 5866.14)
+// //        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //      else
+// //       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 1378.00)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //   else
+// //    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 33998.50)
+// //     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 853.00)
+// //       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //     else
+// //       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+// //    else
+// //     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 961.00)
+// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.41)
+// //       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.50)
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+// //      else
+// //       if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
+// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //       else
+// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //     else
+// //      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 48423.50)
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //  else
+// //   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 35.22)
+// //    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
+// //     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.56)
+// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.71)
+// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //     else
+// //      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 16986.83)
+// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //    else
+// //     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2568.50)
+// //       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //     else
+// //      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
+// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //   else
+// //    if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1419.00)
+// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 5920.59)
+// //       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //     else
+// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 128.29)
+// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+// //      else
+// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+// //    else
+// //      flow_pg_class_table[CNT_DATA][node.key] = VOD;
+
+
+// 			if (flow_pg_class_table[CNT_DATA][node.key] == 2)			tmpFlowlist[1].push_back({node.key, node.val});
+// 			else if (flow_pg_class_table[CNT_DATA][node.key] == 3)		tmpFlowlist[2].push_back({node.key, node.val});
+
+
+// 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
+// 															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
+// 			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
+// 				flow_idle_num_table[CNT_DATA][node.key]++;
+// 			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
+// 				tmpDellist.push_back(node.key);
+				
+// 			// !注意及时将周期流表清空!
+// 			flow_current_frate_table[CNT_DATA][node.key] = 0;
+// 		}
+
+
 
 		if (Canout) std::cout << "High class: " << tmpFlowlist[0].size() <<'\n';
 		for (auto& iter : tmpFlowlist[0])
