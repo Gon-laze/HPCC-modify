@@ -1100,6 +1100,8 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 			m_node->flow_last_send_table[qp->QpFivetuples] = sendTime;
 			m_node->flow_total_send_table[qp->QpFivetuples] = 0.0;
 			m_node->flow_total_num_table[qp->QpFivetuples] = 1;
+
+			m_node->flow_first_send_table[qp->QpFivetuples] = sendTime;
 		}
 		else
 		{

@@ -1339,14 +1339,16 @@ int main(int argc, char *argv[])
 
 	// /新增收端检测
 	#ifdef MODIFY_ON
-		std::cout.precision(10);
+		std::cout.precision(15);
 
 		std::cout 	<< "flow id:" << "\t\t" 
-					<< "last send:" << "\t\t" 
+					<< "first send:" << "\t\t" 
+					// << "last send:" << "\t\t" 
 					<< "last arrive:" << "\t\t"
-					<< "send num:" << "\t\t"
-					<< "receive num" << "\t\t"
-					<< "avg delay:" << '\n'; 
+					// << "send num:" << "\t\t"
+					// << "receive num" << "\t\t"
+					<< "FCT:" << '\n'; 
+					// << "avg delay:" << '\n'; 
 		Ptr<Node> receiveNodePtr = n.Get(4);
 		for (int i=1; i<=3; i++)
 		{
@@ -1357,12 +1359,16 @@ int main(int argc, char *argv[])
 			{
 				auto key = iter.first;
 				std::cout 	<< key << "\t\t"
+							<< nptr->flow_first_send_table[key] << "\t\t"
 							<< nptr->flow_last_send_table[key] << "\t\t"
-							<< receiveNodePtr->flow_last_arrive_table[key] << "\t\t"
-							<< nptr->flow_total_num_table[key] << "\t\t"
-							<< receiveNodePtr->flow_total_num_table[key] << "\t\t"
+							// << receiveNodePtr->flow_last_arrive_table[key] << "\t\t"
+							// << nptr->flow_total_num_table[key] << "\t\t"
+							// << receiveNodePtr->flow_total_num_table[key] << "\t\t"
 							// ?希望没有丢包，否则收发端数目不一致....
-							<< (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key]) / nptr->flow_total_num_table[key] << '\n';
+							// << (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key]) / nptr->flow_total_num_table[key] << '\n';
+							// 先试试改为时延总合
+							<< (receiveNodePtr->flow_last_arrive_table[key] - nptr->flow_first_send_table[key])<< '\n';
+							
 			}
 			
 		}

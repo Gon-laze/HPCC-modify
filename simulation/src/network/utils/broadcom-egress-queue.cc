@@ -186,7 +186,8 @@ namespace ns3 {
 		NS_LOG_FUNCTION(this);
 
 		// *根据具体的需求可变更算法（SP,WRR,WFQ）
-		Ptr<Packet> packet = DoDequeueWFQ(paused);
+		// Ptr<Packet> packet = DoDequeueWFQ(paused);
+		Ptr<Packet> packet = DoDequeueWRR(paused);
 		if (packet != 0)
 		{
 			NS_ASSERT(m_nBytes >= packet->GetSize());
@@ -247,7 +248,10 @@ namespace ns3 {
 			return p;
 		}
 		NS_LOG_LOGIC("Nothing can be sent");
-		return 0;
+		
+		// ! !!???????????????
+		// uint32_t sleep = (rand())/(found+1.55);
+		// return 0;
 	}
 	
 	Ptr<Packet>
@@ -315,10 +319,8 @@ namespace ns3 {
 					break;
 				}
 			}
-			// std::cout << "qIndex:" << qIndex << '\n';
-			// std::cout << "m_rrlast:" << m_rrlast << '\n';
 			qIndex = (qIndex + m_rrlast) % qCnt;
-			// std::cout << "final qIndex:" << qIndex << '\n';
+
 		}
 
 		if (found)
