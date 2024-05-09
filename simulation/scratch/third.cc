@@ -1347,14 +1347,16 @@ int main(int argc, char *argv[])
 					<< "last arrive:" << "\t\t"
 					// << "send num:" << "\t\t"
 					// << "receive num" << "\t\t"
-					<< "FCT:" << '\n'; 
-					// << "avg delay:" << '\n'; 
+					<< "FCT:" << "\t\t"
+					// << "total delay:"
+					<< "origin_pg:"  << '\n';
 		Ptr<Node> receiveNodePtr = n.Get(4);
+		Ptr<SwitchNode> transfer_node = DynamicCast<SwitchNode>(n.Get(0));
 		for (int i=1; i<=3; i++)
 		{
 			if (n.Get(i)->GetNodeType() > 0)	continue;
 			Ptr<Node> nptr = n.Get(i);
-			std::cout << "" << nptr->GetId() << '\n';
+			// std::cout << "" << nptr->GetId() << '\n';
 			for (auto iter : nptr->flow_last_send_table)
 			{
 				auto key = iter.first;
@@ -1365,9 +1367,11 @@ int main(int argc, char *argv[])
 							// << nptr->flow_total_num_table[key] << "\t\t"
 							// << receiveNodePtr->flow_total_num_table[key] << "\t\t"
 							// ?希望没有丢包，否则收发端数目不一致....
-							// << (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key]) / nptr->flow_total_num_table[key] << '\n';
 							// 先试试改为时延总合
-							<< (receiveNodePtr->flow_last_arrive_table[key] - nptr->flow_first_send_table[key])<< '\n';
+							<< (receiveNodePtr->flow_last_arrive_table[key] - nptr->flow_first_send_table[key]) << "\t\t"
+							// << (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key]) / nptr->flow_total_num_table[key] << '\n';
+							// << (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key])<< '\n';
+							<< transfer_node->origin_pg[key] << '\n';;
 							
 			}
 			

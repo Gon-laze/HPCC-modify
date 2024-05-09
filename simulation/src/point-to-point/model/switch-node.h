@@ -237,6 +237,9 @@ public:
     // *3是指3个优先级;double为了方便除法
     std::unordered_map<std::string, double> flow_pg_pktNum_table[3];
 
+    //* 为使得优先级能够成功写会qp对而创立的下标表
+    std::unordered_map<std::string, uint64_t> flow_qp_index_table;
+
     // std::unordered_map<std::string,uint64_t> flow_byte_size_table;
 	// std::unordered_map<std::string,uint64_t> flow_packet_num_table;
 	// //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval

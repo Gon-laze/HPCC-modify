@@ -107,6 +107,7 @@ void SwitchNode::CheckAndSendResume(uint32_t inDev, uint32_t qIndex){
 	}
 }
 
+// !!非常关键： switchNode改变实际传输优先级的key-step
 void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 	int idx = GetOutDev(p, ch);
 	if (idx >= 0){
@@ -139,8 +140,8 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 			#else
 				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 			#endif
-				// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
-
+			
+			// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 		}
 
 		// admission control
@@ -436,6 +437,9 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			// *针对老化初始化
 			flow_idle_num_table[CNT_DATA][fivetuples] = 0;
 			flow_current_frate_table[CNT_DATA][fivetuples] = 0;
+
+			// * 新增qp对映射环节
+
 		}
 		//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
 		else
