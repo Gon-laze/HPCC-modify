@@ -753,16 +753,17 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		bool Canout = (CallNum%1000 == 0);
 		if (Canout) std::cout << '\n';
 		
-		// for (auto& tb : flow_byte_size_table[OLD_DATA])
-		// {
-		// 	// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
-		// 	if (tb.second == 0.0) continue;
+		// TOPK
+		for (auto& tb : flow_byte_size_table[OLD_DATA])
+		{
+			// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
+			if (tb.second == 0.0) continue;
 
-		// 	if (TOP_20percent.renew(tb.first, tb.second) == false)
-		// 		TOP_20percent.push({tb.first, tb.second});
-		// 	// if (Canout) std::cout << "load: ";
-		// 	// if (Canout) std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
-		// }
+			if (TOP_20percent.renew(tb.first, tb.second) == false)
+				TOP_20percent.push({tb.first, tb.second});
+			// if (Canout) std::cout << "load: ";
+			// if (Canout) std::cout << "\tid: " << tb.first << "\tsize: " << tb.second << '\n';
+		}
 
 		// !注意用OLD的数据计算CNT的优先级
 		if (Canout) std::cout << "Round: " << CallNum << '\n';
@@ -770,77 +771,77 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		std::vector<std::string> tmpDellist;
 
 		// *PIAS方式区分优先级
-		for (auto& tb:flow_byte_size_table[CNT_DATA])
-		{
-			if (tb.second == 0.0) continue;
+		// for (auto& tb:flow_byte_size_table[CNT_DATA])
+		// {
+		// 	if (tb.second == 0.0) continue;
 			
-			std::string key = tb.first;
-			uint32_t val = tb.second;
-			if (tb.second <= 16*1024)
-			{
-				flow_pg_class_table[CNT_DATA][key] = 1;
-				tmpFlowlist[0].push_back({key, val});
+		// 	std::string key = tb.first;
+		// 	uint32_t val = tb.second;
+		// 	if (tb.second <= 16*1024)
+		// 	{
+		// 		flow_pg_class_table[CNT_DATA][key] = 1;
+		// 		tmpFlowlist[0].push_back({key, val});
 
-				flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][key]  + \
-															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][key];
-				if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
-					flow_idle_num_table[CNT_DATA][key]++;
-				if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
-					tmpDellist.push_back(key);
-			}
-			else if (tb.second <= 896*1024)
-			{
-				flow_pg_class_table[CNT_DATA][key] = 2;
-				tmpFlowlist[1].push_back({key, val});
+		// 		flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][key]  + \
+		// 													(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][key];
+		// 		if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
+		// 			flow_idle_num_table[CNT_DATA][key]++;
+		// 		if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
+		// 			tmpDellist.push_back(key);
+		// 	}
+		// 	else if (tb.second <= 896*1024)
+		// 	{
+		// 		flow_pg_class_table[CNT_DATA][key] = 2;
+		// 		tmpFlowlist[1].push_back({key, val});
 
-				flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][key]  + \
-															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][key];
-				if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
-					flow_idle_num_table[CNT_DATA][key]++;
-				if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
-					tmpDellist.push_back(key);
-			}
-			else
-			{
-				flow_pg_class_table[CNT_DATA][key] = 3;
-				tmpFlowlist[2].push_back({key, val});
+		// 		flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][key]  + \
+		// 													(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][key];
+		// 		if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
+		// 			flow_idle_num_table[CNT_DATA][key]++;
+		// 		if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
+		// 			tmpDellist.push_back(key);
+		// 	}
+		// 	else
+		// 	{
+		// 		flow_pg_class_table[CNT_DATA][key] = 3;
+		// 		tmpFlowlist[2].push_back({key, val});
 
-				flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][key]  + \
-															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][key];
-				if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
-					flow_idle_num_table[CNT_DATA][key]++;
-				if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
-					tmpDellist.push_back(key);
-			}
+		// 		flow_current_frate_table[CNT_DATA][key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][key]  + \
+		// 													(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][key];
+		// 		if (flow_current_frate_table[CNT_DATA][key] < SIZE_IDLE_THRESHOLD)
+		// 			flow_idle_num_table[CNT_DATA][key]++;
+		// 		if (flow_idle_num_table[CNT_DATA][key] >= PERIOD_IDLE_THRESHOLD)
+		// 			tmpDellist.push_back(key);
+		// 	}
+		// }
+
+
+		if (Canout) std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
+		for (auto& node : TOP_20percent.Top.vec)
+		{
+			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+		
+			flow_pg_class_table[CNT_DATA][node.key] = 1;
+			tmpFlowlist[0].push_back({node.key, node.val});
+
+			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][node.key]  + \
+															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][node.key];
+			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
+				flow_idle_num_table[CNT_DATA][node.key]++;
+			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
+				tmpDellist.push_back(node.key);
+
+			// !注意及时将周期流表清空!
+			flow_current_frate_table[CNT_DATA][node.key] = 0;
+
 		}
 
-
-		// if (Canout) std::cout << "High class: " << TOP_20percent.Top.size() <<'\n';
-// 		for (auto& node : TOP_20percent.Top.vec)
-// 		{
-// 			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
-		
-// 			flow_pg_class_table[CNT_DATA][node.key] = 1;
-// 			tmpFlowlist[0].push_back({node.key, node.val});
-
-// 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_SMALL * flow_current_frate_table[CNT_DATA][node.key]  + \
-// 															(1-AGING_ALPHA_SMALL) * flow_speed_table[CNT_DATA][node.key];
-// 			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
-// 				flow_idle_num_table[CNT_DATA][node.key]++;
-// 			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
-// 				tmpDellist.push_back(node.key);
-
-// 			// !注意及时将周期流表清空!
-// 			flow_current_frate_table[CNT_DATA][node.key] = 0;
-
-// 		}
-
-// 		// if (Canout) std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
-// 		for (auto& node : TOP_20percent.Bottom.vec)
-// 		{
-// 			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
-// 			// !注意用OLD的数据计算CNT的优先级
-// 			// flow_pg_class_table[CNT_DATA][node.key] = 2;
+		// if (Canout) std::cout << "low class: " << TOP_20percent.Bottom.size() <<'\n';
+		for (auto& node : TOP_20percent.Bottom.vec)
+		{
+			// if (Canout) std::cout << "\tid: " << node.key << "\tsize: " << node.val << '\n';
+			// !注意用OLD的数据计算CNT的优先级
+			// flow_pg_class_table[CNT_DATA][node.key] = 2;
 
 // 			// *PLAN A: 5(BEST!)
 // 			// if (flow_max_pkt_size_table[CNT_DATA][node.key] <= 1369.5 &&
@@ -1306,11 +1307,11 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 // 			// 		flow_pg_class_table[CNT_DATA][node.key] = 3;
 // 			// }
 
-// 			// #define VOICE 		2
-// 			// #define VMEETING 	2
-// 			// #define GAME		2
-// 			// #define FILE		3
-// 			// #define VOD			3
+			#define VOICE 		2
+			#define VMEETING 	2
+			#define GAME		2
+			#define FILE		3
+			#define VOD			3
 
 // 			// !截至2024.1均采用该版本(应该标为PLAN L)
 // 			// // plan K: 5 class
@@ -1487,192 +1488,192 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 // 			// 	}
 // 			// }
 
-// 			// plan L: new feature:gap_pkt_size
-// // if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 520.50)
-// //  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 256.50)
-// //   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 3.51)
-// //    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 212.00)
-// //     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //     else
-// //      if(flow_speed_table[CNT_DATA][node.key] <= 45.40)
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //      else
-// //       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.00)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //    else
-// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2430.67)
-// //      if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
-// //       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = GAME;
-// //      else
-// //       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.01)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //     else
-// //      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
-// //       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 22830.26)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //   else
-// //    if(flow_speed_table[CNT_DATA][node.key] <= 2.53)
-// //      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //    else
-// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2553.10)
-// //      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.00)
-// //       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 9.00)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //      else
-// //       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 15.01)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //  else
-// //   if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
-// //    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 5583.50)
-// //     if(flow_speed_table[CNT_DATA][node.key] <= 8834.90)
-// //      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2004.00)
-// //       if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.08)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //      else
-// //       if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //    else
-// //     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 8176.00)
-// //       flow_pg_class_table[CNT_DATA][node.key] = GAME;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //   else
-// //    if(flow_speed_table[CNT_DATA][node.key] <= 839.73)
-// //     if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.19)
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //    else
-// //     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.04)
-// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.72)
-// //        flow_pg_class_table[CNT_DATA][node.key] = GAME;
-// //      else
-// //       if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 122.26)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = GAME;
-// // else
-// //  if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1349.50)
-// //   if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
-// //    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
-// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 179.32)
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //    else
-// //     if(flow_speed_table[CNT_DATA][node.key] <= 1130.52)
-// //      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.00)
-// //       if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 725.50)
-// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //     else
-// //      if(flow_speed_table[CNT_DATA][node.key] <= 5866.14)
-// //        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //      else
-// //       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 1378.00)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //   else
-// //    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 33998.50)
-// //     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 853.00)
-// //       flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //     else
-// //       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
-// //    else
-// //     if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 961.00)
-// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.41)
-// //       if(flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.50)
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOICE;
-// //      else
-// //       if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
-// //         flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //       else
-// //         flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //     else
-// //      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 48423.50)
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //  else
-// //   if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 35.22)
-// //    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
-// //     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.56)
-// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.71)
-// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //     else
-// //      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 16986.83)
-// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //    else
-// //     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2568.50)
-// //       flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //     else
-// //      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
-// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //   else
-// //    if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1419.00)
-// //     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 5920.59)
-// //       flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //     else
-// //      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 128.29)
-// //        flow_pg_class_table[CNT_DATA][node.key] = VOD;
-// //      else
-// //        flow_pg_class_table[CNT_DATA][node.key] = FILE;
-// //    else
-// //      flow_pg_class_table[CNT_DATA][node.key] = VOD;
+			// plan L: new feature:gap_pkt_size
+if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 520.50)
+ if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 256.50)
+  if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 3.51)
+   if(flow_max_burst_size_table[CNT_DATA][node.key] <= 212.00)
+    if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.66)
+      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+    else
+     if(flow_speed_table[CNT_DATA][node.key] <= 45.40)
+       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+     else
+      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 90.00)
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+   else
+    if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2430.67)
+     if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
+      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = GAME;
+     else
+      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.01)
+        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+    else
+     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 22830.26)
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+  else
+   if(flow_speed_table[CNT_DATA][node.key] <= 2.53)
+     flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+   else
+    if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2553.10)
+     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 5.00)
+      if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 9.00)
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+     else
+      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 15.01)
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+ else
+  if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.03)
+   if(flow_max_burst_size_table[CNT_DATA][node.key] <= 5583.50)
+    if(flow_speed_table[CNT_DATA][node.key] <= 8834.90)
+     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2004.00)
+      if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.08)
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+     else
+      if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+   else
+    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 8176.00)
+      flow_pg_class_table[CNT_DATA][node.key] = GAME;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+  else
+   if(flow_speed_table[CNT_DATA][node.key] <= 839.73)
+    if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.19)
+      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = FILE;
+   else
+    if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.04)
+     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 0.72)
+       flow_pg_class_table[CNT_DATA][node.key] = GAME;
+     else
+      if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 122.26)
+        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = GAME;
+else
+ if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1349.50)
+  if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 2599.17)
+   if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.02)
+    if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 179.32)
+      flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+   else
+    if(flow_speed_table[CNT_DATA][node.key] <= 1130.52)
+     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 3032.00)
+      if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 725.50)
+        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+    else
+     if(flow_speed_table[CNT_DATA][node.key] <= 5866.14)
+       flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+     else
+      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 1378.00)
+        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+  else
+   if(flow_max_burst_size_table[CNT_DATA][node.key] <= 33998.50)
+    if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 853.00)
+      flow_pg_class_table[CNT_DATA][node.key] = FILE;
+    else
+      flow_pg_class_table[CNT_DATA][node.key] = VMEETING;
+   else
+    if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 961.00)
+     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.41)
+      if(flow_max_burst_size_table[CNT_DATA][node.key] <= 805656.50)
+        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOICE;
+     else
+      if(flow_min_pkt_interval_table[CNT_DATA][node.key] <= 0.00)
+        flow_pg_class_table[CNT_DATA][node.key] = FILE;
+      else
+        flow_pg_class_table[CNT_DATA][node.key] = VOD;
+    else
+     if(flow_max_burst_size_table[CNT_DATA][node.key] <= 48423.50)
+       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+ else
+  if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 35.22)
+   if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
+    if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 2.56)
+     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 1.71)
+       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+    else
+     if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 16986.83)
+       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+   else
+    if(flow_max_burst_size_table[CNT_DATA][node.key] <= 2568.50)
+      flow_pg_class_table[CNT_DATA][node.key] = VOD;
+    else
+     if(flow_avg_pkt_interval_table[CNT_DATA][node.key] <= 0.01)
+       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+  else
+   if(flow_gap_pkt_size_table[CNT_DATA][node.key] <= 1419.00)
+    if(flow_avg_burst_size_table[CNT_DATA][node.key] <= 5920.59)
+      flow_pg_class_table[CNT_DATA][node.key] = FILE;
+    else
+     if(flow_max_pkt_interval_table[CNT_DATA][node.key] <= 128.29)
+       flow_pg_class_table[CNT_DATA][node.key] = VOD;
+     else
+       flow_pg_class_table[CNT_DATA][node.key] = FILE;
+   else
+     flow_pg_class_table[CNT_DATA][node.key] = VOD;
 
 
-// 			if (flow_pg_class_table[CNT_DATA][node.key] == 2)			tmpFlowlist[1].push_back({node.key, node.val});
-// 			else if (flow_pg_class_table[CNT_DATA][node.key] == 3)		tmpFlowlist[2].push_back({node.key, node.val});
+			if (flow_pg_class_table[CNT_DATA][node.key] == 2)			tmpFlowlist[1].push_back({node.key, node.val});
+			else if (flow_pg_class_table[CNT_DATA][node.key] == 3)		tmpFlowlist[2].push_back({node.key, node.val});
 
 
-// 			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
-// 															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
-// 			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
-// 				flow_idle_num_table[CNT_DATA][node.key]++;
-// 			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
-// 				tmpDellist.push_back(node.key);
+			flow_current_frate_table[CNT_DATA][node.key] = 	AGING_ALPHA_BIG * flow_current_frate_table[CNT_DATA][node.key]  + \
+															(1-AGING_ALPHA_BIG) * flow_speed_table[CNT_DATA][node.key];
+			if (flow_current_frate_table[CNT_DATA][node.key] < SIZE_IDLE_THRESHOLD)
+				flow_idle_num_table[CNT_DATA][node.key]++;
+			if (flow_idle_num_table[CNT_DATA][node.key] >= PERIOD_IDLE_THRESHOLD)
+				tmpDellist.push_back(node.key);
 				
-// 			// !注意及时将周期流表清空!
-// 			flow_current_frate_table[CNT_DATA][node.key] = 0;
-// 		}
+			// !注意及时将周期流表清空!
+			flow_current_frate_table[CNT_DATA][node.key] = 0;
+		}
 
 
 

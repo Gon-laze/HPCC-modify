@@ -1,0 +1,2639 @@
+ENABLE_QCN			Yes
+USE_DYNAMIC_PFC_THRESHOLD	Yes
+PACKET_PAYLOAD_SIZE		1000
+TOPOLOGY_FILE			mix/topology.txt
+FLOW_FILE			mix/flow.txt
+TRACE_FILE			mix/trace.txt
+TRACE_OUTPUT_FILE		mix/mix.tr
+FCT_OUTPUT_FILE		mix/fct.txt
+PFC_OUTPUT_FILE				mix/pfc.txt
+SIMULATOR_STOP_TIME		20000
+CC_MODE		7
+ALPHA_RESUME_INTERVAL		1
+RATE_DECREASE_INTERVAL		4
+CLAMP_TARGET_RATE		No
+RP_TIMER			900
+EWMA_GAIN			0.00390625
+FAST_RECOVERY_TIMES		1
+RATE_AI				32Kb/s
+RATE_HAI			64Kb/s
+MIN_RATE		64Kb/s
+DCTCP_RATE_AI				64Kb/s
+ERROR_RATE_PER_LINK		0
+L2_CHUNK_SIZE			4000
+L2_ACK_INTERVAL			1
+L2_BACK_TO_ZERO			No
+HAS_WIN		1
+GLOBAL_T		1
+VAR_WIN		1
+FAST_REACT		1
+U_TARGET		0.95
+MI_THRESH		0
+INT_MULTI				1
+MULTI_RATE				0
+SAMPLE_FEEDBACK				0
+PINT_LOG_BASE				1.05
+PINT_PROB				1
+RATE_BOUND		1
+ACK_HIGH_PRIO		0
+LINK_DOWN				0 0 0
+ENABLE_TRACE				1
+KMAX_MAP				 25000000000 400 50000000000 800 256000 1600
+KMIN_MAP				 25000000000 100 50000000000 200 256000 400
+PMAX_MAP				 25000000000 0.2 50000000000 0.2 256000 0.2
+BUFFER_SIZE				32
+QLEN_MON_FILE				mix/qlen.txt
+QLEN_MON_START				2000000000
+QLEN_MON_END				2010000000
+Add: node 0 device Num: 1
+Add: node 1 device Num: 1
+Add: node 2 device Num: 1
+Add: node 3 device Num: 1
+Add: node 4 device Num: 1
+init: node 1 device Num: 1
+init: node 2 device Num: 1
+init: node 3 device Num: 1
+init: node 4 device Num: 1
+Add: node 1 device Num: 2
+Add: node 0 device Num: 2
+Add: node 2 device Num: 2
+Add: node 0 device Num: 3
+Add: node 3 device Num: 2
+Add: node 0 device Num: 4
+Add: node 0 device Num: 5
+Add: node 4 device Num: 2
+Node[1] has m_nic Nums 2
+	Node[1]m_nic[0]QpGrpstatus:
+	Node[1]m_nic[1]QpGrpstatus:
+Node[2] has m_nic Nums 2
+	Node[2]m_nic[0]QpGrpstatus:
+	Node[2]m_nic[1]QpGrpstatus:
+Node[3] has m_nic Nums 2
+	Node[3]m_nic[0]QpGrpstatus:
+	Node[3]m_nic[1]QpGrpstatus:
+Node[4] has m_nic Nums 2
+	Node[4]m_nic[0]QpGrpstatus:
+	Node[4]m_nic[1]QpGrpstatus:
+maxRtt=62504000 maxBdp=2000
+Running Simulation.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP1: Read flows.
+CP2: RdmaClient Helper start.
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+CP3: new Rdma client.
+CP4: Established queue pair.
+CP5: QP configure set.
+input Test begin!
+CP6: QP configure set successfully!
+
+Round: 0
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 1000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 2000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 3000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 4000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 5000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 6000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 7000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 8000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 9000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 10000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 11000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 12000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 13000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 14000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 15000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 16000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 17000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 18000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+Round: 19000
+High class: 0
+High class: 0
+Mid class: 0
+Low class: 0
+0:0:0
+
+
+PktClass: High
+Total: 0
+''''Percentage: -nan:-nan:-nan:''''
+
+
+PktClass: mid
+Total: 0
+''''Percentage: -nan:-nan:-nan:''''
+
+
+PktClass: low
+Total: 0
+''''Percentage: -nan:-nan:-nan:''''
+final_acc_Percentage: 
+	1: 	1	0	0
+	2: 	1	0	0
+	3: 	1	0	0
+flow id:		first send:		last arrive:		FCT:		origin_pg:
+11:0:11 11:0:41 10099 100 17		2.611406222		19999.781967646		19997.166809426		3
+11:0:11 11:0:41 10097 100 17		2.603562473		10241.269678293		10243.637613763		3
+11:0:11 11:0:41 10096 100 17		2.599749974		19999.457967649		19996.854465677		3
+11:0:11 11:0:41 10093 100 17		2.587781225		12809.868489369		12811.826362323		3
+11:0:11 11:0:41 10092 100 17		2.583906226		5150.14509527		5153.466874464		3
+11:0:11 11:0:41 10090 100 17		2.575906226		19998.574592655		19995.994934431		3
+11:0:11 11:0:41 10098 100 17		2.607437472		19998.813123904		19996.201934434		3
+11:0:11 11:0:41 10088 100 17		2.565718726		19998.648467655		19996.078996931		3
+11:0:11 11:0:41 10087 100 17		2.518468726		19998.906561403		19996.383590679		3
+11:0:11 11:0:41 10086 100 17		2.514281226		19999.649498898		19997.131465674		3
+11:0:11 11:0:41 10085 100 17		2.510406227		19998.485123906		19995.97024693		3
+11:0:11 11:0:41 10084 100 17		2.504031228		19996.367155176		19993.85937195		3
+11:0:11 11:0:41 10078 100 17		2.47856248		11275.344290564		11277.651913519		3
+11:0:11 11:0:41 10077 100 17		2.47437498		19999.589717648		19997.09955942		3
+11:0:11 11:0:41 10076 100 17		2.470531231		9800.966246336		9803.61005679		3
+11:0:11 11:0:41 10075 100 17		2.422531231		19999.829936395		19997.403653166		3
+11:0:11 11:0:41 10074 100 17		2.418562481		19998.282311407		19995.853028178		3
+11:0:11 11:0:41 10072 100 17		2.395093732		19999.505873898		19997.107028168		3
+11:0:11 11:0:41 10070 100 17		2.386999982		19999.553811398		19997.151028168		3
+11:0:11 11:0:41 10069 100 17		2.381124982		19996.246186426		19993.861309446		3
+11:0:11 11:0:41 10068 100 17		2.377249983		19998.339905157		19995.958903176		3
+11:0:11 11:0:41 10067 100 17		2.373281233		19996.415155176		19994.038121945		3
+11:0:11 11:0:41 10091 100 17		2.579999976		19998.083873908		19995.500121934		3
+11:0:11 11:0:41 10066 100 17		2.369406234		9312.795909713		9315.896126401		3
+11:0:11 11:0:41 10065 100 17		2.365468734		9402.190814671		9405.153281358		3
+11:0:11 11:0:41 10082 100 17		2.495468729		19996.463123925		19993.954684448		3
+11:0:11 11:0:41 10064 100 17		2.359562484		11737.870940731		11740.235532444		3
+11:0:11 11:0:41 10063 100 17		2.356843735		19999.156030151		19996.792903168		3
+11:0:11 11:0:41 10061 100 17		2.328343735		19998.861123904		19996.52646567		3
+11:0:11 11:0:41 10060 100 17		2.324843735		19998.035873908		19995.707278175		3
+11:0:11 11:0:41 10012 100 17		2.053593748		156.467249788		160.780185174		1
+11:0:11 11:0:41 10036 100 17		2.152968741		136.687906438		141.059560548		1
+11:0:11 11:0:41 10024 100 17		2.100218745		158.239124748		162.41909139		1
+11:0:11 11:0:41 10008 100 17		2.0351875		162.310062175		166.588185055		1
+11:0:11 11:0:41 10034 100 17		2.145406241		96.120688718		101.244530305		1
+11:0:11 11:0:41 10026 100 17		2.108031244		126.466844176		131.500623261		1
+11:0:11 11:0:41 10022 100 17		2.092406246		149.918437412		153.9586853		1
+11:0:11 11:0:41 10027 100 17		2.111968744		124.554844242		129.786498303		1
+11:0:11 11:0:41 10049 100 17		2.215562489		5690.810712071		5694.342709998		2
+11:0:11 11:0:41 10017 100 17		2.072781247		126.912375414		131.963935745		1
+11:0:11 11:0:41 10089 100 17		2.571718726		19996.656123923		19994.080653199		3
+11:0:11 11:0:41 10016 100 17		2.068874997		126.263312927		131.324404511		1
+11:0:11 11:0:41 10023 100 17		2.096281245		122.262563055		127.519123363		1
+11:0:11 11:0:41 10073 100 17		2.398968731		19998.387873906		19995.985153177		3
+11:0:11 11:0:41 10015 100 17		2.064968747		128.256406637		133.160935719		1
+11:0:11 11:0:41 10014 100 17		2.061156248		149.915406162		153.986591549		1
+11:0:11 11:0:41 10053 100 17		2.243468737		2278.891958418		2282.728112568		2
+11:0:11 11:0:41 10059 100 17		2.320874985		19996.123905176		19993.799278193		3
+11:0:11 11:0:41 10013 100 17		2.057187498		122.250781806		127.546498362		1
+11:0:11 11:0:41 10048 100 17		2.206999989		8340.865798258		8344.308733692		2
+11:0:11 11:0:41 10020 100 17		2.084468746		126.462937926		131.52031076		1
+11:0:11 11:0:41 10025 100 17		2.104156245		124.550906742		129.790435803		1
+11:0:11 11:0:41 10003 100 17		2.0138125		157.704781008		162.023716399		1
+11:0:11 11:0:41 10046 100 17		2.19512499		3533.346153036		3537.205338426		2
+11:0:11 11:0:41 10001 100 17		2.00396875		183.485499274		187.735497161		1
+11:0:11 11:0:41 10004 100 17		2.01740625		128.18609414		133.13971697		1
+11:0:11 11:0:41 10002 100 17		2.00790625		119.400188118		124.786060921		1
+11:0:11 11:0:41 10095 100 17		2.595874975		8454.405171719		8457.393044681		3
+11:0:11 11:0:41 10044 100 17		2.18687499		130.329750341		135.164435691		1
+11:0:11 11:0:41 10057 100 17		2.313031236		19999.108061402		19996.791278168		3
+11:0:11 11:0:41 10071 100 17		2.391187482		12974.236893427		12976.532141381		3
+11:0:11 11:0:41 10006 100 17		2.02728125		131.037406577		136.038341916		1
+11:0:11 11:0:41 10009 100 17		2.04109375		131.937906547		136.787560643		1
+11:0:11 11:0:41 10028 100 17		2.115843743		129.261781615		134.147685707		1
+11:0:11 11:0:41 10018 100 17		2.076687497		122.258688056		127.534842112		1
+11:0:11 11:0:41 10021 100 17		2.088437496		124.547031743		129.802217052		1
+11:0:11 11:0:41 10010 100 17		2.0450625		124.244187997		129.493873312		1
+11:0:11 11:0:41 10000 100 17		2		121.416188077		126.890685874		1
+11:0:11 11:0:41 10039 100 17		2.164468741		118.93343813		124.153342189		1
+11:0:11 11:0:41 10005 100 17		2.023375		128.252531638		133.198591966		1
+11:0:11 11:0:41 10079 100 17		2.48246873		19996.342061426		19993.842028198		3
+11:0:11 11:0:41 10029 100 17		2.119718742		132.792844018		137.550216877		1
+11:0:11 11:0:41 10038 100 17		2.160874991		136.290875197		140.749654304		1
+11:0:11 11:0:41 10043 100 17		2.18293749		130.277875341		135.103966942		1
+11:0:11 11:0:41 10030 100 17		2.123593741		129.053437869		133.942935712		1
+11:0:11 11:0:41 10031 100 17		2.129593741		109.145438401		114.541342464		1
+11:0:11 11:0:41 10032 100 17		2.135531241		128.260344137		133.094341975		1
+11:0:11 11:0:41 10033 100 17		2.139499991		124.854844224		130.087092046		1
+11:0:11 11:0:41 10052 100 17		2.239031238		3452.953935773		3456.719214929		2
+11:0:11 11:0:41 10081 100 17		2.49221873		19998.436498906		19995.940528178		3
+11:0:11 11:0:41 10019 100 17		2.080593747		120.490500599		125.838748402		1
+11:0:11 11:0:41 10035 100 17		2.148999991		126.470719175		131.463529513		1
+11:0:11 11:0:41 10037 100 17		2.156937491		121.512531827		126.848748381		1
+11:0:11 11:0:41 10080 100 17		2.48859373		19998.761686405		19996.269340677		3
+11:0:11 11:0:41 10040 100 17		2.170437491		128.264312887		133.063373225		1
+11:0:11 11:0:41 10058 100 17		2.316999986		18747.137637711		18749.02322943		3
+11:0:11 11:0:41 10041 100 17		2.174343741		134.46968773		139.072341831		1
+11:0:11 11:0:41 10083 100 17		2.500093728		19996.294123926		19993.7902782		3
+11:0:11 11:0:41 10042 100 17		2.17899999		130.325812841		135.168341941		1
+11:0:11 11:0:41 10007 100 17		2.03125		114.137969525		119.786061071		1
+11:0:11 11:0:41 10045 100 17		2.19081249		4457.224949894		4460.778510312		2
+11:0:11 11:0:41 10047 100 17		2.198906239		7242.615408164		7246.189812332		2
+11:0:11 11:0:41 10094 100 17		2.591687475		13038.034392631		13040.054921855		3
+11:0:11 11:0:41 10062 100 17		2.331843735		19996.171873925		19993.819559443		3
+11:0:11 11:0:41 10011 100 17		2.048937499		132.788187769		137.617591871		1
+11:0:11 11:0:41 10050 100 17		2.223687489		7945.865179014		7949.37386444		2
+11:0:11 11:0:41 10051 100 17		2.233531239		567.412742195		571.361646349		2
+11:0:11 11:0:41 10054 100 17		2.254874986		9935.775650772		9938.502836221		2
+11:0:11 11:0:41 10056 100 17		2.309124986		19999.060123902		19996.747246918		3
+11:0:11 11:0:41 10055 100 17		2.261124986		17083.755094665		17085.835873883		3
+11:0:21 11:0:41 10097 100 17		2.90171872		13628.769729021		13630.344539502		3
+11:0:21 11:0:41 10094 100 17		2.853562471		19999.998342643		19997.130746924		3
+11:0:21 11:0:41 10093 100 17		2.847031222		19997.687498913		19994.836715693		3
+11:0:21 11:0:41 10091 100 17		2.795906223		9188.419099044		9191.013784485		3
+11:0:21 11:0:41 10090 100 17		2.790031223		19997.03731142		19994.243528199		3
+11:0:21 11:0:41 10087 100 17		2.733937474		19996.723748923		19993.986059451		3
+11:0:21 11:0:41 10086 100 17		2.729999974		19999.001717652		19996.26796568		3
+11:0:21 11:0:41 10089 100 17		2.785843723		19996.95862392		19994.15693445		3
+11:0:21 11:0:41 10084 100 17		2.721281225		19998.035811409		19995.265403186		3
+11:0:21 11:0:41 10096 100 17		2.89571872		19810.171313228		19811.458748721		3
+11:0:21 11:0:41 10083 100 17		2.682593726		19996.92346767		19994.224278197		3
+11:0:21 11:0:41 10079 100 17		2.621562479		19996.875498921		19994.250184444		3
+11:0:21 11:0:41 10077 100 17		2.61109373		19995.982030177		19993.338996949		3
+11:0:21 11:0:41 10076 100 17		2.60759373		19999.056623901		19996.400778174		3
+11:0:21 11:0:41 10099 100 17		2.91296872		19997.829686411		19994.912965693		3
+11:0:21 11:0:41 10072 100 17		2.584968731		19996.203155176		19993.614434447		3
+11:0:21 11:0:41 10071 100 17		2.581468731		19999.947498893		19997.317840665		3
+11:0:21 11:0:41 10092 100 17		2.843156223		19997.712498913		19994.814684443		3
+11:0:21 11:0:41 10069 100 17		2.573812481		19997.877623911		19995.288028182		3
+11:0:21 11:0:41 10066 100 17		2.514437482		6947.045537473		6950.413629169		3
+11:0:21 11:0:41 10065 100 17		2.476124983		9884.056401424		9886.672899385		3
+11:0:21 11:0:41 10063 100 17		2.464937483		8096.864833072		8100.207299759		3
+11:0:21 11:0:41 10062 100 17		2.461031233		12700.736772058		12702.919520015		3
+11:0:21 11:0:41 10028 100 17		2.125968744		136.696875189		141.123998043		1
+11:0:21 11:0:41 10027 100 17		2.120031244		120.468594347		125.747435906		1
+11:0:21 11:0:41 10025 100 17		2.112281244		149.654531164		153.667154056		1
+11:0:21 11:0:41 10098 100 17		2.90568747		9136.448662303		9139.018879001		3
+11:0:21 11:0:41 10070 100 17		2.577999981		19996.052905176		19993.471153197		3
+11:0:21 11:0:41 10022 100 17		2.096531245		141.95184381		146.031591697		1
+11:0:21 11:0:41 10021 100 17		2.090562495		122.140313058		127.385217116		1
+11:0:21 11:0:41 10053 100 17		2.245749985		8237.16545604		8240.617203974		2
+11:0:21 11:0:41 10020 100 17		2.086593745		127.829750401		132.802091979		1
+11:0:21 11:0:41 10067 100 17		2.518374982		19996.792342672		19994.270215692		3
+11:0:21 11:0:41 10047 100 17		2.213343737		5944.176677104		5947.911706285		2
+11:0:21 11:0:41 10019 100 17		2.082718746		131.184687822		136.120498166		1
+11:0:21 11:0:41 10044 100 17		2.196562488		127.8456254		132.710060736		1
+11:0:21 11:0:41 10080 100 17		2.669531228		19998.953717652		19996.280434426		3
+11:0:21 11:0:41 10024 100 17		2.108406245		118.803719383		124.048560936		1
+11:0:21 11:0:41 10055 100 17		2.270187485		19997.412373917		19995.138371934		3
+11:0:21 11:0:41 10018 100 17		2.078843747		121.799531822		127.17021712		1
+11:0:21 11:0:41 10023 100 17		2.102499995		142.124031306		146.190341691		1
+11:0:21 11:0:41 10085 100 17		2.725906224		19997.613592664		19994.883934442		3
+11:0:21 11:0:41 10058 100 17		2.355812484		19997.760436413		19995.367309431		3
+11:0:21 11:0:41 10064 100 17		2.468906233		19996.549842675		19994.077184444		3
+11:0:21 11:0:41 10017 100 17		2.074874997		144.839593755		149.058029147		1
+11:0:21 11:0:41 10078 100 17		2.614343729		19997.26243642		19994.644340693		3
+11:0:21 11:0:41 10030 100 17		2.135843743		120.397000599		125.657904658		1
+11:0:21 11:0:41 10073 100 17		2.588906231		19995.934092677		19993.341434448		3
+11:0:21 11:0:41 10036 100 17		2.16121874		127.547719156		132.488560741		1
+11:0:21 11:0:41 10038 100 17		2.16909374		131.701594051		136.414716908		1
+11:0:21 11:0:41 10014 100 17		2.061437498		124.360844242		129.557998308		1
+11:0:21 11:0:41 10000 100 17		2		126.593437919		131.707217		1
+11:0:21 11:0:41 10054 100 17		2.262187485		118.753750638		123.840623447		2
+11:0:21 11:0:41 10074 100 17		2.596124981		19997.316498919		19994.71662194		3
+11:0:21 11:0:41 10016 100 17		2.071281247		118.494906894		123.82471719		1
+11:0:21 11:0:41 10003 100 17		2.01346875		127.544312907		132.632373231		1
+11:0:21 11:0:41 10004 100 17		2.017375		116.457875709		121.98459226		1
+11:0:21 11:0:41 10068 100 17		2.566312482		19995.882686427		19993.312621947		3
+11:0:21 11:0:41 10005 100 17		2.022031249		131.176750322		136.173279413		1
+11:0:21 11:0:41 10088 100 17		2.737874974		19999.899592644		19997.157965672		3
+11:0:21 11:0:41 10039 100 17		2.17299999		131.188625322		136.034123172		1
+11:0:21 11:0:41 10015 100 17		2.067406248		127.173344164		132.242685739		1
+11:0:21 11:0:41 10006 100 17		2.025968749		124.640719233		129.999060794		1
+11:0:21 11:0:41 10041 100 17		2.18287499		125.940687934		130.917373273		1
+11:0:21 11:0:41 10011 100 17		2.045562498		126.597406669		131.665592002		1
+11:0:21 11:0:41 10056 100 17		2.274062484		19997.364405168		19995.086590686		3
+11:0:21 11:0:41 10081 100 17		2.673343727		18717.899044284		18719.523792251		3
+11:0:21 11:0:41 10034 100 17		2.153437491		116.715156953		122.113748507		1
+11:0:21 11:0:41 10007 100 17		2.029937499		186.138061712		190.366934601		1
+11:0:21 11:0:41 10060 100 17		2.365187484		19997.92334266		19995.554403178		3
+11:0:21 11:0:41 10049 100 17		2.222656237		118.745750638		123.872154695		2
+11:0:21 11:0:41 10051 100 17		2.235062486		6119.425768238		6122.951109926		2
+11:0:21 11:0:41 10008 100 17		2.033812498		146.618937468		150.760622853		1
+11:0:21 11:0:41 10035 100 17		2.157343741		124.462687992		129.61440456		1
+11:0:21 11:0:41 10002 100 17		2.009875		100.46106363		105.57093645		1
+11:0:21 11:0:41 10010 100 17		2.041656248		131.180719072		136.157623164		1
+11:0:21 11:0:41 10031 100 17		2.139718742		126.601344169		131.575404508		1
+11:0:21 11:0:41 10082 100 17		2.679343727		11539.47359961		11541.348597577		3
+11:0:21 11:0:41 10075 100 17		2.600093731		19999.950967643		19997.346590665		3
+11:0:21 11:0:41 10012 100 17		2.049468748		115.126032002		120.726561051		1
+11:0:21 11:0:41 10029 100 17		2.131968744		124.186719254		129.330967072		1
+11:0:21 11:0:41 10033 100 17		2.149499991		121.22450058		126.558717137		1
+11:0:21 11:0:41 10026 100 17		2.116499994		79.651751687		85.024905723		1
+11:0:21 11:0:41 10040 100 17		2.17696874		124.954781722		130.151435792		1
+11:0:21 11:0:41 10032 100 17		2.143593741		127.8396254		132.757091983		1
+11:0:21 11:0:41 10095 100 17		2.891843721		19997.980873909		19995.08527819		3
+11:0:21 11:0:41 10037 100 17		2.16515624		128.248562888		133.052935727		1
+11:0:21 11:0:41 10043 100 17		2.190624988		125.944062933		130.915623275		1
+11:0:21 11:0:41 10001 100 17		2.00390625		128.300375387		133.297623216		1
+11:0:21 11:0:41 10045 100 17		2.202531238		3966.843582944		3970.641143348		2
+11:0:21 11:0:41 10013 100 17		2.055468748		119.128969375		124.429373429		1
+11:0:21 11:0:41 10042 100 17		2.186749989		121.803406821		127.066279628		1
+11:0:21 11:0:41 10046 100 17		2.207687488		9561.135874792		9564.169497733		2
+11:0:21 11:0:41 10059 100 17		2.361687484		19999.049686401		19996.63974692		3
+11:0:21 11:0:41 10048 100 17		2.216781237		2448.156548938		2452.082328093		2
+11:0:21 11:0:41 10061 100 17		2.413124984		19996.501905175		19994.085028193		3
+11:0:21 11:0:41 10009 100 17		2.037749998		126.569469172		131.645404504		1
+11:0:21 11:0:41 10050 100 17		2.230656237		9017.967445254		9021.225536936		2
+11:0:21 11:0:41 10052 100 17		2.239249986		9905.802869913		9908.583086616		2
+11:0:21 11:0:41 10057 100 17		2.307812484		6733.870696766		6737.450850943		3
+11:0:31 11:0:41 10099 100 17		2.770124962		19998.610498905		19995.836621945		3
+11:0:31 11:0:41 10095 100 17		2.707343712		19997.223092669		19994.48368446		3
+11:0:31 11:0:41 10092 100 17		2.674624962		13519.836167803		13521.627572034		3
+11:0:31 11:0:41 10090 100 17		2.664562462		19997.08362392		19994.41530946		3
+11:0:31 11:0:41 10088 100 17		2.656781213		19998.131811408		19995.471278197		3
+11:0:31 11:0:41 10087 100 17		2.652874963		19998.227342657		19995.570715696		3
+11:0:31 11:0:41 10085 100 17		2.645031214		19880.974562529		19882.461623032		3
+11:0:31 11:0:41 10084 100 17		2.597468714		19998.179748908		19995.578215696		3
+11:0:31 11:0:41 10080 100 17		2.578531215		19806.465625762		19808.121123759		3
+11:0:31 11:0:41 10079 100 17		2.574531215		19996.992842671		19994.414559458		3
+11:0:31 11:0:41 10078 100 17		2.568656215		19997.17812392		19994.635996957		3
+11:0:31 11:0:41 10076 100 17		2.517968717		10762.209078371		10764.461482594		3
+11:0:31 11:0:41 10075 100 17		2.514156218		8664.946543837		8667.993291785		3
+11:0:31 11:0:41 10093 100 17		2.680499962		19997.460217666		19994.775965706		3
+11:0:31 11:0:41 10074 100 17		2.493031218		19996.597748924		19994.100965708		3
+11:0:31 11:0:41 10073 100 17		2.445093718		19999.734061397		19997.285215681		3
+11:0:31 11:0:41 10072 100 17		2.438968718		19999.404592649		19996.961871933		3
+11:0:31 11:0:41 10070 100 17		2.431249969		13718.390446751		13720.39553848		3
+11:0:31 11:0:41 10081 100 17		2.584531215		19997.607780164		19994.977371951		3
+11:0:31 11:0:41 10069 100 17		2.427062469		19999.306717651		19996.863840683		3
+11:0:31 11:0:41 10068 100 17		2.407374969		19996.075967676		19993.664840709		3
+11:0:31 11:0:41 10066 100 17		2.358062471		8411.781578576		8415.001607782		3
+11:0:31 11:0:41 10071 100 17		2.435187469		14421.40703257		14423.333280555		3
+11:0:31 11:0:41 10065 100 17		2.353437472		19998.646405155		19996.165934435		3
+11:0:31 11:0:41 10064 100 17		2.349593723		9754.219090784		9756.971244996		3
+11:0:31 11:0:41 10063 100 17		2.345718724		19997.559780164		19995.210090692		3
+11:0:31 11:0:41 10062 100 17		2.342999975		19998.758186404		19996.366996932		3
+11:0:31 11:0:41 10061 100 17		2.339062475		19999.201436401		19996.858621928		3
+11:0:31 11:0:41 10060 100 17		2.335187476		19998.706811405		19996.367871931		3
+11:0:31 11:0:41 10059 100 17		2.329312476		19996.692217673		19994.359153199		3
+11:0:31 11:0:41 10021 100 17		2.090124995		120.953406834		126.334810889		1
+11:0:31 11:0:41 10024 100 17		2.101781243		133.668344002		138.397685605		1
+11:0:31 11:0:41 10083 100 17		2.593281214		19999.613592648		19997.016559436		3
+11:0:31 11:0:41 10020 100 17		2.086218745		126.357656676		131.414123261		1
+11:0:31 11:0:41 10027 100 17		2.118968741		123.627156775		128.86274834		1
+11:0:31 11:0:41 10055 100 17		2.253437477		19999.286467651		19997.001559425		3
+11:0:31 11:0:41 10018 100 17		2.078343745		126.674719172		131.704404504		1
+11:0:31 11:0:41 10025 100 17		2.111499992		132.993219012		137.76137312		1
+11:0:31 11:0:41 10040 100 17		2.177312487		127.725156652		132.61074824		1
+11:0:31 11:0:41 10013 100 17		2.056749996		119.967656855		125.300373416		1
+11:0:31 11:0:41 10082 100 17		2.589156214		19996.001217677		19993.408309465		3
+11:0:31 11:0:41 10002 100 17		2.007812499		128.244062889		133.206404469		1
+11:0:31 11:0:41 10014 100 17		2.060718746		154.528468569		158.865216448		1
+11:0:31 11:0:41 10094 100 17		2.700124962		19999.342623901		19996.63871569		3
+11:0:31 11:0:41 10003 100 17		2.013781249		91.245063837		96.545530416		1
+11:0:31 11:0:41 10097 100 17		2.758124962		19999.851655144		19997.089778184		3
+11:0:31 11:0:41 10052 100 17		2.23674998		3226.656877536		3230.44471919		2
+11:0:31 11:0:41 10089 100 17		2.660656212		9538.586343887		9541.262279348		3
+11:0:31 11:0:41 10015 100 17		2.064593745		118.888000631		124.164873435		1
+11:0:31 11:0:41 10004 100 17		2.017656248		171.262655757		175.459903637		1
+11:0:31 11:0:41 10005 100 17		2.021562498		123.967219263		129.236935826		1
+11:0:31 11:0:41 10016 100 17		2.070499995		127.278875414		132.328685741		1
+11:0:31 11:0:41 10000 100 17		2		119.955906855		125.345342162		1
+11:0:31 11:0:41 10017 100 17		2.074437495		96.154813718		101.358811548		1
+11:0:31 11:0:41 10029 100 17		2.130906241		135.412781463		140.016591816		1
+11:0:31 11:0:41 10098 100 17		2.763999962		19999.686123897		19996.918371937		3
+11:0:31 11:0:41 10022 100 17		2.093999994		125.701781693		130.841560772		1
+11:0:31 11:0:41 10007 100 17		2.029249996		128.797500374		133.698810711		1
+11:0:31 11:0:41 10026 100 17		2.115093742		131.158656574		136.054966922		1
+11:0:31 11:0:41 10032 100 17		2.14446874		120.965031832		126.292185893		1
+11:0:31 11:0:41 10038 100 17		2.168718738		123.978906762		129.102217084		1
+11:0:31 11:0:41 10009 100 17		2.039062496		120.945656836		126.37812339		1
+11:0:31 11:0:41 10056 100 17		2.273687477		19997.511873915		19995.23415319		3
+11:0:31 11:0:41 10001 100 17		2.003874999		79.860845433		85.40103071		1
+11:0:31 11:0:41 10010 100 17		2.042999996		115.005219507		120.632529804		1
+11:0:31 11:0:41 10067 100 17		2.36193747		19997.13087392		19994.765184452		3
+11:0:31 11:0:41 10023 100 17		2.097968744		156.150812293		160.435591431		1
+11:0:31 11:0:41 10019 100 17		2.082249995		120.949531835		126.33881089		1
+11:0:31 11:0:41 10042 100 17		2.185062485		130.996031578		135.815248183		1
+11:0:31 11:0:41 10012 100 17		2.052843746		129.424312864		134.423716947		1
+11:0:31 11:0:41 10011 100 17		2.048906246		123.975031763		129.217373327		1
+11:0:31 11:0:41 10077 100 17		2.520687466		15278.213772372		15280.178520358		3
+11:0:31 11:0:41 10028 100 17		2.124906241		122.312469305		127.552092116		1
+11:0:31 11:0:41 10034 100 17		2.15231249		128.421125385		133.257216974		1
+11:0:31 11:0:41 10030 100 17		2.13659374		91.240938837		96.419374176		1
+11:0:31 11:0:41 10033 100 17		2.14840624		151.813624879		155.906529014		1
+11:0:31 11:0:41 10035 100 17		2.156968739		118.2039694		123.41715471		1
+11:0:31 11:0:41 10036 100 17		2.160906239		127.400687909		132.355310744		1
+11:0:31 11:0:41 10039 100 17		2.173374987		144.012437524		148.231966671		1
+11:0:31 11:0:41 10043 100 17		2.189031235		128.090219143		132.855716987		1
+11:0:31 11:0:41 10031 100 17		2.14056249		127.643937905		132.582560741		1
+11:0:31 11:0:41 10037 100 17		2.164781238		127.7490629		132.647123237		1
+11:0:31 11:0:41 10047 100 17		2.206999984		9728.1733099		9731.125432842		2
+11:0:31 11:0:41 10041 100 17		2.181187486		123.868938014		128.97371709		1
+11:0:31 11:0:41 10048 100 17		2.212562483		4448.808325009		4452.531385449		2
+11:0:31 11:0:41 10044 100 17		2.192999985		126.11746918		131.070998275		1
+11:0:31 11:0:41 10096 100 17		2.754593712		19996.645717673		19993.858403213		3
+11:0:31 11:0:41 10045 100 17		2.198968735		5161.029470127		5164.737249308		2
+11:0:31 11:0:41 10086 100 17		2.648906213		19997.781780162		19995.129121951		3
+11:0:31 11:0:41 10046 100 17		2.202406235		9478.833001012		9481.943467703		2
+11:0:31 11:0:41 10006 100 17		2.025437497		79.13325171		84.635436992		1
+11:0:31 11:0:41 10049 100 17		2.218999982		3581.887058388		3585.691837556		2
+11:0:31 11:0:41 10091 100 17		2.668749962		19999.249373901		19996.56599694		3
+11:0:31 11:0:41 10050 100 17		2.224749981		2577.504952629		2581.495700519		2
+11:0:31 11:0:41 10051 100 17		2.230999981		3175.613565988		3179.363282626		2
+11:0:31 11:0:41 10053 100 17		2.242249979		3916.609990019		3920.507675437		2
+11:0:31 11:0:41 10054 100 17		2.249031228		9961.005244192		9963.728304644		2
+11:0:31 11:0:41 10008 100 17		2.035156246		130.157594094		135.157154436		1
+11:0:31 11:0:41 10058 100 17		2.325406226		10500.626862805		10503.365548267		3
+11:0:31 11:0:41 10057 100 17		2.321624977		19996.824123922		19994.498746947		3
+54.52675
