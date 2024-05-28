@@ -141,7 +141,7 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 			#endif
 			
-			// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+			// qIndex = (ch.l3Prot == 0x06 ? 3 : ch.udp.pg); // if TCP, put to queue 1
 		}
 
 		// admission control
