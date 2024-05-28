@@ -1,6 +1,6 @@
 5 1 4
 0
-1 0 800Kbps 0.001ms 0
-2 0 800Kbps 0.001ms 0
-3 0 800Kbps 0.001ms 0
-0 4 800Kbps 0.001ms 0
+1 0 40Mbps 0.001ms 0
+2 0 40Mbps 0.001ms 0
+3 0 40Mbps 0.001ms 0
+0 4 40Mbps 0.001ms 0

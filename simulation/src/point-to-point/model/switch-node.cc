@@ -141,7 +141,7 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 			#endif
 			
-			// qIndex = (ch.l3Prot == 0x06 ? 3 : ch.udp.pg); // if TCP, put to queue 1
+			// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 		}
 
 		// admission control
@@ -595,7 +595,11 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			auto udp_key = iter.first;
 			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
-			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			// if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			// !流量限额减少后回传包载荷不为0，需要新的判别方式
+			// !非常关键的改动
+			if (udp_key.substr(0, 7) == "11:0:41") continue;
+
 			if (flow_pg_class_table[CNT_DATA][udp_key] == 1)
 			{
 				tmp_vec.push_back({udp_key, flow_byte_size_table[CNT_DATA][udp_key]});
@@ -632,7 +636,11 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			auto udp_key = iter.first;
 			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
-			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			// if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			// !流量限额减少后回传包载荷不为0，需要新的判别方式
+			// !非常关键的改动
+			if (udp_key.substr(0, 7) == "11:0:41") continue;
+
 			if (flow_pg_class_table[CNT_DATA][udp_key] == 2)
 			{
 				tmp_vec.push_back({udp_key, flow_byte_size_table[CNT_DATA][udp_key]});
@@ -670,7 +678,11 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		{
 			auto udp_key = iter.first;
 			// // !这一步将会跳过ACK与NACK（因为它们没有payload大小,若特征用Getsize()统计则有Header的大小）
-			if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			// if (flow_max_pkt_size_table[CNT_DATA][udp_key] == 0.0) continue;
+			// !流量限额减少后回传包载荷不为0，需要新的判别方式
+			// !非常关键的改动
+			if (udp_key.substr(0, 7) == "11:0:41") continue;
+
 			if (flow_pg_class_table[CNT_DATA][udp_key] == 3)
 			{
 				tmp_vec.push_back({udp_key, flow_byte_size_table[CNT_DATA][udp_key]});
@@ -772,7 +784,11 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		// *PIAS方式区分优先级
 		for (auto& tb:flow_byte_size_table[CNT_DATA])
 		{
-			if (tb.second == 0.0) continue;
+			// !流量限额减少后回传包载荷不为0，需要新的判别方式
+			// !非常关键的改动
+
+			// if (tb.second == 0.0) continue;
+			if (tb.first.substr(0, 7) == "11:0:41") continue;
 			
 			std::string key = tb.first;
 			uint32_t val = tb.second;
@@ -1686,7 +1702,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 		for (auto& iter : tmpFlowlist[2])
 			if (Canout) std::cout << "\tid: " << iter.first << "\tsize: " << iter.second << '\n';
 
-		if (Canout) std::cout << TOP_20percent.size() << ':' << TOP_20percent.Top.size() << ':' << TOP_20percent.Bottom.size() << '\n';
+		// if (Canout) std::cout << TOP_20percent.size() << ':' << TOP_20percent.Top.size() << ':' << TOP_20percent.Bottom.size() << '\n';
 
 
 		// *老化更新流表
