@@ -240,6 +240,8 @@ public:
     //* 为使得优先级能够成功写会qp对而创立的下标表
     std::unordered_map<std::string, uint64_t> flow_qp_index_table;
 
+    // !测试中转所使用时延
+    std::unordered_map<std::string, int64_t> flow_transfer_delay_table;
     // std::unordered_map<std::string,uint64_t> flow_byte_size_table;
 	// std::unordered_map<std::string,uint64_t> flow_packet_num_table;
 	// //和包间隔相关的统计tables，包间隔特征：max_pkt_interval min_pkt_interval avg_pkt_interval
