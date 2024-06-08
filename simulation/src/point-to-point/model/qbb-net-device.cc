@@ -119,9 +119,9 @@ namespace ns3 {
 		uint32_t fcount = m_qpGrp->GetN();
 		uint32_t min_finish_id = 0xffffffff;
 		for (qIndex = 1; qIndex <= fcount; qIndex++){
-			uint32_t idx = (qIndex + m_rrlast) % fcount;
+			// uint32_t idx = (qIndex + m_rrlast) % fcount;
 			// !非常关键！发包序列由原先轮询改为严格优先级(2024.4.9)注意关注！
-			// uint32_t idx = qIndex;
+			uint32_t idx = qIndex  % fcount;
 			Ptr<RdmaQueuePair> qp = m_qpGrp->Get(idx);
 			if (!paused[qp->m_pg] && qp->GetBytesLeft() > 0 && !qp->IsWinBound()){
 				if (m_qpGrp->Get(idx)->m_nextAvail.GetTimeStep() > Simulator::Now().GetTimeStep()) //not available now
