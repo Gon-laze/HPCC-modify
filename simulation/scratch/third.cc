@@ -1349,8 +1349,8 @@ int main(int argc, char *argv[])
 					<< "receive num" << "\t\t"
 					<< "FCT:" << "\t\t"
 					// << "total delay:"
-					<< "origin_pg:"  << '\n'
-					<< "transfer delay";
+					<< "origin_pg:" << "\t\t"
+					<< "transfer delay:"  << '\n';
 		Ptr<Node> receiveNodePtr = n.Get(4);
 		Ptr<SwitchNode> transfer_node = DynamicCast<SwitchNode>(n.Get(0));
 		for (int i=1; i<=3; i++)
@@ -1372,7 +1372,7 @@ int main(int argc, char *argv[])
 							<< (receiveNodePtr->flow_last_arrive_table[key] - nptr->flow_first_send_table[key]) << "\t\t"
 							// << (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key]) / nptr->flow_total_num_table[key] << '\n';
 							// << (receiveNodePtr->flow_total_arrive_table[key] - nptr->flow_total_send_table[key])<< '\n';
-							<< transfer_node->origin_pg[key]
+							<< transfer_node->origin_pg[key] << "\t\t"
 							<< transfer_node->flow_transfer_delay_table[key] << '\n';
 							
 			}
