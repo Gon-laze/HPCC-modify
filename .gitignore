@@ -1,5 +1,7 @@
 .vscode
 simulation/build
+simulation/.waf*
+simulation/.lock*
 simulation/mix/mix.tr
 simulation/mix/fct.txt
 simulation/mix/pfc.txt

@@ -858,9 +858,10 @@ int main(int argc, char *argv[])
 		// 	flowPkt_fileGroup[i+210].open(fhead.append(std::to_string(i).append(ftail)));
 		// }
 
+		// !注意换回数据集！
 		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/300_mix_size_txt/high/high_"};
+			std::string fhead{"mix/300_mix_size_txt_renew/high/high_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
@@ -868,14 +869,14 @@ int main(int argc, char *argv[])
 		}
 		for (int i=0; i<30; i++)
 		{
-			std::string fhead{"mix/300_mix_size_txt/middle/middle_"};
+			std::string fhead{"mix/300_mix_size_txt_renew/middle/middle_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
 		}
 		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/300_mix_size_txt/low/low_"};
+			std::string fhead{"mix/300_mix_size_txt_renew/low/low_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
