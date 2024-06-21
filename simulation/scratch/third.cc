@@ -52,6 +52,11 @@ using namespace std;
 	#define CHECKPOINT_ON
 #endif
 
+// !2024.6.18：针对起始时间乱序而启用的调试宏。慎用！！！
+#ifndef SHUFFLE_ORDER
+	#define SHUFFLE_ORDER
+#endif
+
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
 uint32_t cc_mode = 1;
@@ -194,7 +199,11 @@ void ScheduleFlowInputs(){
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
 		#endif
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
-		appCon.Start(Time(0));
+		#ifdef SHUFFLE_ORDER
+			appCon.Start(Time(flow_input.start_time));
+		#else
+			appCon.Start(Time(0));
+		#endif
 
 		// get the next flow input
 		flow_input.idx++;
@@ -203,7 +212,11 @@ void ScheduleFlowInputs(){
 
 	// schedule the next time to run this function
 	if (flow_input.idx < flow_num){
-		Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+		#ifdef SHUFFLE_ORDER
+			Simulator::Schedule(Simulator::Now()+Seconds(0.0), ScheduleFlowInputs);
+		#else
+			Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+		#endif
 	}else { // no more flows, close the file
 		flowf.close();
 	}
@@ -1292,7 +1305,11 @@ int main(int argc, char *argv[])
 	flow_input.idx = 0;
 	if (flow_num > 0){
 		ReadFlowInput();
-		Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+		#ifdef SHUFFLE_ORDER
+			Simulator::Schedule(Simulator::Now(), ScheduleFlowInputs);
+		#else
+			Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
+		#endif
 	}
 
 	topof.close();
@@ -1312,8 +1329,11 @@ int main(int argc, char *argv[])
 		// 尝试直接通过switchNode打印流信息
 		for (int i=0; i<node_num; i++)
 			if (n.Get(i)->GetNodeType() > 0)
+			#ifdef SHUFFLE_ORDER
+				Simulator::Schedule(Seconds(12) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
+			#else
 				Simulator::Schedule(Seconds(2) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
-
+			#endif
 	#endif
 
 	//
@@ -1347,7 +1367,9 @@ int main(int argc, char *argv[])
 					<< "last send:" << "\t\t" 
 					<< "last arrive:" << "\t\t"
 					<< "send num:" << "\t\t"
-					<< "receive num" << "\t\t"
+					<< "receive num:" << "\t\t"
+					<< "send size:" << "\t\t"
+					<< "receive size:" << "\t\t"
 					<< "FCT:" << "\t\t"
 					// << "total delay:"
 					<< "origin_pg:" << "\t\t"

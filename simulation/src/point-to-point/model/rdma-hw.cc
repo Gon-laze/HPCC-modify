@@ -715,12 +715,14 @@ int RdmaHw::ReceiveUdp(Ptr<Packet> p, CustomHeader &ch){
 			m_node->flow_last_arrive_table[fivetuples] = arriveTime;
 			m_node->flow_total_arrive_table[fivetuples] = 0.0;
 			m_node->flow_total_num_table[fivetuples] = 1;
+			m_node->flow_total_size_table[fivetuples] = payload_size;
 		}
 		else
 		{
 			m_node->flow_last_arrive_table[fivetuples] = arriveTime;
 			m_node->flow_total_num_table[fivetuples] += arriveTime;
 			m_node->flow_total_num_table[fivetuples]++;
+			m_node->flow_total_size_table[fivetuples] += payload_size;
 		}
 	#endif
 
@@ -1050,12 +1052,13 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 	#ifdef MODIFY_ON
 		// !若余留数据不足m_mtu，最后一个包大小可能偏小
 		// !每次都根据qp内容调整HW级别信息。有可能造成不必要开销或冲突
-		m_mtu = qp->PktInfo_vec[qp->m_sent].second;
 		// !不太清楚自定义发包大小会不会最终改变发包的数量（即唤起send的次数与实际包数不一致），留个调试点
     	if (qp->PktInfo_vec.size() <= qp->m_sent)
       		std::cout << "CUSTOM_PKT_ERROR!\n" \
 				<< "Total: " << qp->PktInfo_vec.size() << '\n' \
 				<< "Current: " << qp->m_sent << '\n';
+		else
+			m_mtu = qp->PktInfo_vec[qp->m_sent].second;			
 	#endif
 	if (m_mtu < payload_size)
 		payload_size = m_mtu;
@@ -1100,6 +1103,7 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 			m_node->flow_last_send_table[qp->QpFivetuples] = sendTime;
 			m_node->flow_total_send_table[qp->QpFivetuples] = 0.0;
 			m_node->flow_total_num_table[qp->QpFivetuples] = 1;
+			m_node->flow_total_size_table[qp->QpFivetuples] = payload_size;
 
 			m_node->flow_first_send_table[qp->QpFivetuples] = sendTime;
 		}
@@ -1108,6 +1112,7 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 			m_node->flow_last_send_table[qp->QpFivetuples] = sendTime;
 			m_node->flow_total_num_table[qp->QpFivetuples] += sendTime;
 			m_node->flow_total_num_table[qp->QpFivetuples]++;
+			m_node->flow_total_size_table[qp->QpFivetuples] += payload_size;
 		}
 
 	#endif

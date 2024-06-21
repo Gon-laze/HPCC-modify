@@ -363,6 +363,7 @@ public:
     std::unordered_map <std::string, double> flow_last_send_table;
     std::unordered_map <std::string, double> flow_total_send_table;
     std::unordered_map <std::string, uint32_t> flow_total_num_table;
+    std::unordered_map <std::string, uint32_t> flow_total_size_table;
   #endif
 };
 
