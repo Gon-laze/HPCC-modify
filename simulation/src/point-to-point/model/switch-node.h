@@ -181,7 +181,10 @@ class T2T_Heap{
 
 
 class SwitchNode : public Node{
+    // !增加流数目崩溃有可能是pCnt受限，注意排查！！（2024.6.21）
+    // 稍后先直接增添到2048试试
 	static const uint32_t pCnt = 257;	// Number of ports used
+    // static const uint32_t pCnt = 2049;	// Number of ports used
 	static const uint32_t qCnt = 8;	// Number of queues/priorities used
 	uint32_t m_ecmpSeed;
 	std::unordered_map<uint32_t, std::vector<int> > m_rtTable; // map from ip address (u32) to possible ECMP port (index of dev)

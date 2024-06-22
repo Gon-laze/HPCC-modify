@@ -53,9 +53,14 @@ using namespace std;
 #endif
 
 // !2024.6.18：针对起始时间乱序而启用的调试宏。慎用！！！
-#ifndef SHUFFLE_ORDER
-	#define SHUFFLE_ORDER
+// #ifndef SHUFFLE_ORDER
+// 	#define SHUFFLE_ORDER
+// #endif
+
+#ifndef FLOW_DUP
+	#define FLOW_DUP
 #endif
+
 
 NS_LOG_COMPONENT_DEFINE("GENERIC_SIMULATION");
 
@@ -174,15 +179,25 @@ void ScheduleFlowInputs(){
 			// 	std::cout << "init Test begin!\n";
 			// else
 			// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
-			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
+			#ifdef FLOW_DUP
+				RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx % 300]);
+			#else
+				RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
+			#endif
 			// !针对switchNode而临时设立的统计部分。不要轻易复用!
 			for (int u=0; u<5; u++) if (n.Get(u)->GetNodeType() == 1)
 			{
 				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(u));
 				uint32_t origin_pg;
-				if (flow_input.idx < 135)			origin_pg = 1;
-				else if (flow_input.idx < 165)		origin_pg = 2;
-				else								origin_pg = 3;
+				#ifdef FLOW_DUP
+					if (flow_input.idx % 300 < 135)			origin_pg = 1;
+					else if (flow_input.idx % 300 < 165)	origin_pg = 2;
+					else									origin_pg = 3;
+				#else
+					if (flow_input.idx < 135)			origin_pg = 1;
+					else if (flow_input.idx < 165)		origin_pg = 2;
+					else								origin_pg = 3;
+				#endif
 
 				// if (flow_input.idx < 45)			origin_pg = 1;
 				// else if (flow_input.idx < 180)		origin_pg = 2;
@@ -200,6 +215,7 @@ void ScheduleFlowInputs(){
 		#endif
 		ApplicationContainer appCon = clientHelper.Install(n.Get(flow_input.src));
 		#ifdef SHUFFLE_ORDER
+			// TODO: 感觉应该是Time(flow_input.start_time) - Simulator::Now()
 			appCon.Start(Time(flow_input.start_time));
 		#else
 			appCon.Start(Time(0));
@@ -213,6 +229,7 @@ void ScheduleFlowInputs(){
 	// schedule the next time to run this function
 	if (flow_input.idx < flow_num){
 		#ifdef SHUFFLE_ORDER
+			// TODO: 感觉应该是Seconds(0)或Time(0)
 			Simulator::Schedule(Simulator::Now()+Seconds(0.0), ScheduleFlowInputs);
 		#else
 			Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
@@ -872,28 +889,104 @@ int main(int argc, char *argv[])
 		// }
 
 		// !注意换回数据集！
-		for (int i=0; i<135; i++)
-		{
-			std::string fhead{"mix/300_mix_size_txt_renew/high/high_"};
-			std::string ftail{".txt"};
+		#ifdef FLOW_DUP
+		#ifdef SHUFFLE_ORDER
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_renew_dup/high/high_"};
+				std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-			// std::cout << "high: " << i << '\n';
-		}
-		for (int i=0; i<30; i++)
-		{
-			std::string fhead{"mix/300_mix_size_txt_renew/middle/middle_"};
-			std::string ftail{".txt"};
+				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+				// std::cout << "high: " << i << '\n';
+			}
+			for (int i=0; i<30; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_renew_dup/middle/middle_"};
+				std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
-		}
-		for (int i=0; i<135; i++)
-		{
-			std::string fhead{"mix/300_mix_size_txt_renew/low/low_"};
-			std::string ftail{".txt"};
+				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_renew_dup/low/low_"};
+				std::string ftail{".txt"};
 
-			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
-		}
+				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+		#else
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_dup/high/high_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+				// std::cout << "high: " << i << '\n';
+			}
+			for (int i=0; i<30; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_dup/middle/middle_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_dup/low/low_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+			}			
+		#endif
+		#else
+		#ifdef SHUFFLE_ORDER
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_renew/high/high_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+				// std::cout << "high: " << i << '\n';
+			}
+			for (int i=0; i<30; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_renew/middle/middle_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt_renew/low/low_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+		#else
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt/high/high_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+				// std::cout << "high: " << i << '\n';
+			}
+			for (int i=0; i<30; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt/middle/middle_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+			for (int i=0; i<135; i++)
+			{
+				std::string fhead{"mix/300_mix_size_txt/low/low_"};
+				std::string ftail{".txt"};
+
+				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+			}
+		#endif
+		#endif
+
 
 		// for (int i=0; i<45; i++)
 		// {
@@ -1306,6 +1399,7 @@ int main(int argc, char *argv[])
 	if (flow_num > 0){
 		ReadFlowInput();
 		#ifdef SHUFFLE_ORDER
+			// TODO: 感觉应该是Seconds(0)或Time(0)
 			Simulator::Schedule(Simulator::Now(), ScheduleFlowInputs);
 		#else
 			Simulator::Schedule(Seconds(flow_input.start_time)-Simulator::Now(), ScheduleFlowInputs);
@@ -1330,8 +1424,10 @@ int main(int argc, char *argv[])
 		for (int i=0; i<node_num; i++)
 			if (n.Get(i)->GetNodeType() > 0)
 			#ifdef SHUFFLE_ORDER
+				// TODO: 感觉应该是Seconds(12) 或稍高一些（Seconds(12.5)）
 				Simulator::Schedule(Seconds(12) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
 			#else
+				// TODO: 感觉应该是Seconds(2) 或稍高一些（Seconds(2.5)）
 				Simulator::Schedule(Seconds(2) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
 			#endif
 	#endif
@@ -1390,6 +1486,8 @@ int main(int argc, char *argv[])
 							<< receiveNodePtr->flow_last_arrive_table[key] << "\t\t"
 							<< nptr->flow_total_num_table[key] << "\t\t"
 							<< receiveNodePtr->flow_total_num_table[key] << "\t\t"
+							<< nptr->flow_total_size_table[key] << "\t\t"
+							<< receiveNodePtr->flow_total_size_table[key] << "\t\t"
 							// ?希望没有丢包，否则收发端数目不一致....
 							// 先试试改为时延总合
 							<< (receiveNodePtr->flow_last_arrive_table[key] - nptr->flow_first_send_table[key]) << "\t\t"
