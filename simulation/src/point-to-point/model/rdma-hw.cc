@@ -322,6 +322,10 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 		uint32_t Pktsize = 0;
 		double Last_StartTime = 0; 
 		uint32_t Last_Pktsize = 0;
+
+		// dup可能涉及同文件多次读取，每次定位至开头
+		qp->Custom_Packet_Info_input_ptr->clear();
+		qp->Custom_Packet_Info_input_ptr->seekg(0, std::ios::beg);
 	
 		// 虽然m_size理论上由flow.txt决定，若手动预先修改flow.txt则无需再更改，但为保险且这里加一步（无异常后可考虑删去）
 		uint32_t totalSize;
@@ -368,6 +372,9 @@ void RdmaHw::AddQueuePair(uint64_t size, uint16_t pg, Ipv4Address sip, Ipv4Addre
 
 	#endif
 	std::cout << "CP6: QP configure set successfully!\n";
+	std::cout << "\t" << "flow id: " << qp->QpFivetuples << '\n';
+	std::cout << "\t" << "total size: " << totalSize << '\n';
+	std::cout << "\t" << "expect pkt num: " << qp->PktInfo_vec.size() << '\n';
 	// add qp
 	uint32_t nic_idx = GetNicIdxOfQp(qp);
 	m_nic[nic_idx].qpGrp->AddQp(qp);

@@ -277,7 +277,7 @@ public:
 
     /* 为流的老化而设置的变量；*/
     // *先将阈值设大，有需求再改
-    const uint64_t  PERIOD_IDLE_THRESHOLD = 100000;
+    const uint64_t  PERIOD_IDLE_THRESHOLD = 1000000000;
     const double    SIZE_IDLE_THRESHOLD = 0.0;
     const double    AGING_ALPHA_SMALL = 0.1;
     const double    AGING_ALPHA_BIG = 0.9;
