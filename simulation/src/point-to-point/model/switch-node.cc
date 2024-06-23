@@ -140,10 +140,12 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
 				// *每次运用优先级都要检测（否则将初始化为0导致一系列错误）！！
 				// *多次踩这个坑太荒唐了......
-				if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
-					qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
-				else
-					qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+				// if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
+				// else
+				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+
+				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 
 				flow_transfer_delay_table[fivetuples] += (Simulator::Now().GetNanoSeconds()-current_time);
 			#else
@@ -431,7 +433,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 			//初始化最大包到达间隔，最小包到达间隔，平均包到达间隔
 			flow_max_pkt_interval_table[CNT_DATA][fivetuples] = 0.0;
 			flow_min_pkt_interval_table[CNT_DATA][fivetuples] = 1000000000;
-			flow_avg_pkt_interval_table[CNT_DATA][fivetuples] - 0.0;
+			flow_avg_pkt_interval_table[CNT_DATA][fivetuples] = 0.0;
 			//初始化平均burst
 			flow_current_burst_size_table[CNT_DATA][fivetuples] += (uint64_t)(payload_size);
 			flow_max_burst_size_table[CNT_DATA][fivetuples] = 0;

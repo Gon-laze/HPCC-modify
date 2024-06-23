@@ -104,6 +104,8 @@ namespace ns3 {
 		-1024：		当前高优先队列没有包传输而转向QP序列（QPS）内查询下一个QP，且所有QP对仍保持连接（所有QP还在工作），且不可用（被暂停、当前没有未传输数据或未在窗口期）
 		others：	当前高优先队列没有包传输而转向QP序列（QPS）内查询下一个QP，清理了已完成的QP后，返回轮询查找到第一个满足条件的QP
 
+
+		! 这一步会在Node而不是switchnode上触发
 	*/
 	int RdmaEgressQueue::GetNextQindex(bool paused[]){
 		#ifdef CHECKPOINT_ON
@@ -119,10 +121,12 @@ namespace ns3 {
 		uint32_t fcount = m_qpGrp->GetN();
 		uint32_t min_finish_id = 0xffffffff;
 		for (qIndex = 1; qIndex <= fcount; qIndex++){
-			// uint32_t idx = (qIndex + m_rrlast) % fcount;
+			uint32_t idx = (qIndex + m_rrlast) % fcount;
 			// !非常关键！发包序列由原先轮询改为严格优先级(2024.4.9)注意关注！
-			uint32_t idx = qIndex  % fcount;
+			// TODO： 启用了flow dup后似乎没有什么收益，先换回来(qIndex + m_rrlast) % fcount吧......
+			// uint32_t idx = qIndex  % fcount;
 			Ptr<RdmaQueuePair> qp = m_qpGrp->Get(idx);
+			// !2024.6.23 (paused[qp->m_pg]可能是个重要观察点)
 			if (!paused[qp->m_pg] && qp->GetBytesLeft() > 0 && !qp->IsWinBound()){
 				if (m_qpGrp->Get(idx)->m_nextAvail.GetTimeStep() > Simulator::Now().GetTimeStep()) //not available now
 					continue;
