@@ -145,7 +145,9 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				// else
 				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 
-				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+				// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+				qIndex = 3;
+				// NS_ASSERT_MSG((ch.udp.pg == 3), "ch.udp.pg is not 3");
 
 				flow_transfer_delay_table[fivetuples] += (Simulator::Now().GetNanoSeconds()-current_time);
 			#else

@@ -179,16 +179,11 @@ void ScheduleFlowInputs(){
 			// 	std::cout << "init Test begin!\n";
 			// else
 			// 	std::cout << "init Test failed!" << (uint64_t)&flowPkt_fileGroup[flow_input.idx]<< '\n';	   
-			#ifdef FLOW_DUP
-				RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx % 300]);
-			#else
-				RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
-			#endif
+			uint32_t origin_pg;
 			// !针对switchNode而临时设立的统计部分。不要轻易复用!
-			for (int u=0; u<5; u++) if (n.Get(u)->GetNodeType() == 1)
+			for (int u=0; u<n.GetN(); u++) if (n.Get(u)->GetNodeType() == 1)
 			{
 				Ptr<SwitchNode> sw = DynamicCast<SwitchNode>(n.Get(u));
-				uint32_t origin_pg;
 				#ifdef FLOW_DUP
 					if (flow_input.idx % 300 < 135)			origin_pg = 1;
 					else if (flow_input.idx % 300 < 165)	origin_pg = 2;
@@ -209,7 +204,12 @@ void ScheduleFlowInputs(){
 				// else								origin_pg = 3;
 				sw->load_OriginFlow_msg(serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, 0x11, origin_pg);
 			}
-			
+			// !读入初始优先级，慎重！
+			#ifdef FLOW_DUP
+				RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx % 300]);
+			#else
+				RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst], (uint64_t)&flowPkt_fileGroup[flow_input.idx]);
+			#endif
 		#else
 			RdmaClientHelper clientHelper(flow_input.pg, serverAddress[flow_input.src], serverAddress[flow_input.dst], port, flow_input.dport, flow_input.maxPacketCount, has_win?(global_t==1?maxBdp:pairBdp[n.Get(flow_input.src)][n.Get(flow_input.dst)]):0, global_t==1?maxRtt:pairRtt[flow_input.src][flow_input.dst]);
 		#endif
@@ -1472,9 +1472,10 @@ int main(int argc, char *argv[])
 					<< "transfer delay:"  << '\n';
 		Ptr<Node> receiveNodePtr = n.Get(4);
 		Ptr<SwitchNode> transfer_node = DynamicCast<SwitchNode>(n.Get(0));
-		for (int i=1; i<=3; i++)
+		for (int i=1; i<node_num; i++)
 		{
 			if (n.Get(i)->GetNodeType() > 0)	continue;
+			if (i == 4)	continue;
 			Ptr<Node> nptr = n.Get(i);
 			// std::cout << "" << nptr->GetId() << '\n';
 			for (auto iter : nptr->flow_last_send_table)
