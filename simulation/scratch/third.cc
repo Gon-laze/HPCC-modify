@@ -889,103 +889,126 @@ int main(int argc, char *argv[])
 		// }
 
 		// !注意换回数据集！
-		#ifdef FLOW_DUP
-		#ifdef SHUFFLE_ORDER
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_renew_dup/high/high_"};
-				std::string ftail{".txt"};
+		// #ifdef FLOW_DUP
+		// #ifdef SHUFFLE_ORDER
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_renew_dup/high/high_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-				// std::cout << "high: " << i << '\n';
-			}
-			for (int i=0; i<30; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_renew_dup/middle/middle_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// 		// std::cout << "high: " << i << '\n';
+		// 	}
+		// 	for (int i=0; i<30; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_renew_dup/middle/middle_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_renew_dup/low/low_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_renew_dup/low/low_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-		#else
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_dup/high/high_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// #else
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_dup/high/high_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-				// std::cout << "high: " << i << '\n';
-			}
-			for (int i=0; i<30; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_dup/middle/middle_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// 		// std::cout << "high: " << i << '\n';
+		// 	}
+		// 	for (int i=0; i<30; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_dup/middle/middle_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_dup/low/low_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_dup/low/low_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
-			}			
-		#endif
-		#else
-		#ifdef SHUFFLE_ORDER
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_renew/high/high_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}			
+		// #endif
+		// #else
+		// #ifdef SHUFFLE_ORDER
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_renew/high/high_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-				// std::cout << "high: " << i << '\n';
-			}
-			for (int i=0; i<30; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_renew/middle/middle_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// 		// std::cout << "high: " << i << '\n';
+		// 	}
+		// 	for (int i=0; i<30; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_renew/middle/middle_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt_renew/low/low_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt_renew/low/low_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-		#else
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt/high/high_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// #else
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt/high/high_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
-				// std::cout << "high: " << i << '\n';
-			}
-			for (int i=0; i<30; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt/middle/middle_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+		// 		// std::cout << "high: " << i << '\n';
+		// 	}
+		// 	for (int i=0; i<30; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt/middle/middle_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-			for (int i=0; i<135; i++)
-			{
-				std::string fhead{"mix/300_mix_size_txt/low/low_"};
-				std::string ftail{".txt"};
+		// 		flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// 	for (int i=0; i<135; i++)
+		// 	{
+		// 		std::string fhead{"mix/300_mix_size_txt/low/low_"};
+		// 		std::string ftail{".txt"};
 
-				flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
-			}
-		#endif
-		#endif
+		// 		flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+		// 	}
+		// #endif
+		// #endif
+
+		for (int i=0; i<135; i++)
+		{
+			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive/high/high_"};
+			std::string ftail{".txt"};
+
+			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
+			// std::cout << "high: " << i << '\n';
+		}
+		for (int i=0; i<30; i++)
+		{
+			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive/middle/middle_"};
+			std::string ftail{".txt"};
+
+			flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
+		}
+		for (int i=0; i<135; i++)
+		{
+			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive/low/low_"};
+			std::string ftail{".txt"};
+
+			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
+		}	
 
 
 		// for (int i=0; i<45; i++)

@@ -272,7 +272,8 @@ public:
 	void Switch_FeaturePrinter();
 
     T2T_Heap<uint64_t>  TOP_20percent;
-	uint32_t FlowPrinter_interval = 1;
+    // 针对于reconstruction大幅改小
+	double FlowPrinter_interval = 0.01;
 	void Switch_FlowPrinter();
 
     /* 为流的老化而设置的变量；*/
