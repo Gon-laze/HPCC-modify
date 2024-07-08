@@ -98,6 +98,7 @@ int SwitchNode::GetOutDev(Ptr<const Packet> p, CustomHeader &ch){
 
 void SwitchNode::CheckAndSendPfc(uint32_t inDev, uint32_t qIndex){
 	Ptr<QbbNetDevice> device = DynamicCast<QbbNetDevice>(m_devices[inDev]);
+	// !pfc问题很有可能处在这里
 	if (m_mmu->CheckShouldPause(inDev, qIndex)){
 		device->SendPfc(qIndex, 0);
 		m_mmu->SetPause(inDev, qIndex);
@@ -140,13 +141,13 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
 				// *每次运用优先级都要检测（否则将初始化为0导致一系列错误）！！
 				// *多次踩这个坑太荒唐了......
-				// if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
-				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
-				// else
-				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+				if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+					qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
+				else
+					qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 
 				// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
-				qIndex = 3;
+				// qIndex = 3;
 				// NS_ASSERT_MSG((ch.udp.pg == 3), "ch.udp.pg is not 3");
 
 				flow_transfer_delay_table[fivetuples] += (Simulator::Now().GetNanoSeconds()-current_time);
@@ -167,8 +168,14 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				m_mmu->UpdateEgressAdmission(idx, qIndex, p->GetSize());
 			}else{
 				return; // Drop
+				#ifdef MODIFY_ON
+					// std::cout << "drop a pfc pkt\n";
+				#endif
 			}
 			CheckAndSendPfc(inDev, qIndex);
+			#ifdef MODIFY_ON
+				// std::cout << "prepare to send a pfc pkt\n";
+			#endif
 		}
 		m_bytes[inDev][idx][qIndex] += p->GetSize();
 		m_devices[idx]->SwitchSend(qIndex, p, ch);

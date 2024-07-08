@@ -428,6 +428,9 @@ namespace ns3 {
 				m_tracePfc(0);
 				Resume(qIndex);
 			}
+			#ifdef MODIFY_ON
+				std::cout << "a pfc pkt occured for qIndex " << qIndex << std::endl;
+			#endif
 		}else { // non-PFC packets (data, ACK, NACK, CNP...)
 			if (m_node->GetNodeType() > 0){ // switch
 				packet->AddPacketTag(FlowIdTag(m_ifIndex));
@@ -465,6 +468,9 @@ namespace ns3 {
 	}
 
 	void QbbNetDevice::SendPfc(uint32_t qIndex, uint32_t type){
+		#ifdef MODIFY_ON
+			std::cout << "send a pfc for qIndex " << qIndex << std::endl;
+		#endif
 		Ptr<Packet> p = Create<Packet>(0);
 		PauseHeader pauseh((type == 0 ? m_pausetime : 0), m_queue->GetNBytes(qIndex), qIndex);
 		p->AddHeader(pauseh);
