@@ -989,7 +989,7 @@ int main(int argc, char *argv[])
 
 		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive/high/high_"};
+			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive_renew/high/high_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i].open(fhead.append(std::to_string(i).append(ftail)));
@@ -997,14 +997,14 @@ int main(int argc, char *argv[])
 		}
 		for (int i=0; i<30; i++)
 		{
-			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive/middle/middle_"};
+			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive_renew/middle/middle_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i+135].open(fhead.append(std::to_string(i).append(ftail)));
 		}
 		for (int i=0; i<135; i++)
 		{
-			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive/low/low_"};
+			std::string fhead{"mix/300_reconstruction_flow_txt_origin_receive_renew/low/low_"};
 			std::string ftail{".txt"};
 
 			flowPkt_fileGroup[i+165].open(fhead.append(std::to_string(i).append(ftail)));
