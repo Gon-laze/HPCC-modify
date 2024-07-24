@@ -127,7 +127,7 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 			// TODO: qindex设置成其他值出错了。为什么？
 			#ifdef MODIFY_ON
 				// ?测试中转所带来时延
-				auto current_time = Simulator::Now().GetNanoSeconds();
+				// auto current_time = Simulator::Now().GetNanoSeconds();
 
 				auto ip2string = [](uint32_t ip)
 				{
@@ -141,16 +141,21 @@ void SwitchNode::SendToDev(Ptr<Packet>p, CustomHeader &ch){
 				std::string fivetuples = key_sip + " " + key_dip + " " + key_sport + " " + key_dport + " " + key_proto;
 				// *每次运用优先级都要检测（否则将初始化为0导致一系列错误）！！
 				// *多次踩这个坑太荒唐了......
-				if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
-					qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
-				else
-					qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
+				// if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : flow_pg_class_table[CNT_DATA][fivetuples]);
+				// else
+				// 	qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 
-				// qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
-				// qIndex = 3;
+
+				// if (flow_pg_class_table[CNT_DATA].find(fivetuples) != flow_pg_class_table[CNT_DATA].end())
+				// 	qIndex = flow_pg_class_table[CNT_DATA][fivetuples];
+				// else
+				// 	qIndex = 3;
+
+				qIndex = 3;
 				// NS_ASSERT_MSG((ch.udp.pg == 3), "ch.udp.pg is not 3");
 
-				flow_transfer_delay_table[fivetuples] += (Simulator::Now().GetNanoSeconds()-current_time);
+				// flow_transfer_delay_table[fivetuples] += (Simulator::Now().GetNanoSeconds()-current_time);
 			#else
 				qIndex = (ch.l3Prot == 0x06 ? 1 : ch.udp.pg); // if TCP, put to queue 1
 			#endif
@@ -460,7 +465,7 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 
 			// * 新增qp对映射环节
 
-			flow_transfer_delay_table[fivetuples] = 0;
+			// flow_transfer_delay_table[fivetuples] = 0;
 
 		}
 		//若不是第一个数据包，则需要开始计算pkt_interval相关的特征信息并进行其他特征的更新
