@@ -850,7 +850,7 @@ int RdmaHw::ReceiveAck(Ptr<Packet> p, CustomHeader &ch){
 	int i;
 	Ptr<RdmaQueuePair> qp = GetQp(ch.sip, port, qIndex);
 	if (qp == NULL){
-		std::cout << "ERROR: " << "node:" << m_node->GetId() << ' ' << (ch.l3Prot == 0xFC ? "ACK" : "NACK") << " NIC cannot find the flow\n";
+		// std::cout << "ERROR: " << "node:" << m_node->GetId() << ' ' << (ch.l3Prot == 0xFC ? "ACK" : "NACK") << " NIC cannot find the flow\n";
 		return 0;
 	}
 
@@ -1061,9 +1061,11 @@ Ptr<Packet> RdmaHw::GetNxtPacket(Ptr<RdmaQueuePair> qp){
 		// !每次都根据qp内容调整HW级别信息。有可能造成不必要开销或冲突
 		// !不太清楚自定义发包大小会不会最终改变发包的数量（即唤起send的次数与实际包数不一致），留个调试点
     	if (qp->PktInfo_vec.size() <= qp->m_sent)
-      		std::cout << "CUSTOM_PKT_ERROR!\n" \
-				<< "Total: " << qp->PktInfo_vec.size() << '\n' \
-				<< "Current: " << qp->m_sent << '\n';
+		{
+      		// std::cout << "CUSTOM_PKT_ERROR!\n" \
+			// 	<< "Total: " << qp->PktInfo_vec.size() << '\n' \
+			// 	<< "Current: " << qp->m_sent << '\n';			
+		}
 		else
 			m_mtu = qp->PktInfo_vec[qp->m_sent].second;			
 	#endif
