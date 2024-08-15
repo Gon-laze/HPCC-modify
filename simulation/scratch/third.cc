@@ -1451,7 +1451,10 @@ int main(int argc, char *argv[])
 				Simulator::Schedule(Seconds(12) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
 			#else
 				// TODO: 感觉应该是Seconds(2) 或稍高一些（Seconds(2.5)）
-				Simulator::Schedule(Seconds(2) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
+				// !2024.8.14更改
+				// !Switch_FlowPrinter调用后不能创建新的流（即所有流启动时间必须在Switch_FlowPrinter调用前），否则报错！！
+				// Simulator::Schedule(Seconds(2) + NanoSeconds(qlen_mon_start), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
+				Simulator::Schedule(Seconds(2) + Seconds(0.02), &SwitchNode::Switch_FlowPrinter, DynamicCast<SwitchNode>(n.Get(i)));
 			#endif
 	#endif
 

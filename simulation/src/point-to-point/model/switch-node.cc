@@ -851,7 +851,9 @@ int SwitchNode::log2apprx(int x, int b, int m, int l){
 				}
 			}
 		#else
-			for (auto& tb : flow_byte_size_table[OLD_DATA])
+			// !2024.8.14 弃用OLD_DATA
+			// for (auto& tb : flow_byte_size_table[OLD_DATA])
+			for (auto& tb : flow_byte_size_table[CNT_DATA])
 			{
 				// !还是那个问题：不要考虑回传的ACK（否则数目会*2）
 				// if (tb.second == 0.0) continue;
@@ -1998,32 +2000,33 @@ else
 		// 打印优先级
 
 		// 实际想把其作为一个锁来使用....
-		index = 0;
+		// !2024.8.14 弃用OLD_DATA
+		// index = 0;
 
-		flow_byte_size_table[OLD_DATA] 				= flow_byte_size_table[CNT_DATA];
-		flow_packet_num_table[OLD_DATA] 			= flow_packet_num_table[CNT_DATA];
+		// flow_byte_size_table[OLD_DATA] 				= flow_byte_size_table[CNT_DATA];
+		// flow_packet_num_table[OLD_DATA] 			= flow_packet_num_table[CNT_DATA];
 
-		flow_last_pkt_time_table[OLD_DATA] 			= flow_last_pkt_time_table[CNT_DATA];
-		flow_first_pkt_time_table[OLD_DATA] 		= flow_first_pkt_time_table[CNT_DATA];
-		flow_min_pkt_interval_table[OLD_DATA] 		= flow_min_pkt_interval_table[CNT_DATA];
-		flow_max_pkt_interval_table[OLD_DATA] 		= flow_max_pkt_interval_table[CNT_DATA];
-		flow_avg_pkt_interval_table[OLD_DATA] 		= flow_avg_pkt_interval_table[CNT_DATA];
+		// flow_last_pkt_time_table[OLD_DATA] 			= flow_last_pkt_time_table[CNT_DATA];
+		// flow_first_pkt_time_table[OLD_DATA] 		= flow_first_pkt_time_table[CNT_DATA];
+		// flow_min_pkt_interval_table[OLD_DATA] 		= flow_min_pkt_interval_table[CNT_DATA];
+		// flow_max_pkt_interval_table[OLD_DATA] 		= flow_max_pkt_interval_table[CNT_DATA];
+		// flow_avg_pkt_interval_table[OLD_DATA] 		= flow_avg_pkt_interval_table[CNT_DATA];
 
-		flow_max_pkt_size_table[OLD_DATA] 			= flow_max_pkt_size_table[CNT_DATA];
-		flow_min_pkt_size_table[OLD_DATA] 			= flow_min_pkt_size_table[CNT_DATA];
-		flow_avg_pkt_size_table[OLD_DATA] 			= flow_avg_pkt_size_table[CNT_DATA];
-		flow_gap_pkt_size_table[OLD_DATA]			= flow_gap_pkt_size_table[CNT_DATA];
+		// flow_max_pkt_size_table[OLD_DATA] 			= flow_max_pkt_size_table[CNT_DATA];
+		// flow_min_pkt_size_table[OLD_DATA] 			= flow_min_pkt_size_table[CNT_DATA];
+		// flow_avg_pkt_size_table[OLD_DATA] 			= flow_avg_pkt_size_table[CNT_DATA];
+		// flow_gap_pkt_size_table[OLD_DATA]			= flow_gap_pkt_size_table[CNT_DATA];
 
-		flow_current_burst_size_table[OLD_DATA] 	= flow_current_burst_size_table[CNT_DATA];
-		flow_max_burst_size_table[OLD_DATA] 		= flow_max_burst_size_table[CNT_DATA];
-		flow_avg_burst_size_table[OLD_DATA] 		= flow_avg_burst_size_table[CNT_DATA];
-		flow_total_burst_size_table[OLD_DATA] 		= flow_total_burst_size_table[CNT_DATA];
-		flow_burst_num_table[OLD_DATA] 				= flow_burst_num_table[CNT_DATA];
+		// flow_current_burst_size_table[OLD_DATA] 	= flow_current_burst_size_table[CNT_DATA];
+		// flow_max_burst_size_table[OLD_DATA] 		= flow_max_burst_size_table[CNT_DATA];
+		// flow_avg_burst_size_table[OLD_DATA] 		= flow_avg_burst_size_table[CNT_DATA];
+		// flow_total_burst_size_table[OLD_DATA] 		= flow_total_burst_size_table[CNT_DATA];
+		// flow_burst_num_table[OLD_DATA] 				= flow_burst_num_table[CNT_DATA];
 
-		flow_speed_table[OLD_DATA] 					= flow_speed_table[CNT_DATA];
-		flow_pg_class_table[OLD_DATA] 				= flow_pg_class_table[CNT_DATA];
+		// flow_speed_table[OLD_DATA] 					= flow_speed_table[CNT_DATA];
+		// flow_pg_class_table[OLD_DATA] 				= flow_pg_class_table[CNT_DATA];
 
-		index = 1;
+		// index = 1;
 
 		CallNum++;
 		// if (Simulator::Now().GetSeconds() <= 15.0)
